@@ -9,6 +9,13 @@ export const index = async (req, res) => {
                 from: 'users',
                 localField: 'user',
                 foreignField: '_id',
+                pipeline: [
+                    {
+                        $project: {
+                            'email': 0
+                        }
+                    }
+                ],
                 as: 'user'
             }
         },
@@ -17,6 +24,13 @@ export const index = async (req, res) => {
                 from: 'subjects',
                 localField: 'subject',
                 foreignField: '_id',
+                pipeline: [
+                    {
+                        $project: {
+                            'users': 0
+                        }
+                    }
+                ],
                 as: 'subject'
             }
         },
@@ -50,7 +64,7 @@ export const index = async (req, res) => {
         },
         {
             $addFields: {
-                'userScore': {
+                'user_score': {
                     $cond: {
                         if: { $ne: ['$matchedScores', {}] },
                         then: '$matchedScores.score',
@@ -89,6 +103,13 @@ export const show = async (req, res) => {
                     from: 'users',
                     localField: 'user',
                     foreignField: '_id',
+                    pipeline: [
+                        {
+                            $project: {
+                                'email': 0
+                            }
+                        }
+                    ],
                     as: 'user'
                 }
             },
@@ -97,6 +118,13 @@ export const show = async (req, res) => {
                     from: 'subjects',
                     localField: 'subject',
                     foreignField: '_id',
+                    pipeline: [
+                        {
+                            $project: {
+                                'users': 0
+                            }
+                        }
+                    ],
                     as: 'subject'
                 }
             },
@@ -130,7 +158,7 @@ export const show = async (req, res) => {
             },
             {
                 $addFields: {
-                    'userScore': {
+                    'user_score': {
                         $cond: {
                             if: { $ne: ['$matchedScores', {}] },
                             then: '$matchedScores.score',
@@ -158,14 +186,15 @@ export const show = async (req, res) => {
 }
 
 export const store = async (req, res) => {
-    const { subject_id, title, content } = req.body
+    const { subject_id, title, content, attachments } = req.body
 
     const discussion = await Discussion.create({
         subject: subject_id,
         user: req.user._id,
         title: title,
         content: content,
-        replyCount: 0,
+        attachments: attachments,
+        reply_count: 0,
         score: 0
     })
 
@@ -176,12 +205,13 @@ export const store = async (req, res) => {
 
 export const update = async (req, res) => {
     try {
-        const { title, content } = req.body
+        const { title, content, attachments } = req.body
 
         const updateQuery = { $set: {} };
 
         if (title) updateQuery.$set.title = title;
         if (content) updateQuery.$set.content = content;
+        if (attachments) updateQuery.$set.attachments = attachments;
 
         const discussion = await Discussion.updateOne({ _id: req.params.id }, updateQuery)
 
@@ -208,7 +238,7 @@ export const score = async (req, res) => {
         const discussionScoreBefore = await DiscussionScore.findOneAndUpdate({ discussion: id, user: req.user._id }, { $set: { score: score } }, { upsert: true, session: session })
 
         let scoreToUpdate = discussionScoreBefore ? (discussionScoreBefore.score * -1 + score) : score
-        
+
         const discussion = await Discussion.updateOne({ _id: id }, { $inc: { score: scoreToUpdate } }, { session: session })
 
         await session.commitTransaction()
