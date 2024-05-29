@@ -3,7 +3,7 @@ import Reply from '../models/Reply.js'
 import mongoose from 'mongoose'
 import ReplyScore from '../models/ReplyScore.js'
 
-export const index = async (req, res) => {
+export const index = async (req, res, next) => {
     try {
         const matchQuery = { $match: {} }
         if (req.query.discussion && mongoose.Types.ObjectId.isValid(req.query.discussion))
