@@ -23,6 +23,13 @@ export const index = async (req, res) => {
                     from: 'users',
                     localField: 'user',
                     foreignField: '_id',
+                    pipeline: [
+                        {
+                            $project: {
+                                'email': 0
+                            }
+                        }
+                    ],
                     as: 'user'
                 }
             },
@@ -53,7 +60,7 @@ export const index = async (req, res) => {
             },
             {
                 $addFields: {
-                    'userScore': {
+                    'user_score': {
                         $cond: {
                             if: { $ne: ['$matchedScores', {}] },
                             then: '$matchedScores.score',
@@ -95,6 +102,43 @@ export const show = async (req, res) => {
                     from: 'users',
                     localField: 'user',
                     foreignField: '_id',
+                    pipeline: [
+                        {
+                            $project: {
+                                'email': 0
+                            }
+                        }
+                    ],
+                    as: 'user'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'subjects',
+                    localField: 'subject',
+                    foreignField: '_id',
+                    pipeline: [
+                        {
+                            $project: {
+                                'users': 0
+                            }
+                        }
+                    ],
+                    as: 'subject'
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'user',
+                    foreignField: '_id',
+                    pipeline: [
+                        {
+                            $project: {
+                                'email': 0
+                            }
+                        }
+                    ],
                     as: 'user'
                 }
             },
@@ -125,7 +169,7 @@ export const show = async (req, res) => {
             },
             {
                 $addFields: {
-                    'userScore': {
+                    'user_score': {
                         $cond: {
                             if: { $ne: ['$matchedScores', {}] },
                             then: '$matchedScores.score',
@@ -161,12 +205,12 @@ export const store = async (req, res) => {
             parent: parent_id ?? null,
             user: req.user._id,
             content: content,
-            replyCount: 0,
+            reply_count: 0,
             score: 0
         }], { session: session })
 
-        const discussion = await Discussion.updateOne({ _id: discussion_id }, { $inc: { replyCount: 1 } }, { session: session })
-        const parentReply = await Reply.updateOne({ _id: parent_id }, { $inc: { replyCount: 1 } }, { session: session })
+        const discussion = await Discussion.updateOne({ _id: discussion_id }, { $inc: { reply_count: 1 } }, { session: session })
+        const parentReply = await Reply.updateOne({ _id: parent_id }, { $inc: { reply_count: 1 } }, { session: session })
 
         await session.commitTransaction()
         session.endSession()

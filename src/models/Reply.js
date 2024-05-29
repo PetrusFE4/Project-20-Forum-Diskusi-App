@@ -7,7 +7,7 @@ const schema = new Schema(
         parent: { type: ObjectId, default: null },
         user: { type: ObjectId, required: true },
         content: { type: String, required: true },
-        replyCount: { type: Number, default: 0 },
+        reply_count: { type: Number, default: 0 },
         attachments: [{
             name: { type: String },
             file: { type: String },
