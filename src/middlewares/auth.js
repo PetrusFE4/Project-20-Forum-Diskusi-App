@@ -1,6 +1,6 @@
 import { validateToken } from '../utils/jwt.js'
 
-export const isAuth = async (req, res, next) => {
+export const auth = async (req, res, next) => {
     try {
         let [type, token] = req.headers['authorization'].split(' ')
 
