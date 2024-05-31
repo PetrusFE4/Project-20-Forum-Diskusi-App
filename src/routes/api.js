@@ -3,6 +3,7 @@ import * as AuthController from '../controllers/authController.js'
 import * as DiscussionController from '../controllers/discussionController.js'
 import * as ReplyController from '../controllers/replyController.js'
 import * as SubjectController from '../controllers/subjectController.js'
+import * as CommunityController from '../controllers/communityController.js'
 import * as Middleware from '../middlewares/index.js'
 
 import morgan from 'morgan'
@@ -43,5 +44,11 @@ router.post('/subjects', Middleware.auth, SubjectController.store)
 router.put('/subjects/:id', Middleware.auth, SubjectController.update)
 router.delete('/subjects/:id', Middleware.auth, SubjectController.destroy)
 router.post('/subjects/:id/enroll', Middleware.auth, SubjectController.enroll)
+
+router.get('/communities', Middleware.auth, CommunityController.index)
+router.get('/communities/:id', Middleware.auth, CommunityController.show)
+router.post('/communities', Middleware.auth, CommunityController.store)
+router.put('/communities/:id', Middleware.auth, CommunityController.update)
+router.delete('/communities/:id', Middleware.auth, CommunityController.destroy)
 
 export default router

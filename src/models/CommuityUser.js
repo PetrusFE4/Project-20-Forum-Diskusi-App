@@ -3,12 +3,11 @@ import mongoose, { Schema } from 'mongoose'
 
 const schema = new Schema(
     {
-        reply: { type: ObjectId },
+        community: { type: ObjectId },
         user: { type: ObjectId },
-        score: { type: Number }
     }
 )
 
-const ReplyScore = mongoose.model('ReplyScore', schema)
+const CommunityUser = mongoose.model('CommunityUser', schema)
 
-export default ReplyScore
+export default CommunityUser
