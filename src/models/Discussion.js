@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose'
 
 const schema = new Schema(
     {
-        subject: { type: ObjectId, required: true },
+        community: { type: ObjectId, required: true },
         user: { type: ObjectId, required: true },
         title: { type: String, required: true },
         content: { type: String, required: true },

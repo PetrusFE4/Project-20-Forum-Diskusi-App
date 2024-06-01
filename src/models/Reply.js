@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose'
 
 const schema = new Schema(
     {
-        discussion: { type: ObjectId, required: true },
+        community: { type: ObjectId, required: true },
         parent: { type: ObjectId, default: null },
         user: { type: ObjectId, required: true },
         content: { type: String, required: true },

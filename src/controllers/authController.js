@@ -32,7 +32,8 @@ export const register = async (req, res, next) => {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
             email: req.body.email,
-            password: password
+            password: password,
+            profile_picture: req.body.profile_picture
         })
 
         let userJson = user.toJSON()
