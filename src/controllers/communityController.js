@@ -1,8 +1,9 @@
 import { ObjectId } from 'mongodb'
-import Community from '../models/Community'
+import Community from '../models/Community.js'
+import CommunityUser from '../models/CommuityUser.js'
 import { ErrorResponse } from '../utils/errorResponse.js'
 import mongoose from 'mongoose'
-import Moderator from '../models/Moderator'
+import Moderator from '../models/Moderator.js'
 
 export const index = async (req, res, next) => {
     try {
@@ -13,17 +14,44 @@ export const index = async (req, res, next) => {
             pipelines.push(
                 {
                     $lookup: {
-                        on: 'moderators',
-                        localField: 'moderators',
-                        foreignField: 'user',
+                        from: 'moderators',
+                        localField: '_id',
+                        foreignField: 'community',
+                        pipeline: [
+                            {
+                                $project: { 'community': 0 }
+                            },
+                            {
+                                $lookup: {
+                                    from: 'users',
+                                    localField: 'user',
+                                    foreignField: '_id',
+                                    pipeline: [
+                                        {
+                                            $project: {
+                                                'password': 0,
+                                                'email': 0
+                                            }
+                                        }
+                                    ],
+                                    as: 'user'
+                                }
+                            },
+                            {
+                                $unwind: '$user'
+                            }
+                        ],
                         as: 'moderators'
                     }
                 }
             )
 
-        const community = await Community.aggregate([
-            ...pipelines,
-        ])
+        let community
+
+        if (show_mods)
+            community = await Community.aggregate([...pipelines])
+        else
+            community = await Community.find()
 
         return res.json({ data: community })
     } catch (error) {
@@ -78,7 +106,7 @@ export const store = async (req, res, next) => {
         session.startTransaction()
 
         const community = await Community.create([{
-            name: name, description: description, profile_picture: profile_picture
+            name: name, description: description, profile_picture: profile_picture, creator: req.user._id
         }], { session: session })
 
         const moderator = await Moderator.create([{
@@ -119,5 +147,29 @@ export const update = async (req, res, next) => {
 }
 
 export const destroy = async (req, res, next) => {
-    
+
+}
+
+export const join = async (req, res) => {
+    try {
+        const id = req.params.id
+
+        await CommunityUser.create({ community: id, user: req.user._id })
+
+        return res.status(204).json({ 'message': 'Accepted' })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const leave = async (req, res) => {
+    try {
+        const id = req.params.id
+
+        await CommunityUser.deleteOne({ community: id, user: req.user._id })
+
+        return res.status(204).json({ 'message': 'Accepted' })
+    } catch (error) {
+        next(error)
+    }
 }
