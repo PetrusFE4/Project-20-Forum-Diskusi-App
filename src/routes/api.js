@@ -38,17 +38,12 @@ router.delete('/replies/:id', Middleware.auth, ReplyController.destroy)
 router.post('/replies/:id/score', Middleware.auth, ReplyController.score)
 router.delete('/replies/:id/score', Middleware.auth, ReplyController.deleteScore)
 
-router.get('/subjects', Middleware.auth, SubjectController.index)
-router.get('/subjects/:id', Middleware.auth, SubjectController.show)
-router.post('/subjects', Middleware.auth, SubjectController.store)
-router.put('/subjects/:id', Middleware.auth, SubjectController.update)
-router.delete('/subjects/:id', Middleware.auth, SubjectController.destroy)
-router.post('/subjects/:id/enroll', Middleware.auth, SubjectController.enroll)
-
 router.get('/communities', Middleware.auth, CommunityController.index)
 router.get('/communities/:id', Middleware.auth, CommunityController.show)
 router.post('/communities', Middleware.auth, CommunityController.store)
 router.put('/communities/:id', Middleware.auth, CommunityController.update)
 router.delete('/communities/:id', Middleware.auth, CommunityController.destroy)
+router.post('/communities/:id/join', Middleware.auth, CommunityController.join)
+router.post('/communities/:id/leave', Middleware.auth, CommunityController.leave)
 
 export default router

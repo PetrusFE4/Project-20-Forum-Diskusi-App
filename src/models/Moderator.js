@@ -9,6 +9,8 @@ const schema = new Schema(
     }
 )
 
+schema.index({ community: 1, user: 1 }, { unique: true })
+
 const Moderator = mongoose.model('Moderator', schema)
 
 export default Moderator
