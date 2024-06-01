@@ -5,7 +5,8 @@ const schema = new Schema(
     {
         name: { type: String },
         description: { type: String },
-        profile_picture: { type: String, default: null }
+        profile_picture: { type: String, default: null },
+        creator: { type: ObjectId }
     },
     {
         timestamps: {

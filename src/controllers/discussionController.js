@@ -2,40 +2,22 @@ import Discussion from '../models/Discussion.js'
 import mongoose from 'mongoose'
 import DiscussionScore from '../models/DiscussionScore.js'
 
-export const index = async (req, res) => {
+export const index = async (req, res, next) => {
     const discussion = await Discussion.aggregate([
         {
             $lookup: {
-                from: 'users',
-                localField: 'user',
+                from: 'communities',
+                localField: 'community',
                 foreignField: '_id',
                 pipeline: [
                     {
                         $project: {
-                            'email': 0
+                            'creator': 0
                         }
                     }
                 ],
-                as: 'user'
+                as: 'community'
             }
-        },
-        {
-            $lookup: {
-                from: 'subjects',
-                localField: 'subject',
-                foreignField: '_id',
-                pipeline: [
-                    {
-                        $project: {
-                            'users': 0
-                        }
-                    }
-                ],
-                as: 'subject'
-            }
-        },
-        {
-            $unwind: '$user'
         },
         {
             $unwind: '$subject'
@@ -75,8 +57,6 @@ export const index = async (req, res) => {
         },
         {
             $project: {
-                'subject.students': 0,
-                'user.password': 0,
                 'matchedScores': 0
             }
         }
@@ -85,7 +65,7 @@ export const index = async (req, res) => {
     return res.json({ message: "Success", data: discussion })
 }
 
-export const show = async (req, res) => {
+export const show = async (req, res, next) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
             throw new Error('Invalid ID format');
@@ -185,11 +165,11 @@ export const show = async (req, res) => {
     }
 }
 
-export const store = async (req, res) => {
-    const { subject_id, title, content, attachments } = req.body
+export const store = async (req, res, next) => {
+    const { community_id, title, content, attachments } = req.body
 
     const discussion = await Discussion.create({
-        subject: subject_id,
+        community: community_id,
         user: req.user._id,
         title: title,
         content: content,
@@ -203,7 +183,7 @@ export const store = async (req, res) => {
     return res.json({ message: "Record created succesfully.", data: discussionJson })
 }
 
-export const update = async (req, res) => {
+export const update = async (req, res, next) => {
     try {
         const { title, content, attachments } = req.body
 
@@ -224,11 +204,11 @@ export const update = async (req, res) => {
     }
 }
 
-export const destroy = async (req, res) => {
+export const destroy = async (req, res, next) => {
 
 }
 
-export const score = async (req, res) => {
+export const score = async (req, res, next) => {
     const session = await mongoose.connection.startSession()
     try {
         session.startTransaction()
@@ -242,11 +222,12 @@ export const score = async (req, res) => {
         const discussion = await Discussion.updateOne({ _id: id }, { $inc: { score: scoreToUpdate } }, { session: session })
 
         await session.commitTransaction()
-        session.endSession()
         return res.sendStatus(204)
     } catch (error) {
         await session.abortTransaction()
         return res.status(500).json(error)
+    } finally {
+        session.endSession()
     }
 }
 
@@ -261,11 +242,12 @@ export const deleteScore = async (req, res) => {
         await Discussion.updateOne({ _id: id }, { $inc: { score: discussionScore.score * -1 } }, { session: session })
 
         await session.commitTransaction()
-        session.endSession()
 
         return res.sendStatus(204)
     } catch (error) {
         await session.abortTransaction()
         return res.status(500).json(error)
+    } finally {
+        session.endSession()
     }
 }

@@ -34,9 +34,6 @@ export const index = async (req, res, next) => {
                 }
             },
             {
-                $unwind: '$user'
-            },
-            {
                 $lookup: {
                     from: 'replyscores',
                     let: { reply_id: '$_id', user_id: new mongoose.Types.ObjectId(req.user._id) },
@@ -71,7 +68,6 @@ export const index = async (req, res, next) => {
             },
             {
                 $project: {
-                    'user.password': 0,
                     'matchedScores': 0
                 }
             },
@@ -99,32 +95,17 @@ export const show = async (req, res) => {
             },
             {
                 $lookup: {
-                    from: 'users',
-                    localField: 'user',
+                    from: 'communities',
+                    localField: 'community',
                     foreignField: '_id',
                     pipeline: [
                         {
                             $project: {
-                                'email': 0
+                                'creator': 0
                             }
                         }
                     ],
-                    as: 'user'
-                }
-            },
-            {
-                $lookup: {
-                    from: 'subjects',
-                    localField: 'subject',
-                    foreignField: '_id',
-                    pipeline: [
-                        {
-                            $project: {
-                                'users': 0
-                            }
-                        }
-                    ],
-                    as: 'subject'
+                    as: 'community'
                 }
             },
             {
