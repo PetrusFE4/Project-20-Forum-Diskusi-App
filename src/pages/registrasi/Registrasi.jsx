@@ -50,7 +50,7 @@ function Registrasi() {
           />
         </div>
         <button type="submit" className="sign-up-button">
-          Sign up
+          <a href="/login">Sign up</a>
         </button>
       </form>
       <p className="continue-with">or continue with</p>

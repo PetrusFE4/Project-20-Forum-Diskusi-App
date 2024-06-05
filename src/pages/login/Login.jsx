@@ -39,7 +39,7 @@ const Login = () => {
                 <br />
                 <button type="submit">Login</button>
                 <p>or continue with <a href="#">Google</a></p>
-                <p>Don't have an account? <a href="#">Register</a></p>
+                <p>Don't have an account? <a href="/register">Register</a></p>
             </form>
             <p>By clicking continue, you agree to our Terms of Service and Privacy Policy</p>
         </div>
