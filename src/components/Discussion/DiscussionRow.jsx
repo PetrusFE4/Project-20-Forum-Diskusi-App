@@ -5,7 +5,7 @@ import TextArea from '../Form/TextArea'
 import Button from '../Form/Button'
 import axiosInstance from '../../lib/axiosInstance'
 import moment from 'moment'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { convertToRaw } from 'draft-js'
 import DraftEditor from '../Editor/DraftEditor'
 import { convertToHTML } from 'draft-convert'
@@ -13,14 +13,8 @@ import { convertToHTML } from 'draft-convert'
 const DiscussionRow = ({ data, showLink, mutate, replyMutate }) => {
     const navigate = useNavigate()
     const [showInput, setShowInput] = useState(false)
-    const [comment, setComment] = useState('')
     const [processing, setProcessing] = useState(false)
 
-    const [reply, setReply] = useState('')
-
-    useEffect(() => {
-        setComment('')
-    }, [showInput])
 
     const handleScore = async (val) => {
         if (processing)
@@ -78,24 +72,23 @@ const DiscussionRow = ({ data, showLink, mutate, replyMutate }) => {
                     <img src="/media/images/user.png" alt="" />
                 </div>
                 <div className='flex-col'>
-                    <h1 className='text-xs'><span className='font-bold'>{data.user.firstname} {data.user.lastname}</span> <span className='text-gray-500'>in {data.community.name}</span></h1>
+                    <h1 className='text-xs'><span className='font-bold'>{data.user.firstname} {data.user.lastname}</span> <span className='text-gray-500'>in <Link to={`/community/${data.community._id}`} className='hover:underline cursor-pointer'>{data.community.name}</Link></span></h1>
                     <span className='text-xs'>{data.created_at ? moment.utc(data.created_at).startOf('minute').fromNow() : ''}</span>
                 </div>
             </div>
             <div className="flex flex-col">
                 <h1 className='font-bold text-lg md:text-xl mb-2'>{data.title}</h1>
-
-                <p className='text-medium text-xs md:text-sm mb-2 text-justify'>{data.content}</p>
+                <p className='text-medium text-sm md:text-base mb-2 text-justify'>{data.content}</p>
             </div>
             <div className="flex flex-row">
-                <div className={`min-h-8 min-w-16 flex flex-row justify-between items-center mr-2 ${data.user_score ? 'bg-primary-900 text-white' : 'bg-[#DFD0B8] text-black'} rounded-full`}>
+                <div className={`min-h-8 min-w-16 flex flex-row justify-between items-center mr-2 transition-colors ${data.user_score ? 'bg-primary-900 text-white' : 'bg-[#DFD0B8] text-black'} rounded-full`}>
                     {data.user_score == 1 ? (
                         <span onClick={deleteScore} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-primary-800 rounded-full'>
                             <BsHeartFill size={'14'} color='#fff' />
                         </span>
                     ) : (
                         <span onClick={() => handleScore(1)} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-gray-300 rounded-full'>
-                            <BsHeart color='#000' />
+                            <BsHeart size={'15'} color={ data.user_score ? '#fff' : '#000'} />
                         </span>
                     )}
                     <span className='mx-1 cursor-default text-sm'>{data.score}</span>
@@ -105,19 +98,19 @@ const DiscussionRow = ({ data, showLink, mutate, replyMutate }) => {
                         </span>
                     ) : (
                         <span onClick={() => handleScore(-1)} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-gray-300 rounded-full'>
-                            <BsHeartbreak size={'16'} color='#000' />
+                            <BsHeartbreak size={'15'} color={ data.user_score ? '#fff' : '#000'} />
                         </span>
                     )}
                 </div>
                 <div onClick={() => setShowInput(prev => !prev)} className="cursor-pointer h-8 min-w-16 px-2 flex flex-row justify-center items-center mr-2 bg-[#DFD0B8] hover:bg-[#ceb58b] rounded-full">
                     <BiComment className='mr-2' size={'16'} />
-                    <span className=' text-sm'>{data.replyCount} Replies</span>
+                    <span className=' text-sm'>{data.reply_count} Replies</span>
                 </div>
             </div>
             {showInput ? (
                 <div className="flex flex-col mt-4">
                     <div className="border rounded-md mb-2">
-                        <DraftEditor discussionId={data._id} onSubmit={submitReply} />
+                        <DraftEditor onSubmit={submitReply} />
                     </div>
                 </div>
             ) : null}
