@@ -65,7 +65,7 @@ const DraftEditor = ({ discussionId, onSubmit }) => {
         const type = contentBlock.getType();
         switch (type) {
             case "blockQuote":
-                return "superFancyBlockquote"
+                return "blockQuote"
             case "codeBlock":
                 return "codeBlock"
             default:
@@ -85,8 +85,8 @@ const DraftEditor = ({ discussionId, onSubmit }) => {
                     customStyleMap={styleMap}
                     blockStyleFn={myBlockStyleFn}
                     onChange={(editorState) => {
-                        const contentState = editorState.getCurrentContent();
-                        console.log(convertToRaw(contentState));
+                        // const contentState = editorState.getCurrentContent();
+                        // console.log(contentState);
                         setEditorState(editorState);
                     }}
                 />

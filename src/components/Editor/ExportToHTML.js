@@ -1,19 +1,13 @@
 import { stateToHTML } from 'draft-js-export-html'
 
-let options = {
+const options = {
     inlineStyles: {
-        // Override default element (`strong`).
         BOLD: { element: 'b' },
         ITALIC: {
-            // Add custom attributes. You can also use React-style `className`.
-            attributes: { class: 'foo' },
-            // Use camel-case. Units (`px`) will be added where necessary.
             style: { fontSize: 12 }
         },
-        // Use a custom inline style. Default element is `span`.
         RED: { style: { color: '#900' } },
         CODE: {
-            // backgroundColor: "rgba(0, 0, 0, 0.05)",
             style: {
                 fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
                 fontSize: 16,
@@ -36,6 +30,19 @@ let options = {
             }
         },
     },
+    blockRenderers: {
+        'codeBlock': (block) => {
+            return `<code class="codeBlock">${block.getText()}</code>`;
+        },
+        'blockQuote': (block) => {
+            return `<blockquote class="blockQuote">${block.getText()}</blockquote>`;
+        }
+    },
+    blockStyleFn: (block) => {
+        if (block.getType() === 'blockQuote') {
+            return 'blockQuote';
+        }
+    }
 };
 
 const ExportToHTML = (contentState) => {

@@ -1,4 +1,9 @@
-.superFancyBlockquote {
+p {
+    font-size: inherit;
+    font-family: inherit;
+}
+
+.blockQuote {
     color: #999;
     background: #fff;
     font-family: "Hoefler Text", Georgia, serif;
@@ -16,5 +21,4 @@
     word-wrap: break-word;
     box-decoration-break: slice;
     padding: 0.3rem 2rem;
-    border-radius: 0.2rem;
 }
