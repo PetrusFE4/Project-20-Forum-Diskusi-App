@@ -1,0 +1,20 @@
+.superFancyBlockquote {
+    color: #999;
+    background: #fff;
+    font-family: "Hoefler Text", Georgia, serif;
+    font-style: italic;
+    border-left: 2px solid #999;
+    padding-left: 10px;
+}
+
+.codeBlock {
+    font-family: fira-code, monospace;
+    font-size: inherit;
+    background: hsl(0, 0%, 89%);
+    /* font-style: italic; */
+    word-wrap: normal;
+    word-wrap: break-word;
+    box-decoration-break: slice;
+    padding: 0.3rem 2rem;
+    border-radius: 0.2rem;
+}
