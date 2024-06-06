@@ -9,6 +9,7 @@ import {
 import Button from "../Form/Button";
 import Toolbar from "./Toolbar";
 import './Style.css'
+import ExportToHTML from "./ExportToHTML";
 
 const DraftEditor = ({ discussionId, onSubmit }) => {
     const [editorState, setEditorState] = useState(
@@ -100,7 +101,7 @@ const DraftEditor = ({ discussionId, onSubmit }) => {
                 <Button
                     className='max-w-40'
                     title='Post'
-                onClick={() => onSubmit(editorState)} 
+                onClick={() => onSubmit(ExportToHTML(editorState.getCurrentContent()))} 
                 />
             </div>
         </div>

@@ -57,7 +57,7 @@ const DiscussionRow = ({ data, showLink, mutate, replyMutate }) => {
         try {
             let response = await axiosInstance.post('/replies', {
                 discussion_id: data._id,
-                content: editorState.getCurrentContent()
+                content: editorState
             })
             replyMutate()
             mutate()

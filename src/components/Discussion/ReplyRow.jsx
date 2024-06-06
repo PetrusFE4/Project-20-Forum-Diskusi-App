@@ -74,7 +74,9 @@ const ReplyRow = ({ discussionId, data, level, mutate }) => {
             <div className="flex flex-col text-xs" >
                 {/* {draftToHtml(JSON.parse(data.content))} */}
             </div>
-            <div className="flex flex-col text-xs" dangerouslySetInnerHTML={{ __html: stateToHTML(EditorState.createWithContent(data.content)) }}>
+            {/* <div className="flex flex-col text-xs" dangerouslySetInnerHTML={{ __html: stateToHTML(EditorState.createWithContent(data.content)) }}>
+            </div> */}
+            <div className="flex flex-col text-xs md:text-sm mb-2" dangerouslySetInnerHTML={{ __html: data.content }}>
             </div>
             <div className="flex flex-row mb-2">
                 <div className="min-h-8 min-w-16 flex flex-row justify-between items-center mr-4 bg-gray-200 rounded-full">
