@@ -10,7 +10,7 @@ import moment from 'moment'
 import { stateToHTML } from 'draft-js-export-html'
 import DraftEditor from '../Editor/DraftEditor'
 
-const ReplyRow = ({ discussionId, data, level, mutate }) => {
+const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
     const { data: replies, error: repliesError, isLoading: repliesLoading, mutate: childMutate } = useSWR(`/replies?discussion=${discussionId}&parent=${data._id}`, url => axiosInstance.get(url).then(res => res.data))
 
     const [showInput, setShowInput] = useState(false)
@@ -63,26 +63,27 @@ const ReplyRow = ({ discussionId, data, level, mutate }) => {
     }
 
     return (
-        <div className='flex flex-col bg-white pl-[32px] border-gray-400'>
-            <div className='flex flex-row w-full h-12 items-center'>
-                <div className='h-6 w-6 md:w-8 md:h-8 mr-2 md:mr-4 shrink-0'>
-                    <img src="/media/image/user.png" alt="" />
+        <div className={`relative flex flex-col bg-white pl-8 border-gray-400 mb-2 ${level != 0 && replies && replies.data.length > 0 ? `border-t border-b border-l ${level == 1 ? 'border-r rounded-3xl' : null} rounded-tl-3xl rounded-bl-3xl pt-2 pb-6` : ''}`}>
+            <div className='flex flex-row w-full h-12 items-center z-0'>
+                <div className='w-8 h-8 mr-4'>
+                    <img src="/media/images/user.png" alt="" />
                 </div>
-                <h1 className='text-xs md:text-base shrink'>{data.user.firstname} {data.user.lastname}</h1>
-                <span className='ml-2'>•</span>
-                <span className='ml-2 text-xs md:text-sm min-w-20'>{data.created_at ? moment.utc(data.created_at).startOf('minute').fromNow() : ''}</span>
+                <div className='flex-col'>
+                    <h1 className='text-xs'><span className='font-bold'>{data.user.firstname} {data.user.lastname}</span></h1>
+                    <span className='text-xs'>{data.created_at ? moment.utc(data.created_at).startOf('minute').fromNow() : ''}</span>
+                </div>
             </div>
             <div className="flex flex-col text-sm md:text-base mb-2" dangerouslySetInnerHTML={{ __html: data.content }}>
             </div>
             <div className="flex flex-row mb-2">
-            <div className={`min-h-8 min-w-16 flex flex-row justify-between items-center mr-2 transition-colors ${data.user_score ? 'bg-primary-900 text-white' : 'bg-[#DFD0B8] text-black'} rounded-full`}>
+                <div className={`min-h-8 min-w-16 flex flex-row justify-between items-center mr-2 transition-colors ${data.user_score ? 'bg-primary-900 text-white' : 'bg-[#DFD0B8] text-black'} rounded-full`}>
                     {data.user_score == 1 ? (
                         <span onClick={deleteScore} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-primary-800 rounded-full'>
                             <BsHeartFill size={'14'} color='#fff' />
                         </span>
                     ) : (
                         <span onClick={() => handleScore(1)} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-gray-300 rounded-full'>
-                            <BsHeart size={'15'} color={ data.user_score ? '#fff' : '#000'} />
+                            <BsHeart size={'15'} color={data.user_score ? '#fff' : '#000'} />
                         </span>
                     )}
                     <span className='mx-1 cursor-default text-sm'>{data.score}</span>
@@ -92,7 +93,7 @@ const ReplyRow = ({ discussionId, data, level, mutate }) => {
                         </span>
                     ) : (
                         <span onClick={() => handleScore(-1)} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-gray-300 rounded-full'>
-                            <BsHeartbreak size={'15'} color={ data.user_score ? '#fff' : '#000'} />
+                            <BsHeartbreak size={'15'} color={data.user_score ? '#fff' : '#000'} />
                         </span>
                     )}
                 </div>
@@ -101,7 +102,7 @@ const ReplyRow = ({ discussionId, data, level, mutate }) => {
                     <span className=' text-sm'>Reply</span>
                 </div>
             </div>
-            <div className='border-b-2'></div>
+            <div className=''></div>
             {showInput ? (
                 <div className="flex flex-col mt-4">
                     <div className="border rounded-md mb-2">
@@ -110,7 +111,7 @@ const ReplyRow = ({ discussionId, data, level, mutate }) => {
                 </div>
             ) : null}
             {level < 17 && replies && replies.data.length > 0 ? replies.data.map((reply, index) => (
-                <ReplyRow discussionId={discussionId} data={reply} level={level + 1} mutate={childMutate} />
+                <ReplyRow className={'border-b border-l rounded-bl-3xl'} discussionId={discussionId} data={reply} level={level + 1} mutate={childMutate} />
             )) : null}
         </div>
     )
