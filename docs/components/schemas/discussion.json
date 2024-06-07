@@ -1,0 +1,48 @@
+{
+    "Discussion": {
+        "type": "object",
+        "properties": {
+            "_id": {
+                "type": "ObjectId"
+            },
+            "subject": {
+                "type": "ObjectId"
+            },
+            "user": {
+                "type": "ObjectId"
+            },
+            "title": {
+                "type": "string"
+            },
+            "content": {
+                "type": "string"
+            },
+            "reply_count": {
+                "type": "integer"
+            },
+            "attachments": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "type": "string"
+                        },
+                        "value": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "score": {
+                "type": "integer"
+            }
+        },
+        "xml": {
+            "name": "discussion"
+        }
+    }
+}
