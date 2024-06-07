@@ -2,6 +2,7 @@ import Discussion from '../models/Discussion.js'
 import Reply from '../models/Reply.js'
 import mongoose from 'mongoose'
 import ReplyScore from '../models/ReplyScore.js'
+import { ErrorResponse } from '../utils/errorResponse.js'
 
 export const index = async (req, res, next) => {
     try {
@@ -9,7 +10,7 @@ export const index = async (req, res, next) => {
         if (req.query.discussion && mongoose.Types.ObjectId.isValid(req.query.discussion))
             matchQuery.$match.discussion = new mongoose.Types.ObjectId(req.query.discussion)
         else
-            throw new Error('Discussion ID not found')
+            throw new ErrorResponse(404, 'Discussion ID not found')
 
         if (req.query.parent && mongoose.Types.ObjectId.isValid(req.query.parent))
             matchQuery.$match.parent = new mongoose.Types.ObjectId(req.query.parent)
@@ -81,14 +82,14 @@ export const index = async (req, res, next) => {
 
         return res.status(200).json({ data: reply })
     } catch (error) {
-        return res.status(404).json(error)
+        next(error)
     }
 }
 
 export const show = async (req, res) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.id))
-            throw new Error('Discussion ID not found')
+            throw new ErrorResponse(404, 'Discussion ID not found')
 
         const id = new mongoose.Types.ObjectId(req.params.id);
 
@@ -175,11 +176,11 @@ export const show = async (req, res) => {
 
         return res.status(200).json({ data: reply })
     } catch (error) {
-        return res.status(404).json({ error })
+        next(error)
     }
 }
 
-export const store = async (req, res) => {
+export const store = async (req, res, next) => {
     const { discussion_id, parent_id, content } = req.body
     const session = await mongoose.connection.startSession()
     try {
@@ -197,12 +198,13 @@ export const store = async (req, res) => {
         const parentReply = await Reply.updateOne({ _id: parent_id }, { $inc: { reply_count: 1 } }, { session: session })
 
         await session.commitTransaction()
-        session.endSession()
 
         return res.status(200).json({ message: 'Success', data: reply })
     } catch (error) {
         await session.abortTransaction()
-        return res.status(500).json(error)
+        next(error)
+    } finally {
+        session.endSession()
     }
 }
 
@@ -214,7 +216,7 @@ export const destroy = async (req, res) => {
 
 }
 
-export const score = async (req, res) => {
+export const score = async (req, res, next) => {
     const session = await mongoose.connection.startSession()
     try {
         session.startTransaction()
@@ -231,16 +233,16 @@ export const score = async (req, res) => {
         const parentReply = await Reply.updateOne({ _id: id }, { $inc: { score: scoreToUpdate } }, { session: session })
 
         await session.commitTransaction()
-        session.endSession()
         return res.sendStatus(204)
     } catch (error) {
         await session.abortTransaction()
-        console.log(error)
-        return res.status(500).json(error)
+        next(error)
+    } finally {
+        session.endSession()
     }
 }
 
-export const deleteScore = async (req, res) => {
+export const deleteScore = async (req, res, next) => {
     const session = await mongoose.connection.startSession()
     try {
         const id = req.params.id
@@ -254,10 +256,11 @@ export const deleteScore = async (req, res) => {
 
         await Reply.updateOne({ _id: id }, { $inc: { score: replyScore.score * -1 } }, { session: session })
         await session.commitTransaction()
-        session.endSession()
         return res.sendStatus(204)
     } catch (error) {
         await session.abortTransaction()
-        return res.status(500).json(error)
+        next(error)
+    } finally {
+        session.endSession()
     }
 }
