@@ -161,7 +161,7 @@ export const show = async (req, res, next) => {
 
         return res.json({ message: "Success", data: discussion[0] })
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        next(error)
     }
 }
 
@@ -200,7 +200,7 @@ export const update = async (req, res, next) => {
         else
             throw new Error('Record is not updated')
     } catch (error) {
-        return res.status(500).json(error)
+        next(error)
     }
 }
 
@@ -225,13 +225,13 @@ export const score = async (req, res, next) => {
         return res.sendStatus(204)
     } catch (error) {
         await session.abortTransaction()
-        return res.status(500).json(error)
+        next(error)
     } finally {
         session.endSession()
     }
 }
 
-export const deleteScore = async (req, res) => {
+export const deleteScore = async (req, res, next) => {
     const session = await mongoose.connection.startSession()
     try {
         const id = req.params.id
@@ -246,8 +246,12 @@ export const deleteScore = async (req, res) => {
         return res.sendStatus(204)
     } catch (error) {
         await session.abortTransaction()
-        return res.status(500).json(error)
+        next(error)
     } finally {
         session.endSession()
     }
+}
+
+export const saveDiscussion = async (req, res, next) => {
+
 }
