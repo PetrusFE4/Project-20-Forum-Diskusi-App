@@ -34,6 +34,9 @@ export const index = async (req, res, next) => {
                 }
             },
             {
+                $unwind: '$user'
+            },
+            {
                 $lookup: {
                     from: 'replyscores',
                     let: { reply_id: '$_id', user_id: new mongoose.Types.ObjectId(req.user._id) },
