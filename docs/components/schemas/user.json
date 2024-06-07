@@ -1,0 +1,33 @@
+{
+    "User": {
+        "type": "object",
+        "properties": {
+            "_id": {
+                "type": "ObjectId"
+            },
+            "firstname": {
+                "type": "string",
+                "example": "Valerica"
+            },
+            "lastname": {
+                "type": "string",
+                "example": "Dewantoro"
+            },
+            "email": {
+                "type": "string",
+                "example": "valerica@dewantoro.com"
+            },
+            "profile_picture": {
+                "type": "string",
+                "example": "12345"
+            },
+            "password": {
+                "type": "string",
+                "example": "kiki1231234"
+            }
+        },
+        "xml": {
+            "name": "user"
+        }
+    }
+}
