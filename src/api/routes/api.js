@@ -2,7 +2,6 @@ import { Router } from 'express'
 import * as AuthController from '../controllers/authController.js'
 import * as DiscussionController from '../controllers/discussionController.js'
 import * as ReplyController from '../controllers/replyController.js'
-import * as SubjectController from '../controllers/subjectController.js'
 import * as CommunityController from '../controllers/communityController.js'
 import * as Middleware from '../middlewares/index.js'
 
