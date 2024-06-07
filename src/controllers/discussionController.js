@@ -20,7 +20,7 @@ export const index = async (req, res, next) => {
             }
         },
         {
-            $unwind: '$subject'
+            $unwind: '$community'
         },
         {
             $lookup: {
@@ -75,7 +75,7 @@ export const show = async (req, res, next) => {
         const discussion = await Discussion.aggregate([
             {
                 $match: {
-                    _id: { $eq: discussionId }
+                    _id: discussionId
                 }
             },
             {
@@ -95,24 +95,24 @@ export const show = async (req, res, next) => {
             },
             {
                 $lookup: {
-                    from: 'subjects',
-                    localField: 'subject',
+                    from: 'communities',
+                    localField: 'community',
                     foreignField: '_id',
                     pipeline: [
                         {
                             $project: {
-                                'users': 0
+                                'creator': 0
                             }
                         }
                     ],
-                    as: 'subject'
+                    as: 'community'
                 }
             },
             {
                 $unwind: '$user'
             },
             {
-                $unwind: '$subject'
+                $unwind: '$community'
             },
             {
                 $lookup: {
