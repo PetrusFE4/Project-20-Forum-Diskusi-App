@@ -1,8 +1,15 @@
 import { Server } from 'socket.io'
 import { validateToken } from '../api/utils/jwt.js'
 
-const WebSocket = (httpServer) => {
-    const io = new Server(httpServer)
+let WebSocket
+
+const InitWebSocket = (httpServer) => {
+    const io = new Server(httpServer, {
+        cors: {
+            origin: '*',
+            methods: ['GET', 'POST'],
+        }
+    })
 
     io.use((socket, next) => {
         const token = socket.handshake.query.token;
@@ -26,6 +33,8 @@ const WebSocket = (httpServer) => {
             console.log(`User with ID ${userId} disconnected`)
         })
     })
+
+    WebSocket = io
 }
 
-export default WebSocket
+export { WebSocket, InitWebSocket }

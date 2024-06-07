@@ -1,6 +1,7 @@
 import Discussion from '../models/Discussion.js'
 import mongoose from 'mongoose'
 import DiscussionScore from '../models/DiscussionScore.js'
+import { WebSocket } from '../../websocket/websocket.js'
 
 export const index = async (req, res, next) => {
     const discussion = await Discussion.aggregate([
@@ -166,21 +167,36 @@ export const show = async (req, res, next) => {
 }
 
 export const store = async (req, res, next) => {
-    const { community_id, title, content, attachments } = req.body
+    const session = await mongoose.connection.startSession()
+    try {
 
-    const discussion = await Discussion.create({
-        community: community_id,
-        user: req.user._id,
-        title: title,
-        content: content,
-        attachments: attachments,
-        reply_count: 0,
-        score: 0
-    })
+        const { community_id, title, content, attachments } = req.body
+    
+        const discussion = await Discussion.create({
+            community: community_id,
+            user: req.user._id,
+            title: title,
+            content: content,
+            attachments: attachments,
+            reply_count: 0,
+            score: 0
+        })
 
-    let discussionJson = discussion.toJSON()
+        let discussionJson = discussion.toJSON()
 
-    return res.json({ message: "Record created succesfully.", data: discussionJson })
+        
+
+        // Notify ke user pakai websocket
+        WebSocket.to(`user:${req.user._id}`).emit('new_notification', JSON.stringify(discussionJson))
+        
+        await session.commitTransaction()
+        return res.json({ message: "Record created succesfully.", data: discussionJson })
+    } catch (error) {
+        await session.abortTransaction()
+        next(error)
+    } finally {
+        session.endSession()
+    }
 }
 
 export const update = async (req, res, next) => {
