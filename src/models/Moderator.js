@@ -3,8 +3,8 @@ import mongoose, { Schema } from 'mongoose'
 
 const schema = new Schema(
     {
-        community: { type: ObjectId },
-        user: { type: ObjectId },
+        community: { type: Schema.Types.ObjectId, ref: 'Community' },
+        user: { type: Schema.Types.ObjectId, ref: 'User' },
         since: { type: Date, default: Date.now() }
     }
 )

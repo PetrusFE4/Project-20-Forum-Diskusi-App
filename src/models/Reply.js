@@ -3,10 +3,10 @@ import mongoose, { Schema } from 'mongoose'
 
 const schema = new Schema(
     {
-        community: { type: ObjectId, required: true },
-        parent: { type: ObjectId, default: null },
-        user: { type: ObjectId, required: true },
-        content: { type: String, required: true },
+        discussion: { type: Schema.Types.ObjectId, ref: 'Discussion' },
+        parent: { type: Schema.Types.ObjectId, default: null, ref: 'Reply' },
+        user: { type: Schema.Types.ObjectId, ref: 'User' },
+        content: { type: Schema.Types.Mixed, required: true },
         reply_count: { type: Number, default: 0 },
         attachments: [{
             name: { type: String },
