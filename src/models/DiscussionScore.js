@@ -3,8 +3,8 @@ import mongoose, { Schema } from 'mongoose'
 
 const schema = new Schema(
     {
-        discussion: { type: ObjectId },
-        user: { type: ObjectId },
+        discussion: { type: Schema.Types.ObjectId, ref: 'Discussion' },
+        user: { type: Schema.Types.ObjectId, ref: 'User' },
         score: { type: Number }
     }
 )

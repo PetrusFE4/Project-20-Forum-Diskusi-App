@@ -3,8 +3,8 @@ import mongoose, { Schema } from 'mongoose'
 
 const schema = new Schema(
     {
-        community: { type: ObjectId, required: true },
-        user: { type: ObjectId, required: true },
+        community: { type: Schema.Types.ObjectId, ref: 'Community' },
+        user: { type: Schema.Types.ObjectId, ref: 'User' },
         title: { type: String, required: true },
         content: { type: String, required: true },
         reply_count: { type: Number, default: 0 },
