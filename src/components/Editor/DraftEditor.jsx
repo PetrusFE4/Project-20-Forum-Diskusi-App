@@ -79,7 +79,7 @@ const DraftEditor = ({ discussionId, onSubmit }) => {
             <div className="p-2 border-b">
                 <Editor
                     ref={editor}
-                    placeholder="Write Here"
+                    placeholder="Content"
                     handleKeyCommand={handleKeyCommand}
                     editorState={editorState}
                     customStyleMap={styleMap}
