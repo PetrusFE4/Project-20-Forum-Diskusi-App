@@ -63,12 +63,12 @@ const DiscussionRow = ({ data, showLink, mutate, replyMutate }) => {
     }
 
     return (
-        <div className='flex flex-col bg-white py-2 px-4 md:px-8 mb-4 rounded-3xl shadow-md w-[640px]'>
+        <div className='flex flex-col bg-white py-2 px-4 md:px-8 mb-4 rounded-3xl shadow-md w-full'>
             <div className='flex flex-row w-full h-12 items-center'>
                 <div className="w-6 h-6 md:w-8 md:h-8 mr-2 flex justify-center items-center hover:bg-gray-200 rounded-full cursor-pointer" onClick={() => navigate(-1)}>
                     <BsChevronLeft />
                 </div>
-                <div className='w-8 h-8 mr-4'>
+                <div className='w-8 h-8 mr-2'>
                     <img src="/media/images/user.png" alt="" />
                 </div>
                 <div className='flex-col'>

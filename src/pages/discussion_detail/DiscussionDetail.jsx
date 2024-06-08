@@ -12,12 +12,12 @@ const DiscussionDetail = () => {
     const { data: replies, error: repliesError, isLoading: repliesLoading, mutate: repliesMutate } = useSWRImmutable(`/replies?discussion=${id}`, url => axiosInstance.get(url).then(res => res.data))
 
     return (
-        <div className="flex justify-center">
+        <div className="flex justify-center break-words">
             <div className="flex flex-col justify-center">
                 {discussion ? <DiscussionRow data={discussion.data} mutate={discussionMutate} replyMutate={repliesMutate} /> : null}
                 {replies ?
                     replies.data.map((reply, index) => (
-                        <div className='rounded-3xl bg-white shadow-md p-4 mb-4'>
+                        <div className='rounded-3xl bg-white shadow-md py-2 px-4 mb-4'>
                             <ReplyRow discussionId={id} data={reply} level={0} mutate={repliesMutate} />
                         </div>
                     )) : null}
