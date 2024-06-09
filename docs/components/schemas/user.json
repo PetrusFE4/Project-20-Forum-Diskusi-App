@@ -5,25 +5,21 @@
             "_id": {
                 "type": "ObjectId"
             },
-            "firstname": {
+            "username": {
                 "type": "string",
-                "example": "Valerica"
-            },
-            "lastname": {
-                "type": "string",
-                "example": "Dewantoro"
+                "example": "JohnDoe"
             },
             "email": {
                 "type": "string",
-                "example": "valerica@dewantoro.com"
+                "example": "your@email.com"
             },
             "profile_picture": {
                 "type": "string",
-                "example": "12345"
+                "example": "melancholy.png"
             },
             "password": {
                 "type": "string",
-                "example": "kiki1231234"
+                "example": "password"
             }
         },
         "xml": {

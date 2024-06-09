@@ -19,7 +19,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:3000/api/v1"
+            "url": "https://chatternestapi.carolynn.my.id/api/v1"
         }
     ],
     "tags": [
