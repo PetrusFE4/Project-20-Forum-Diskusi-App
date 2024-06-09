@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Login from '../pages/login/Login'
 import Registrasi from '../pages/registrasi/Registrasi'
+import Forgetpassword from '../pages/forgetpassword/ForgetPassword'
 import MainLayout from '../layouts/MainLayout'
 import DiscussionDetail from '../pages/discussion_detail/DiscussionDetail'
 
@@ -12,6 +13,10 @@ const routes = createBrowserRouter([
     {
         path: '/register',
         element: <Registrasi />
+    },
+    {
+        path: '/forgetpassword',
+        element: <Forgetpassword />
     },
     {
         path: '/discussion/:discussion_id',
