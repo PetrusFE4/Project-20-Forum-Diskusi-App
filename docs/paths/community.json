@@ -50,14 +50,15 @@
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "discussion_id": {
-                                    "type": "string"
-                                },
-                                "parent_id": {
+                                "name": {
                                     "type": "string",
                                     "required": true
                                 },
-                                "content": {
+                                "description": {
+                                    "type": "string",
+                                    "required": true
+                                },
+                                "profile_picture": {
                                     "type": "string"
                                 }
                             }
