@@ -23,7 +23,7 @@ externalDocs:
   description: Find out more about Swagger
   url: http://swagger.io
 servers:
-  - url: http://localhost:3000/api/v1
+  - url: https://chatternestapi.carolynn.my.id/api/v1
 tags:
   - name: auth
     description: Everything about your Pets
@@ -46,7 +46,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              type: object
+              properties:
+                email:
+                  type: string
+                  required: true
+                password:
+                  type: string
+                  required: true
       responses:
         '200':
           description: successful operation
@@ -133,14 +140,18 @@ paths:
             schema:
               type: object
               properties:
-                subject_id:
+                community_id:
                   type: string
+                  required: true
                 title:
                   type: string
+                  required: true
                 content:
                   type: string
+                  required: true
                 attachments:
                   type: array
+                  required: false
                   items:
                     type: object
                     properties:
@@ -336,11 +347,13 @@ paths:
               properties:
                 discussion_id:
                   type: string
+                  required: true
                 parent_id:
                   type: string
-                  required: true
+                  required: false
                 content:
                   type: string
+                  required: true
       responses:
         '200':
           description: successful operation

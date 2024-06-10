@@ -6,12 +6,14 @@
   "type": "module",
   "scripts": {
     "start": "dotenvx run -- node index.js",
+    "start_notification": "dotenvx run -- node ./src/notification-service/app.js",
     "dev": "dotenvx run -- nodemon index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@dotenvx/dotenvx": "^0.44.0",
+    "amqplib": "^0.10.4",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
