@@ -7,9 +7,14 @@ const Run = async () => {
 
     channel.consume(process.env.NOTIFICATION_QUEUE_NAME, (msg) => {
         if (msg) {
-            ProcessNotification(msg)
+            try {
+                ProcessNotification(msg)
+                channel.ack(msg)
+            } catch (error) {
+                console.log(error)
+            }
         }
     })
 }
 
-Run()
+export default Run
