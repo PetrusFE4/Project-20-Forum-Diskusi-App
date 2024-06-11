@@ -37,6 +37,7 @@ const Login = () => {
                 <label>Password:</label>
                 <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
                 <br />
+                <a href="/ForgetPassword"><legend id="forgot-pass">Forgot password?</legend></a>
                 <button type="submit">Login</button>
                 <p>or continue with <a href="#">Google</a></p>
                 <p>Don't have an account? <a href="/register">Register</a></p>

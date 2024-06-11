@@ -1,57 +1,66 @@
 .login-container {
-    max-width: 300px;
-    margin: 40px auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border: 1px solid #ccc;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  h2 {
-    margin-top: 0;
-    text-align: center;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  
-  input[type="email"],
-  input[type="password"] {
-    width: 100%; /* make input fields full width */
-    height: 40px;
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    box-sizing: border-box; /* add this to include padding and border in width calculation */
-  }
-  
-  button[type="submit"] {
-    width: 100%; /* make button full width */
-    height: 40px;
-    background-color: black;
-    color: #fff;
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    box-sizing: border-box; /* add this to include padding and border in width calculation */
-  }
-  
-  button[type="submit"]:hover {
-    background-color: #3e8e41;
-  }
-  
-  a {
-    text-decoration: none;
-    color: #337ab7;
-  }
-  
-  a:hover {
-    color: #23527c;
-  }
-  
-  p {
-    margin-bottom: 20px;
-  }
+  max-width: 300px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+input[type="email"],
+input[type="password"] {
+  width: 100%; /* make input fields full width */
+  height: 40px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  box-sizing: border-box; /* add this to include padding and border in width calculation */
+}
+
+button[type="submit"] {
+  width: 100%; /* make button full width */
+  height: 40px;
+  background-color: black;
+  color: #fff;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-sizing: border-box; /* add this to include padding and border in width calculation */
+}
+
+button[type="submit"]:hover {
+  background-color: #3e8e41;
+}
+
+a {
+  text-decoration: none;
+  color: blue;
+}
+
+a:hover {
+  color: #23527c;
+}
+
+p {
+  margin-bottom: 20px;
+  color: #2f2dbd;
+}
+
+#forgot-pass {
+    color: #2f2dbd;
+    font-family: "Raleway", sans-serif;
+    font-size: 10pt;
+    margin-top: 3px;
+    text-align: right;
+}
