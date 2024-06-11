@@ -6,7 +6,9 @@ const schema = new Schema(
         name: { type: String },
         description: { type: String },
         profile_picture: { type: String, default: null },
-        creator: { type: Schema.Types.ObjectId, ref: 'User' }
+        banner_picture: { type: String, default: null },
+        creator: { type: Schema.Types.ObjectId, ref: 'User' },
+        member_count: { type: Number, default: 1 }
     },
     {
         timestamps: {
