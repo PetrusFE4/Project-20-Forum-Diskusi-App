@@ -2,6 +2,7 @@ import Discussion from '../models/Discussion.js'
 import mongoose from 'mongoose'
 import DiscussionScore from '../models/DiscussionScore.js'
 import { WebSocket } from '../../websocket/websocket.js'
+import { checkIfUserGiveScore } from '../helpers/discussionHelper.js'
 
 export const index = async (req, res, next) => {
     const discussion = await Discussion.aggregate([
@@ -23,44 +24,7 @@ export const index = async (req, res, next) => {
         {
             $unwind: '$community'
         },
-        {
-            $lookup: {
-                from: 'discussionscores',
-                let: { discussion_id: '$_id', user_id: new mongoose.Types.ObjectId(req.user._id) },
-                pipeline: [
-                    {
-                        $match: {
-                            $expr: {
-                                $and: [
-                                    { $eq: ['$discussion', '$$discussion_id'] },
-                                    { $eq: ['$user', '$$user_id'] }
-                                ]
-                            }
-                        }
-                    }
-                ],
-                as: 'matchedScores',
-            }
-        },
-        {
-            $unwind: { path: '$matchedScores', preserveNullAndEmptyArrays: true }
-        },
-        {
-            $addFields: {
-                'user_score': {
-                    $cond: {
-                        if: { $ne: ['$matchedScores', {}] },
-                        then: '$matchedScores.score',
-                        else: 0
-                    }
-                }
-            }
-        },
-        {
-            $project: {
-                'matchedScores': 0
-            }
-        }
+        ...checkIfUserGiveScore(new mongoose.Types.ObjectId(req.user._id))
     ])
 
     return res.json({ message: "Success", data: discussion })
@@ -87,7 +51,8 @@ export const show = async (req, res, next) => {
                     pipeline: [
                         {
                             $project: {
-                                'email': 0
+                                'email': 0,
+                                'password': 0
                             }
                         }
                     ],
@@ -115,46 +80,7 @@ export const show = async (req, res, next) => {
             {
                 $unwind: '$community'
             },
-            {
-                $lookup: {
-                    from: 'discussionscores',
-                    let: { discussion_id: '$_id', user_id: new mongoose.Types.ObjectId(req.user._id) },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: {
-                                    $and: [
-                                        { $eq: ['$discussion', '$$discussion_id'] },
-                                        { $eq: ['$user', '$$user_id'] }
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    as: 'matchedScores'
-                }
-            },
-            {
-                $unwind: { path: '$matchedScores', preserveNullAndEmptyArrays: true }
-            },
-            {
-                $addFields: {
-                    'user_score': {
-                        $cond: {
-                            if: { $ne: ['$matchedScores', {}] },
-                            then: '$matchedScores.score',
-                            else: 0
-                        }
-                    }
-                }
-            },
-            {
-                $project: {
-                    'subject.students': 0,
-                    'user.password': 0,
-                    'matchedScores': 0
-                }
-            }
+            ...checkIfUserGiveScore(new mongoose.Types.ObjectId(req.user._id))
         ])
 
         if (discussion.length == 0)
@@ -183,8 +109,6 @@ export const store = async (req, res, next) => {
         })
 
         let discussionJson = discussion.toJSON()
-
-        
 
         // Notify ke user pakai websocket
         WebSocket.to(`user:${req.user._id}`).emit('new_notification', JSON.stringify(discussionJson))
