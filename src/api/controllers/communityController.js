@@ -4,6 +4,7 @@ import CommunityUser from '../models/CommuityUser.js'
 import { ErrorResponse } from '../utils/errorResponse.js'
 import mongoose from 'mongoose'
 import Moderator from '../models/Moderator.js'
+import { checkIfUserJoined, populateModerator } from '../helpers/communityHelper.js'
 
 export const index = async (req, res, next) => {
     try {
@@ -12,38 +13,7 @@ export const index = async (req, res, next) => {
 
         if (show_mods)
             pipelines.push(
-                {
-                    $lookup: {
-                        from: 'moderators',
-                        localField: '_id',
-                        foreignField: 'community',
-                        pipeline: [
-                            {
-                                $project: { 'community': 0 }
-                            },
-                            {
-                                $lookup: {
-                                    from: 'users',
-                                    localField: 'user',
-                                    foreignField: '_id',
-                                    pipeline: [
-                                        {
-                                            $project: {
-                                                'password': 0,
-                                                'email': 0
-                                            }
-                                        }
-                                    ],
-                                    as: 'user'
-                                }
-                            },
-                            {
-                                $unwind: '$user'
-                            }
-                        ],
-                        as: 'moderators'
-                    }
-                }
+                ...populateModerator()
             )
 
         let community
@@ -77,6 +47,10 @@ export const show = async (req, res, next) => {
                 }
             )
 
+        pipelines.push(
+            ...checkIfUserJoined(new mongoose.Types.ObjectId(req.user._id))
+        )
+
         if (!ObjectId.isValid(id))
             throw new ErrorResponse(404, 'Community ID not found.')
 
@@ -99,14 +73,14 @@ export const show = async (req, res, next) => {
 }
 
 export const store = async (req, res, next) => {
-    const { name, description, profile_picture } = req.body
+    const { name, description, profile_picture, banner_picture } = req.body
 
     const session = await mongoose.connection.startSession()
     try {
         session.startTransaction()
 
         const community = await Community.create([{
-            name: name, description: description, profile_picture: profile_picture, creator: req.user._id
+            name: name, description: description, profile_picture: profile_picture, banner_picture: banner_picture, creator: req.user._id
         }], { session: session })
 
         const moderator = await Moderator.create([{
@@ -125,7 +99,7 @@ export const store = async (req, res, next) => {
 }
 
 export const update = async (req, res, next) => {
-    const { name, description, profile_picture } = req.body
+    const { name, description, profile_picture, banner_picture } = req.body
 
     const updateQuery = { $set: {} }
     if (name)
@@ -136,6 +110,9 @@ export const update = async (req, res, next) => {
 
     if (profile_picture)
         updateQuery.$set.profile_picture = profile_picture
+
+    if (banner_picture)
+        updateQuery.$set.banner_picture = banner_picture
 
     try {
         const community = await Community.updateOne({ _id: req.params.id }, updateQuery)
@@ -150,26 +127,43 @@ export const destroy = async (req, res, next) => {
 
 }
 
-export const join = async (req, res) => {
+export const join = async (req, res, next) => {
+    const session = await mongoose.connection.startSession()
     try {
+        await session.startTransaction()
         const id = req.params.id
 
-        await CommunityUser.create({ community: id, user: req.user._id })
+        await CommunityUser.create([{ community: id, user: req.user._id }], { session: session })
 
+        await Community.updateOne({ _id: id }, { $inc: { member_count: 1 } }, { session: session })
+
+        await session.commitTransaction()
         return res.status(204).json({ 'message': 'Accepted' })
     } catch (error) {
+        await session.abortTransaction()
         next(error)
+    } finally {
+        session.endSession()
     }
 }
 
-export const leave = async (req, res) => {
+export const leave = async (req, res, next) => {
+    const session = await mongoose.connection.startSession()
     try {
+        await session.startTransaction()
         const id = req.params.id
 
-        await CommunityUser.deleteOne({ community: id, user: req.user._id })
+        const deleted = await CommunityUser.deleteOne({ community: id, user: req.user._id }, { session: session })
 
+        if (deleted.deletedCount == 1)
+            await Community.updateOne({ _id: id }, { $inc: { member_count: -1 } }, { session: session })
+
+        await session.commitTransaction()
         return res.status(204).json({ 'message': 'Accepted' })
     } catch (error) {
+        await session.abortTransaction()
         next(error)
+    } finally {
+        session.endSession()
     }
 }

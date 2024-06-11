@@ -3,6 +3,7 @@ import Reply from '../models/Reply.js'
 import mongoose from 'mongoose'
 import ReplyScore from '../models/ReplyScore.js'
 import { ErrorResponse } from '../utils/errorResponse.js'
+import { checkIfUserGiveScore, populateUser } from '../helpers/replyHelper.js'
 
 export const index = async (req, res, next) => {
     try {
@@ -19,62 +20,8 @@ export const index = async (req, res, next) => {
 
         const reply = await Reply.aggregate([
             matchQuery,
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'user',
-                    foreignField: '_id',
-                    pipeline: [
-                        {
-                            $project: {
-                                'email': 0
-                            }
-                        }
-                    ],
-                    as: 'user'
-                }
-            },
-            {
-                $unwind: '$user'
-            },
-            {
-                $lookup: {
-                    from: 'replyscores',
-                    let: { reply_id: '$_id', user_id: new mongoose.Types.ObjectId(req.user._id) },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: {
-                                    $and: [
-                                        { $eq: ['$reply', '$$reply_id'] },
-                                        { $eq: ['$user', '$$user_id'] }
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    as: 'matchedScores'
-                }
-            },
-            {
-                $unwind: { path: '$matchedScores', preserveNullAndEmptyArrays: true }
-            },
-            {
-                $addFields: {
-                    'user_score': {
-                        $cond: {
-                            if: { $ne: ['$matchedScores', {}] },
-                            then: '$matchedScores.score',
-                            else: 0
-                        }
-                    }
-                }
-            },
-            {
-                $project: {
-                    'matchedScores': 0
-                }
-            },
+            ...populateUser(),
+            ...checkIfUserGiveScore(new mongoose.Types.ObjectId(req.user._id)),
             {
                 $sort: { like: 1 }
             }
@@ -97,78 +44,8 @@ export const show = async (req, res) => {
             {
                 $match: { _id: id }
             },
-            {
-                $lookup: {
-                    from: 'communities',
-                    localField: 'community',
-                    foreignField: '_id',
-                    pipeline: [
-                        {
-                            $project: {
-                                'creator': 0
-                            }
-                        }
-                    ],
-                    as: 'community'
-                }
-            },
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'user',
-                    foreignField: '_id',
-                    pipeline: [
-                        {
-                            $project: {
-                                'email': 0
-                            }
-                        }
-                    ],
-                    as: 'user'
-                }
-            },
-            {
-                $unwind: '$user'
-            },
-            {
-                $lookup: {
-                    from: 'replyscores',
-                    let: { reply_id: '$_id', user_id: new mongoose.Types.ObjectId(req.user._id) },
-                    pipeline: [
-                        {
-                            $match: {
-                                $expr: {
-                                    $and: [
-                                        { $eq: ['$reply', '$$reply_id'] },
-                                        { $eq: ['$user', '$$user_id'] }
-                                    ]
-                                }
-                            }
-                        }
-                    ],
-                    as: 'matchedScores'
-                }
-            },
-            {
-                $unwind: { path: '$matchedScores', preserveNullAndEmptyArrays: true }
-            },
-            {
-                $addFields: {
-                    'user_score': {
-                        $cond: {
-                            if: { $ne: ['$matchedScores', {}] },
-                            then: '$matchedScores.score',
-                            else: 0
-                        }
-                    }
-                }
-            },
-            {
-                $project: {
-                    'user.password': 0,
-                    'matchedScores': 0
-                }
-            },
+            ...populateUser(),
+            ...checkIfUserGiveScore(new mongoose.Types.ObjectId(req.user._id)),
             {
                 $sort: { like: 1 }
             }
