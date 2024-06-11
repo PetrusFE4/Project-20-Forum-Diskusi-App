@@ -1,10 +1,10 @@
-import { ObjectId } from 'mongodb'
 import mongoose, { Schema } from 'mongoose'
 
 const schema = new Schema(
     {
         community: { type: Schema.Types.ObjectId, ref: 'Community' },
         user: { type: Schema.Types.ObjectId, ref: 'User' },
+        notification: { type: Boolean, default: true }
     }
 )
 
