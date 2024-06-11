@@ -3,11 +3,24 @@ import * as AuthController from '../controllers/authController.js'
 import * as DiscussionController from '../controllers/discussionController.js'
 import * as ReplyController from '../controllers/replyController.js'
 import * as CommunityController from '../controllers/communityController.js'
+import * as StorageController from '../controllers/storageController.js'
 import * as Middleware from '../middlewares/index.js'
 
 import morgan from 'morgan'
+import multer from 'multer'
 
 const router = Router()
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads/');
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '_' + file.originalname)
+    }
+})
+
+const upload = multer({ storage: storage })
 
 morgan.token('id', function getId(req) {
     return req.id
@@ -16,6 +29,8 @@ morgan.token('id', function getId(req) {
 router.use(Middleware.uuid)
 router.use(morgan(':date[iso] | :status | :response-time ms | :remote-addr | :method :url '))
 router.use(Middleware.error)
+
+router.post('/upload', upload.single('file'), StorageController.uploadFile)
 
 router.post('/auth/login', AuthController.login)
 router.post('/auth/register', AuthController.register)
