@@ -1,8 +1,8 @@
 import Discussion from '../models/Discussion.js'
 import mongoose from 'mongoose'
 import DiscussionScore from '../models/DiscussionScore.js'
-import { WebSocket } from '../../websocket/websocket.js'
 import { checkIfUserGiveScore } from '../helpers/discussionHelper.js'
+import { sendNotification } from '../services/rabbitmq.js'
 
 export const index = async (req, res, next) => {
     const discussion = await Discussion.aggregate([
@@ -95,7 +95,7 @@ export const show = async (req, res, next) => {
 export const store = async (req, res, next) => {
     const session = await mongoose.connection.startSession()
     try {
-
+        await session.startTransaction()
         const { community_id, title, content, attachments } = req.body
     
         const discussion = await Discussion.create({
@@ -110,8 +110,10 @@ export const store = async (req, res, next) => {
 
         let discussionJson = discussion.toJSON()
 
+        sendNotification(JSON.stringify({ discussion: discussionJson, community: community_id }))
+
         // Notify ke user pakai websocket
-        WebSocket.to(`user:${req.user._id}`).emit('new_notification', JSON.stringify(discussionJson))
+        // WebSocket.to(`user:${req.user._id}`).emit('new_notification', JSON.stringify(discussionJson))
         
         await session.commitTransaction()
         return res.json({ message: "Record created succesfully.", data: discussionJson })
