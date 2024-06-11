@@ -212,9 +212,9 @@
             "tags": [
                 "communities"
             ],
-            "summary": "Score a reply",
+            "summary": "Join to a community",
             "description": "",
-            "operationId": "communities.score",
+            "operationId": "communities.join",
             "security": [
                 {
                     "bearerAuth": []
@@ -275,9 +275,9 @@
             "tags": [
                 "communities"
             ],
-            "summary": "Score a reply",
+            "summary": "Leave from a community",
             "description": "",
-            "operationId": "communities.score",
+            "operationId": "communities.leave",
             "security": [
                 {
                     "bearerAuth": []
