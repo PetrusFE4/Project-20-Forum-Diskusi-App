@@ -1,28 +1,28 @@
 import React, { useContext, useState } from 'react';
 import './Login.css';
 import axios from 'axios';
-import { UserContext } from '../../contexts/UserContext';
+import UserContext from '../../contexts/UserContext';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
-    const [submitting, setSubmitting] = useState(false)
+    const [submitting, setSubmitting] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const { setUser } = useContext(UserContext)
+    const { setUser } = useContext(UserContext);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        if (submitting)
-            return
-        setSubmitting(true)
+        if (submitting) return;
+        setSubmitting(true);
         try {
-            let response = axios.post(`${import.meta.env.VITE_API_ENDPOINT}/auth/login`, { email: email, password: password })
-            sessionStorage.setItem('api_key', response.data.token)
-            setUser(response.data.user)
+            let response = await axios.post(`${import.meta.env.VITE_API_ENDPOINT}/auth/login`, { email, password });
+            sessionStorage.setItem('api_key', response.data.token);
+            setUser(response.data.user);
             // navigate somewhere
         } catch (error) {
-
+            console.error(error);
         } finally {
-            setSubmitting(false)
+            setSubmitting(false);
         }
         console.log('Login submitted:', email, password);
     };
@@ -40,7 +40,7 @@ const Login = () => {
                 <a href="/ForgetPassword"><legend id="forgot-pass">Forgot password?</legend></a>
                 <button type="submit">Login</button>
                 <p>or continue with <a href="#">Google</a></p>
-                <p>Don't have an account? <a href="/register">Register</a></p>
+                <p>Don't have an account? <Link to="/register"><a href="/register">Register</a> </Link> </p>
             </form>
             <p>By clicking continue, you agree to our Terms of Service and Privacy Policy</p>
         </div>
