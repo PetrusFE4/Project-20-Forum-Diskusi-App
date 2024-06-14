@@ -1,0 +1,327 @@
+{
+    "/replies": {
+        "get": {
+            "tags": [
+                "replies"
+            ],
+            "summary": "Get all replies",
+            "description": "",
+            "operationId": "replies.get",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "post",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "description": "ID of the post to fetch replies for"
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Reply"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credential"
+                },
+                "404": {
+                    "description": "User not found"
+                }
+            }
+        },
+        "post": {
+            "tags": [
+                "replies"
+            ],
+            "summary": "Post new reply",
+            "description": "",
+            "operationId": "replies.store",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "requestBody": {
+                "description": "User credential",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "discussion_id": {
+                                    "type": "string",
+                                    "required": true
+                                },
+                                "parent_id": {
+                                    "type": "string",
+                                    "required": false
+                                },
+                                "content": {
+                                    "type": "string",
+                                    "required": true
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credential"
+                },
+                "404": {
+                    "description": "User not found"
+                }
+            }
+        }
+    },
+    "/replies/{id}": {
+        "get": {
+            "tags": [
+                "replies"
+            ],
+            "summary": "Get reply by ID",
+            "description": "",
+            "operationId": "replies.show",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true,
+                    "description": "String ID of the reply to get"
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Reply"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credential"
+                },
+                "404": {
+                    "description": "User not found"
+                }
+            }
+        },
+        "put": {
+            "tags": [
+                "replies"
+            ],
+            "summary": "Update a reply",
+            "description": "",
+            "operationId": "replies.update",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true,
+                    "description": "String ID of the reply to get"
+                }
+            ],
+            "requestBody": {
+                "description": "User credential",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "content": {
+                                    "type": "string"
+                                },
+                                "attachments": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "type": {
+                                                "type": "string"
+                                            },
+                                            "value": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credential"
+                },
+                "404": {
+                    "description": "User not found"
+                }
+            }
+        }
+    },
+    "/replies/{id}/score": {
+        "post": {
+            "tags": [
+                "replies"
+            ],
+            "summary": "Score a reply",
+            "description": "",
+            "operationId": "replies.score",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true,
+                    "description": "String ID of the reply to get"
+                }
+            ],
+            "requestBody": {
+                "description": "User credential",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "score": {
+                                    "type": "integer",
+                                    "enum": [
+                                        -1,
+                                        1
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credential"
+                },
+                "404": {
+                    "description": "User not found"
+                }
+            }
+        },
+        "delete": {
+            "tags": [
+                "replies"
+            ],
+            "summary": "Remove score off a reply",
+            "description": "",
+            "operationId": "replies.deleteScore",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true,
+                    "description": "String ID of the reply to get"
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credential"
+                },
+                "404": {
+                    "description": "User not found"
+                }
+            }
+        }
+    }
+}

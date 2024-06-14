@@ -1,0 +1,336 @@
+{
+    "/communities": {
+        "get": {
+            "tags": [
+                "communities"
+            ],
+            "summary": "Get all replies",
+            "description": "",
+            "operationId": "communities.get",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Reply"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credential"
+                },
+                "404": {
+                    "description": "User not found"
+                }
+            }
+        },
+        "post": {
+            "tags": [
+                "communities"
+            ],
+            "summary": "Post new reply",
+            "description": "",
+            "operationId": "communities.store",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "requestBody": {
+                "description": "User credential",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "required": true
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "required": true
+                                },
+                                "profile_picture": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credential"
+                },
+                "404": {
+                    "description": "User not found"
+                }
+            }
+        }
+    },
+    "/communities/{id}": {
+        "get": {
+            "tags": [
+                "communities"
+            ],
+            "summary": "Get reply by ID",
+            "description": "",
+            "operationId": "communities.show",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true,
+                    "description": "String ID of the reply to get"
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Reply"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credential"
+                },
+                "404": {
+                    "description": "User not found"
+                }
+            }
+        },
+        "put": {
+            "tags": [
+                "communities"
+            ],
+            "summary": "Update a reply",
+            "description": "",
+            "operationId": "communities.update",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true,
+                    "description": "String ID of the reply to get"
+                }
+            ],
+            "requestBody": {
+                "description": "User credential",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "content": {
+                                    "type": "string"
+                                },
+                                "attachments": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "type": {
+                                                "type": "string"
+                                            },
+                                            "value": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credential"
+                },
+                "404": {
+                    "description": "User not found"
+                }
+            }
+        }
+    },
+    "/communities/{id}/join": {
+        "post": {
+            "tags": [
+                "communities"
+            ],
+            "summary": "Join to a community",
+            "description": "",
+            "operationId": "communities.join",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true,
+                    "description": "String ID of the reply to get"
+                }
+            ],
+            "requestBody": {
+                "description": "User credential",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "score": {
+                                    "type": "integer",
+                                    "enum": [
+                                        -1,
+                                        1
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credential"
+                },
+                "404": {
+                    "description": "User not found"
+                }
+            }
+        }
+    },
+    "/communities/{id}/leave": {
+        "post": {
+            "tags": [
+                "communities"
+            ],
+            "summary": "Leave from a community",
+            "description": "",
+            "operationId": "communities.leave",
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "parameters": [
+                {
+                    "in": "path",
+                    "name": "id",
+                    "schema": {
+                        "type": "string"
+                    },
+                    "required": true,
+                    "description": "String ID of the reply to get"
+                }
+            ],
+            "requestBody": {
+                "description": "User credential",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "score": {
+                                    "type": "integer",
+                                    "enum": [
+                                        -1,
+                                        1
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "successful operation",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Invalid credential"
+                },
+                "404": {
+                    "description": "User not found"
+                }
+            }
+        }
+    }
+}

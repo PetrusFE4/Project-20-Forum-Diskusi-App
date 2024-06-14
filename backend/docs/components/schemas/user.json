@@ -1,0 +1,29 @@
+{
+    "User": {
+        "type": "object",
+        "properties": {
+            "_id": {
+                "type": "ObjectId"
+            },
+            "username": {
+                "type": "string",
+                "example": "JohnDoe"
+            },
+            "email": {
+                "type": "string",
+                "example": "your@email.com"
+            },
+            "profile_picture": {
+                "type": "string",
+                "example": "melancholy.png"
+            },
+            "password": {
+                "type": "string",
+                "example": "password"
+            }
+        },
+        "xml": {
+            "name": "user"
+        }
+    }
+}
