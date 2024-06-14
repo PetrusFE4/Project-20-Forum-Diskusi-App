@@ -6,7 +6,8 @@ const schema = new Schema(
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true, select: false },
         activated: { type: Boolean, default: false, select: false},
-        profile_picture: { type: String, default: null }
+        profile_picture: { type: String, default: null },
+        follower_count: { type: Number, default: 0}
     },
     {
         timestamps: {
