@@ -3,7 +3,7 @@ import Reply from '../models/Reply.js'
 import mongoose from 'mongoose'
 import ReplyScore from '../models/ReplyScore.js'
 import { ErrorResponse } from '../utils/errorResponse.js'
-import { checkIfUserGiveScore, populateUser } from '../helpers/replyHelper.js'
+import { checkIfUserGiveScore, checkIfUserIsPoster, populateUser } from '../helpers/replyHelper.js'
 
 export const index = async (req, res, next) => {
     try {
@@ -20,6 +20,7 @@ export const index = async (req, res, next) => {
 
         const reply = await Reply.aggregate([
             matchQuery,
+            ...checkIfUserIsPoster(new mongoose.Types.ObjectId(req.user._id)),
             ...populateUser(),
             ...checkIfUserGiveScore(new mongoose.Types.ObjectId(req.user._id)),
             {
@@ -44,6 +45,7 @@ export const show = async (req, res) => {
             {
                 $match: { _id: id }
             },
+            ...checkIfUserIsPoster(new mongoose.Types.ObjectId(req.user._id)),
             ...populateUser(),
             ...checkIfUserGiveScore(new mongoose.Types.ObjectId(req.user._id)),
             {

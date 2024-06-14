@@ -4,7 +4,8 @@ const schema = new Schema(
     {
         user: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
         follower: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
-        notification: { type: Boolean, default: true }
+        notification: { type: Boolean, default: true },
+        since: { type: Date, default: Date.now() }
     }
 )
 

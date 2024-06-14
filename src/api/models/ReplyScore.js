@@ -9,6 +9,8 @@ const schema = new Schema(
     }
 )
 
+schema.index({ reply: 1, user: 1 }, { unique: true })
+
 const ReplyScore = mongoose.model('ReplyScore', schema)
 
 export default ReplyScore

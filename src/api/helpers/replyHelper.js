@@ -60,3 +60,17 @@ export const populateUser = () => ([
         $unwind: '$user'
     }
 ])
+
+export const checkIfUserIsPoster = (userId) => ([
+    {
+        $addFields: {
+            is_poster: {
+                $cond: {
+                    if: { $eq: ["$user", userId] },
+                    then: true,
+                    else: false
+                }
+            }
+        }
+    }
+])

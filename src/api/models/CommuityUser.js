@@ -4,7 +4,9 @@ const schema = new Schema(
     {
         community: { type: Schema.Types.ObjectId, ref: 'Community' },
         user: { type: Schema.Types.ObjectId, ref: 'User' },
-        notification: { type: Boolean, default: true }
+        notification: { type: Boolean, default: true },
+        post_count: { type: Number, default: 0 },
+        since: { type: Date, default: Date.now() }
     }
 )
 
