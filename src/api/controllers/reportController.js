@@ -1,5 +1,5 @@
-import UserReport from '../models/UserReport'
-import CommunityReport from '../models/CommunityReport'
+import UserReport from '../models/UserReport.js'
+import CommunityReport from '../models/CommunityReport.js'
 
 export const indexUser = async (req, res, next) => {
     try {

@@ -1,4 +1,4 @@
-import Community from "../models/Community"
+import Community from "../models/Community.js"
 
 export const communityAdmin = async (req, res, next) => {
     try {

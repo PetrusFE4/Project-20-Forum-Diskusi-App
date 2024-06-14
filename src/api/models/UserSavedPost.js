@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose'
 const schema = new Schema(
     {
         user: { type: Schema.Types.ObjectId, unique: true, ref: 'User' },
-        posts: [{ type: Schema.Type.ObjectId, ref: 'Post' }]
+        posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }]
     }
 )
 
