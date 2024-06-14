@@ -1,4 +1,4 @@
-import Discussion from '../models/Discussion.js'
+import Post from '../models/Post.js'
 import Reply from '../models/Reply.js'
 import mongoose from 'mongoose'
 import ReplyScore from '../models/ReplyScore.js'
@@ -8,10 +8,10 @@ import { checkIfUserGiveScore, populateUser } from '../helpers/replyHelper.js'
 export const index = async (req, res, next) => {
     try {
         const matchQuery = { $match: {} }
-        if (req.query.discussion && mongoose.Types.ObjectId.isValid(req.query.discussion))
-            matchQuery.$match.discussion = new mongoose.Types.ObjectId(req.query.discussion)
+        if (req.query.post && mongoose.Types.ObjectId.isValid(req.query.post))
+            matchQuery.$match.post = new mongoose.Types.ObjectId(req.query.post)
         else
-            throw new ErrorResponse(404, 'Discussion ID not found')
+            throw new ErrorResponse(404, 'Post ID not found')
 
         if (req.query.parent && mongoose.Types.ObjectId.isValid(req.query.parent))
             matchQuery.$match.parent = new mongoose.Types.ObjectId(req.query.parent)
@@ -36,7 +36,7 @@ export const index = async (req, res, next) => {
 export const show = async (req, res) => {
     try {
         if (!mongoose.Types.ObjectId.isValid(req.params.id))
-            throw new ErrorResponse(404, 'Discussion ID not found')
+            throw new ErrorResponse(404, 'Post ID not found')
 
         const id = new mongoose.Types.ObjectId(req.params.id);
 
@@ -58,12 +58,12 @@ export const show = async (req, res) => {
 }
 
 export const store = async (req, res, next) => {
-    const { discussion_id, parent_id, content } = req.body
+    const { post_id, parent_id, content } = req.body
     const session = await mongoose.connection.startSession()
     try {
         session.startTransaction()
         const reply = await Reply.create([{
-            discussion: discussion_id,
+            post: post_id,
             parent: parent_id ?? null,
             user: req.user._id,
             content: content,
@@ -71,7 +71,7 @@ export const store = async (req, res, next) => {
             score: 0
         }], { session: session })
 
-        const discussion = await Discussion.updateOne({ _id: discussion_id }, { $inc: { reply_count: 1 } }, { session: session })
+        const post = await Post.updateOne({ _id: post_id }, { $inc: { reply_count: 1 } }, { session: session })
         const parentReply = await Reply.updateOne({ _id: parent_id }, { $inc: { reply_count: 1 } }, { session: session })
 
         await session.commitTransaction()

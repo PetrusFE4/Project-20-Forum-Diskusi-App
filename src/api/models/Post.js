@@ -1,4 +1,3 @@
-import { ObjectId } from 'mongodb'
 import mongoose, { Schema } from 'mongoose'
 
 const schema = new Schema(
@@ -22,6 +21,6 @@ const schema = new Schema(
         }
     })
 
-const Discussion = mongoose.model('Discussion', schema)
+const Post = mongoose.model('Post', schema)
 
-export default Discussion
+export default Post
