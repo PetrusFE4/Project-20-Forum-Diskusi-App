@@ -15,17 +15,17 @@ export const checkIfUserJoined = (userId) => ([
                     }
                 }
             ],
-            as: 'mathedUser'
+            as: 'matchedUser'
         }
     },
     {
-        $unwind: { path: '$mathedUser', preserveNullAndEmptyArrays: true }
+        $unwind: { path: '$matchedUser', preserveNullAndEmptyArrays: true }
     },
     {
         $addFields: {
             'joined': {
                 $cond: {
-                    if: { $ne: ['$mathedUser', {}] },
+                    if: { $ne: ['$matchedUser', {}] },
                     then: true,
                     else: false
                 }
@@ -34,7 +34,7 @@ export const checkIfUserJoined = (userId) => ([
     },
     {
         $project: {
-            'mathedUser': 0
+            'matchedUser': 0
         }
     }
 ])
