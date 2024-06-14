@@ -123,8 +123,13 @@ const TestingNewCommunityForm = () => {
                 <div className="flex flex-row justify-between items-center mb-4 text-base">
                     <h1>Create new Community</h1>
                 </div>
-                <FloatingLabelTextInput limit={100} placeholder='Community Name' value={title} onChange={e => setTitle(e.target.value)} required={true} />
-                <FloatingLabelTextArea limit={500} rows={8} placeholder='Description' value={description} onChange={e => setDescription(e.target.value)} required={true} />
+                <div className="mb-4">
+                    <FloatingLabelTextInput limit={100} placeholder='Community Name' value={title} onChange={e => setTitle(e.target.value)} required={true} />
+                </div>
+
+                <div className="mb-4">
+                    <FloatingLabelTextArea limit={500} rows={8} placeholder='Description' value={description} onChange={e => setDescription(e.target.value)} required={true} />
+                </div>
                 <SelectSearch
                     data={data}
                     label={
