@@ -1,5 +1,8 @@
 import { connectRabbitMQ } from './config/rabbitmq.js'
-import { ProcessNotification } from './service/notification.js';
+import { ProcessNotification } from './service/notification.js'
+import { connectDB } from './config/mongodb.js'
+
+connectDB()
 
 const Run = async () => {
     const { channel } = await connectRabbitMQ()
@@ -7,12 +10,12 @@ const Run = async () => {
 
     channel.consume(process.env.NOTIFICATION_QUEUE_NAME, (msg) => {
         if (msg) {
-            try {
-                ProcessNotification(msg)
+            ProcessNotification(msg).then(() => {
+                console.log("Message acknowledged")
                 channel.ack(msg)
-            } catch (error) {
+            }).catch((error) => {
                 console.log(error)
-            }
+            })
         }
     })
 }

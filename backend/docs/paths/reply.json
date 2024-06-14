@@ -12,6 +12,17 @@
                     "bearerAuth": []
                 }
             ],
+            "parameters": [
+                {
+                    "name": "post",
+                    "in": "query",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "description": "ID of the post to fetch replies for"
+                }
+            ],
             "responses": {
                 "200": {
                     "description": "successful operation",

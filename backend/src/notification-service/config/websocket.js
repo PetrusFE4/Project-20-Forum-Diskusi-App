@@ -1,5 +1,5 @@
 import { Server } from 'socket.io'
-import { validateToken } from '../api/utils/jwt.js'
+import { validateToken } from '../utils/jwt.js'
 
 let WebSocket
 
