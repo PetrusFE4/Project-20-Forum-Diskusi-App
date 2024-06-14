@@ -8,7 +8,8 @@ const schema = new Schema(
         profile_picture: { type: String, default: null },
         banner_picture: { type: String, default: null },
         creator: { type: Schema.Types.ObjectId, ref: 'User' },
-        member_count: { type: Number, default: 1 }
+        member_count: { type: Number, default: 1 },
+        keywords: [{ type: Schema.Types.ObjectId, ref: 'Keyword'}]
     },
     {
         timestamps: {
