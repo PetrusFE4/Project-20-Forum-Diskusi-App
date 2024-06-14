@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import PostScore from '../models/PostScore.js'
 import { checkIfUserGiveScore, populateCommunity, populateUser } from '../helpers/postHelper.js'
 import { sendNotification } from '../services/rabbitmq.js'
+import UserSavedPost from '../models/UserSavedPost.js'
 
 export const index = async (req, res, next) => {
     const post = await Post.aggregate([
@@ -46,7 +47,7 @@ export const store = async (req, res, next) => {
     try {
         await session.startTransaction()
         const { community_id, title, content, attachments } = req.body
-    
+
         const post = await Post.create({
             community: community_id,
             user: req.user._id,
@@ -61,11 +62,11 @@ export const store = async (req, res, next) => {
 
         // Notify ke user pakai websocket
         // WebSocket.to(`user:${req.user._id}`).emit('new_notification', JSON.stringify(postJson))
-        
+
         await session.commitTransaction()
-        
+
         sendNotification(JSON.stringify({ post: postJson, community: community_id }))
-        
+
         return res.json({ message: "Record created succesfully.", data: postJson })
     } catch (error) {
         await session.abortTransaction()
@@ -145,5 +146,28 @@ export const deleteScore = async (req, res, next) => {
 }
 
 export const savePost = async (req, res, next) => {
+    try {
+        await UserSavedPost.updateOne(
+            { user: req.user._id },
+            { $addToSet: { posts: req.params.id } },
+            { upsert: true }
+        )
 
+        return res.sendStatus(204)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const unsavePost = async (req, res, next) => {
+    try {
+        await UserSavedPost.updateOne(
+            { user: req.user._id },
+            { $pull: { posts: req.params.id } }
+        )
+
+        return res.sendStatus(204)
+    } catch (error) {
+        next(error)
+    }
 }

@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose'
 
 const schema = new Schema(
     {
-        discussion: { type: Schema.Types.ObjectId, ref: 'Discussion' },
+        post: { type: Schema.Types.ObjectId, ref: 'Post' },
         parent: { type: Schema.Types.ObjectId, default: null, ref: 'Reply' },
         user: { type: Schema.Types.ObjectId, ref: 'User' },
         content: { type: Schema.Types.Mixed, required: true },
