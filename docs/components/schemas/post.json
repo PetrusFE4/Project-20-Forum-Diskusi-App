@@ -1,11 +1,11 @@
 {
-    "Discussion": {
+    "Post": {
         "type": "object",
         "properties": {
             "_id": {
                 "type": "ObjectId"
             },
-            "subject": {
+            "community": {
                 "type": "ObjectId"
             },
             "user": {
@@ -42,7 +42,7 @@
             }
         },
         "xml": {
-            "name": "discussion"
+            "name": "post"
         }
     }
 }

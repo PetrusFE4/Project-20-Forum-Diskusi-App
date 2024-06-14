@@ -1,12 +1,12 @@
 {
-    "/discussions": {
+    "/posts": {
         "get": {
             "tags": [
-                "discussions"
+                "posts"
             ],
-            "summary": "Get all discussions",
+            "summary": "Get all posts",
             "description": "",
-            "operationId": "discussions.get",
+            "operationId": "posts.get",
             "security": [
                 {
                     "bearerAuth": []
@@ -18,7 +18,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Discussion"
+                                "$ref": "#/components/schemas/Post"
                             }
                         }
                     }
@@ -33,11 +33,11 @@
         },
         "post": {
             "tags": [
-                "discussions"
+                "posts"
             ],
-            "summary": "Post new discussion",
+            "summary": "Post new post",
             "description": "",
-            "operationId": "discussions.store",
+            "operationId": "posts.store",
             "security": [
                 {
                     "bearerAuth": []
@@ -105,14 +105,14 @@
             }
         }
     },
-    "/discussions/{id}": {
+    "/posts/{id}": {
         "get": {
             "tags": [
-                "discussions"
+                "posts"
             ],
-            "summary": "Get discussion by ID",
+            "summary": "Get post by ID",
             "description": "",
-            "operationId": "discussions.show",
+            "operationId": "posts.show",
             "security": [
                 {
                     "bearerAuth": []
@@ -126,7 +126,7 @@
                         "type": "string"
                     },
                     "required": true,
-                    "description": "String ID of the discussion to get"
+                    "description": "String ID of the post to get"
                 }
             ],
             "responses": {
@@ -135,7 +135,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Discussion"
+                                "$ref": "#/components/schemas/Post"
                             }
                         }
                     }
@@ -150,11 +150,11 @@
         },
         "put": {
             "tags": [
-                "discussions"
+                "posts"
             ],
-            "summary": "Update a discussion",
+            "summary": "Update a post",
             "description": "",
-            "operationId": "discussions.update",
+            "operationId": "posts.update",
             "security": [
                 {
                     "bearerAuth": []
@@ -168,7 +168,7 @@
                         "type": "string"
                     },
                     "required": true,
-                    "description": "String ID of the discussion to get"
+                    "description": "String ID of the post to get"
                 }
             ],
             "requestBody": {
@@ -226,14 +226,14 @@
             }
         }
     },
-    "/discussions/{id}/score": {
+    "/posts/{id}/score": {
         "post": {
             "tags": [
-                "discussions"
+                "posts"
             ],
-            "summary": "Score a discussion",
+            "summary": "Score a post",
             "description": "",
-            "operationId": "discussions.score",
+            "operationId": "posts.score",
             "security": [
                 {
                     "bearerAuth": []
@@ -247,7 +247,7 @@
                         "type": "string"
                     },
                     "required": true,
-                    "description": "String ID of the discussion to get"
+                    "description": "String ID of the post to get"
                 }
             ],
             "requestBody": {
@@ -290,11 +290,11 @@
         },
         "delete": {
             "tags": [
-                "discussions"
+                "posts"
             ],
-            "summary": "Remove score off a discussion",
+            "summary": "Remove score off a post",
             "description": "",
-            "operationId": "discussions.deleteScore",
+            "operationId": "posts.deleteScore",
             "security": [
                 {
                     "bearerAuth": []
@@ -308,7 +308,7 @@
                         "type": "string"
                     },
                     "required": true,
-                    "description": "String ID of the discussion to get"
+                    "description": "String ID of the post to get"
                 }
             ],
             "responses": {

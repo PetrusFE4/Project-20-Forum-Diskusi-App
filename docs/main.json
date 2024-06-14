@@ -19,7 +19,7 @@
     },
     "servers": [
         {
-            "url": "https://chatternestapi.carolynn.my.id/api/v1"
+            "url": "http://localhost:3000/api/v1"
         }
     ],
     "tags": [
@@ -28,12 +28,12 @@
             "description": "App authentication"
         },
         {
-            "name": "discussions",
-            "description": "Discussion"
+            "name": "posts",
+            "description": "Post"
         },
         {
             "name": "replies",
-            "description": "Reply of a discussion or an parent reply"
+            "description": "Reply of a post or an parent reply"
         },
         {
             "name": "communities",

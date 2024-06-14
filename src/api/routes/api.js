@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import * as AuthController from '../controllers/authController.js'
-import * as DiscussionController from '../controllers/discussionController.js'
+import * as PostController from '../controllers/postController.js'
 import * as ReplyController from '../controllers/replyController.js'
 import * as CommunityController from '../controllers/communityController.js'
 import * as StorageController from '../controllers/storageController.js'
@@ -36,14 +36,14 @@ router.post('/auth/login', AuthController.login)
 router.post('/auth/register', AuthController.register)
 router.get('/auth/validate', Middleware.auth, AuthController.validate)
 
-router.get('/discussions', Middleware.auth, DiscussionController.index)
-router.get('/discussions/:id', Middleware.auth, DiscussionController.show)
-router.post('/discussions', Middleware.auth, DiscussionController.store)
-router.post('/discussions/:id/save', Middleware.auth, DiscussionController.saveDiscussion)
-router.put('/discussions/:id', Middleware.auth, DiscussionController.update)
-router.delete('/discussions/:id', Middleware.auth, DiscussionController.destroy)
-router.post('/discussions/:id/score', Middleware.auth, DiscussionController.score)
-router.delete('/discussions/:id/score', Middleware.auth, DiscussionController.deleteScore)
+router.get('/posts', Middleware.auth, PostController.index)
+router.get('/posts/:id', Middleware.auth, PostController.show)
+router.post('/posts', Middleware.auth, PostController.store)
+router.post('/posts/:id/save', Middleware.auth, PostController.savePost)
+router.put('/posts/:id', Middleware.auth, PostController.update)
+router.delete('/posts/:id', Middleware.auth, PostController.destroy)
+router.post('/posts/:id/score', Middleware.auth, PostController.score)
+router.delete('/posts/:id/score', Middleware.auth, PostController.deleteScore)
 
 router.get('/replies', Middleware.auth, ReplyController.index)
 router.get('/replies/:id', Middleware.auth, ReplyController.show)
