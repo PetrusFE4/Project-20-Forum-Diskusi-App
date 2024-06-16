@@ -90,10 +90,10 @@ const Toolbar = ({ editorState, setEditorState }) => {
     };
 
     return (
-        <div className="p-1 border-b ">
+        <div className="p-1 border-b flex flex-wrap">
             {tools.map((item, idx) => (
                 <button
-                    className={`p-2 m-1 rounded-full ${isActive(item.style, item.method) ? 'bg-gray-400' : 'hover:bg-gray-200'} `}
+                    className={`p-2 m-1 rounded-full block ${isActive(item.style, item.method) ? 'bg-gray-400' : 'hover:bg-gray-200'} `}
                     key={`${item.label}-${idx}`}
                     title={item.label}
                     onClick={(e) => applyStyle(e, item.style, item.method)}

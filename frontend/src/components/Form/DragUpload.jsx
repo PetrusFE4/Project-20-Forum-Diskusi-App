@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
+import axiosInstance from '../../lib/axiosInstance'
 
 const DragUpload = ({ onUploadSuccess, onError }) => {
     const [uploadProgress, setUploadProgress] = useState(-1)
@@ -8,22 +9,22 @@ const DragUpload = ({ onUploadSuccess, onError }) => {
         const formData = new FormData()
         formData.append('file', file)
 
-        // try {
-        //     let response = await window.axios.post('/api/admin/media', formData, {
-        //         headers: {
-        //             'Content-Type': 'multipart/form-data'
-        //         },
-        //         onUploadProgress: (progressEvent) => {
-        //             const progress = Math.round(progressEvent.loaded * 100 / progressEvent.total)
-        //             setUploadProgress(progress)
-        //         }
-        //     })
-        //     onUploadSuccess(response.data)
-        // } catch (error) {
-        //     onError(error)
-        // } finally {
-        //     setUploadProgress(-1)
-        // }
+        try {
+            let response = await axiosInstance.post('/upload', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress: (progressEvent) => {
+                    const progress = Math.round(progressEvent.loaded * 100 / progressEvent.total)
+                    setUploadProgress(progress)
+                }
+            })
+            onUploadSuccess(response.data)
+        } catch (error) {
+            onError(error)
+        } finally {
+            setUploadProgress(-1)
+        }
     }
 
     const onDrop = useCallback(acceptedFiles => {

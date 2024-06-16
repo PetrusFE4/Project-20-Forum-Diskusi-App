@@ -6,21 +6,31 @@ import {
     convertToRaw,
     convertFromRaw,
 } from "draft-js";
+import Button from "../Form/Button";
 import Toolbar from "./Toolbar";
 import './Style.css'
+import ExportToHTML from "./ExportToHTML";
 
-const DraftEditor = ({ editorState, setEditorState, setButtonActive }) => {
+const DraftEditorEmbed = ({ onSubmit }) => {
+    const [editorState, setEditorState] = useState(
+        EditorState.createWithContent(
+            convertFromRaw({
+                blocks: [],
+                entityMap: {},
+            })
+        )
+    )
     const [focus, setFocus] = useState(false)
     const editor = useRef(null);
 
     useEffect(() => {
         focusEditor();
-        setButtonActive(false)
     }, []);
 
     const focusEditor = () => {
         editor.current.focus()
         setFocus(true)
+
     };
 
     const handleKeyCommand = (command) => {
@@ -87,8 +97,21 @@ const DraftEditor = ({ editorState, setEditorState, setButtonActive }) => {
                     }}
                 />
             </div>
+
+            <div className="flex flex-row p-2 justify-end">
+                <Button
+                    className='block max-w-40 mr-4'
+                    title='Cancel'
+                // onClick={() => setShowInput(false)} 
+                />
+                <Button
+                    className='block max-w-40'
+                    title='Post'
+                    onClick={() => onSubmit(ExportToHTML(editorState.getCurrentContent()))}
+                />
+            </div>
         </div>
     );
 };
 
-export default DraftEditor;
+export default DraftEditorEmbed;

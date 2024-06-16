@@ -11,7 +11,8 @@ import Button from '../../components/Form/Button'
 import axiosInstance from '../../lib/axiosInstance'
 import SelectPostLocation from '../../components/Form/SelectPostLocation'
 
-const TestingForm = () => {
+const CreatePost = () => {
+    document.title = 'ChatterNest - Create Post'
     const [title, setTitle] = useState('')
     const [attachment, setAttachment] = useState([])
     const [processing, setProcessing] = useState(false)
@@ -43,13 +44,12 @@ const TestingForm = () => {
     }
 
     return (
-        <div className="flex justify-center bg-[#dddddd] h-screen">
-            <div className="rounded-3xl p-4 mb-4 bg-white shadow-md flex flex-col ">
-                <div className="flex flex-row justify-between items-center mb-4">
-                    <h1>Create new Post</h1>
-                </div>
-                <div className="mb-4">
-                    <SelectPostLocation
+        <div className="rounded-3xl p-4 mb-4 bg-white shadow-md flex flex-col w-full md:max-w-[75%]">
+            <div className="flex flex-row justify-between items-center mb-4">
+                <h1>Create new Post</h1>
+            </div>
+            <div className="mb-4">
+                {/* <SelectPostLocation
                         data={data}
                         label={<h1>Keywords (3-7)</h1>}
                         required={true}
@@ -59,27 +59,26 @@ const TestingForm = () => {
                         }
                         selected={keywords}
                         onSelect={onSelect}
-                    />
-                </div>
-                <div className="">
-                    <FloatingLabelTextInput limit={300} placeholder='Title' value={title} onChange={e => setTitle(e.target.value)} required={true} />
-                </div>
-                <div className="rounded-3xl border bg-gray-50 border-gray-300 mb-4">
-                    <DraftEditor editorState={editorState} setEditorState={setEditorState} onSubmit={submitPost} />
-                </div>
-                <div className='h-64 mb-4'>
-                    <DragUpload onUploadSuccess={(data) => setAttachment(prev => [...prev, { file: data.filename }])} onError={e => console.log(e)} />
-                </div>
-                <div className="flex flex-row justify-end">
-                    <Button
-                        className='max-w-40'
-                        title='Post'
-                        onClick={submitPost}
-                    />
-                </div>
+                    /> */}
+            </div>
+            <div className="">
+                <FloatingLabelTextInput limit={300} placeholder='Title' value={title} onChange={e => setTitle(e.target.value)} required={true} />
+            </div>
+            <div className="rounded-3xl border bg-gray-50 border-gray-300 mb-4">
+                <DraftEditor editorState={editorState} setEditorState={setEditorState} onSubmit={submitPost} />
+            </div>
+            <div className='h-64 mb-4'>
+                <DragUpload onUploadSuccess={(data) => setAttachment(prev => [...prev, { file: data.filename }])} onError={e => console.log(e)} />
+            </div>
+            <div className="flex flex-row justify-end">
+                <Button
+                    className='max-w-40'
+                    title='Post'
+                    onClick={submitPost}
+                />
             </div>
         </div>
     )
 }
 
-export default TestingForm
+export default CreatePost

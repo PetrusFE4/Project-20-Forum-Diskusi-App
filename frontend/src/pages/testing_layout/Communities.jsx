@@ -1,6 +1,7 @@
 import React from "react";
 
 function Communities() {
+    document.title = 'ChatterNest - Community'
     const communities = [
         {
             rank: 1,
@@ -149,7 +150,7 @@ function Communities() {
     ];
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto">
             <div className="flex justify-between items-center mb-8">
                 <div className="flex items-center">
                     <h1 className="text-2xl font-bold ml-2">Communities</h1>
@@ -175,7 +176,7 @@ function Communities() {
                             <span className="text-lg font-bold">{community.rank}</span>
                             <div className="ml-2">
                                 <img
-                                    src="https://static.vecteezy.com/system/resources/previews/018/930/582/non_2x/reddit-logo-reddit-icon-transparent-free-png.png"
+                                    src="https://www.iconpacks.net/icons/2/free-reddit-logo-icon-2436-thumb.png"
                                     // alt={community.subreddit}
                                     className="h-6"
                                 />

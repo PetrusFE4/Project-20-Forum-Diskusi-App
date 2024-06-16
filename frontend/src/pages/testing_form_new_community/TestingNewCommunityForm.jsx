@@ -119,7 +119,7 @@ const TestingNewCommunityForm = () => {
 
     return (
         <div className="flex justify-center bg-[#dddddd]">
-            <div className="rounded-3xl p-4 mb-4 bg-white shadow-md flex flex-col w-[640px]">
+            <div className="rounded-3xl p-4 mb-4 bg-white shadow-md flex flex-col">
                 <div className="flex flex-row justify-between items-center mb-4 text-base">
                     <h1>Create new Community</h1>
                 </div>
@@ -132,16 +132,15 @@ const TestingNewCommunityForm = () => {
                 </div>
                 <SelectSearch
                     data={data}
-                    label={
-                        <h1>Keywords (3-7)</h1>
-                    }
+                    label={<h1>Keywords (3-7)</h1>}
                     required={true}
                     max={7}
                     trigger={
                         <GoPlus className='ml-2 cursor-pointer h-4 w-4 p-0.5 hover:bg-gray-300 rounded-full' />
                     }
                     selected={keywords}
-                    onSelect={onSelect} />
+                    onSelect={onSelect}
+                />
                 <div className='flex flex-wrap'>
                     {keywords.length > 0 ? keywords.map((item, index) => (
                         <div key={index} className='m-1 p-2 group flex flex-row justify-center items-center bg-primary-900 rounded-full'>

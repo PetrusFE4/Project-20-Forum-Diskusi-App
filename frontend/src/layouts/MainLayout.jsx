@@ -6,6 +6,7 @@ import axiosInstance from '../lib/axiosInstance'
 import { Outlet } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import Botbar from '../components/Botbar'
+import Topbar from '../components/Topbar'
 
 const MainLayout = () => {
     // const navigate = useNavigate()
@@ -45,10 +46,14 @@ const MainLayout = () => {
                 <Botbar />
             </div>
             {/* Mungkin sidebar goes here */}
-            <div className='md:ml-64 md:left-64 w-full h-[calc(100dvh-48px)] md:w-[calc(100dvw-256px)] md:h-screen overflow-x-hidden'>
+            <div className='md:ml-64 md:left-64 w-full h-[calc(100dvh-96px)] mt-12 md:mt-0 md:w-[calc(100vw-256px)] md:h-dvh overflow-x-hidden bg-[#f0f0f0]'>
+                {/* p-4 */}
                 <Outlet /> {/* Isi */}
             </div>
             {/* Mungkin leftbar goes here */}
+            <div className='block md:hidden fixed h-12 w-screen top-0 left-0 bg-white shadow-md'>
+                <Topbar />
+            </div>
         </div>
     )
 }

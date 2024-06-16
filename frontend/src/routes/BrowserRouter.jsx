@@ -7,13 +7,12 @@ import MainLayout from '../layouts/MainLayout'
 import DiscussionDetail from '../pages/discussion_detail/DiscussionDetail'
 import About from '../routes/About'
 import Contact from '../routes/Contact'
-import Home from '../routes/home'
+import Home from '../pages/testing_layout/Home'
+import Communities from '../pages/testing_layout/Communities'
+import CreatePost from '../pages/testing_layout/CreatePost'
+import PostDetail from '../pages/testing_layout/PostDetail'
 
 const routes = createBrowserRouter([
-    {
-        path: '/',
-        element: <Home />
-    },
     {
         path: '/about',
         element: <About />
@@ -35,16 +34,37 @@ const routes = createBrowserRouter([
         element: <Forgetpassword />
     },
     {
-        path: '/discussion/:discussion_id',
-        element: <DiscussionDetail />
-    },
-    {
         path: '',
         element: <MainLayout />,
         children: [
             {
-                path: 'home',
+                path: '',
+                element: <Home />
+            },
+            {
+                path: 'community',
+                element: <Communities />
+            },
+            {
+                path: 'create-post',
+                element: <CreatePost />
+            },
+            {
+                path: 'post/:post_id',
+                element: <PostDetail />
+            },
+            {
+                path: 'search',
                 element: <></>
+            },
+            {
+                path: 'notification'
+            },
+            {
+                path: 'saved-post'
+            },
+            {
+                path: 'profile'
             }
         ]
     }
@@ -55,5 +75,4 @@ const BrowserRouter = () => {
     return <RouterProvider router={routes} />
 }
 
-<Navbar />
 export default BrowserRouter
