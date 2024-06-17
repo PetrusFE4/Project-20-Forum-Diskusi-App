@@ -7,7 +7,7 @@ import { BsHeart, BsHeartbreak, BsShare, BsHeartFill, BsHeartbreakFill, BsChevro
 import { HiOutlineChatBubbleOvalLeft } from 'react-icons/hi2'
 import { CiBookmark, CiShare1 } from 'react-icons/ci'
 
-const DiscussionRow = ({ data, detailed, mutate, replyMutate }) => {
+const PostRow = ({ data, detailed, mutate, replyMutate }) => {
     const { post_id } = useParams()
     const navigate = useNavigate()
     const [showInput, setShowInput] = useState(data._id == post_id)
@@ -67,6 +67,11 @@ const DiscussionRow = ({ data, detailed, mutate, replyMutate }) => {
             navigate(`/post/${data._id}`)
     }
 
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(`${window.location.protocol}//${window.location.host}/post/${data._id}`)
+        alert('Link copied to clipboard')
+    }
+
     return (
         <div className='flex flex-col bg-white p-2 md:px-4 rounded border w-full'>
             <div className='flex flex-row w-full h-12 items-center'>
@@ -87,18 +92,31 @@ const DiscussionRow = ({ data, detailed, mutate, replyMutate }) => {
 
             {!detailed ?
                 <Link to={`/post/${data._id}`}>
-                    <div className="flex flex-col">
+                    <div className="flex flex-col relative max-h-64 overflow-hidden">
                         <h1 className='font-bold text-lg md:text-xl'>{data.title}</h1>
-                        <p className='text-medium text-sm md:text-base mb-2 text-justify' dangerouslySetInnerHTML={{ __html: data.content }}></p>
+                        <p className='text-medium text-sm md:text-base mb-2' dangerouslySetInnerHTML={{ __html: data.content }}></p>
+                        <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white" />
                     </div>
                 </Link>
                 :
                 <div className="flex flex-col">
                     <h1 className='font-bold text-lg md:text-xl mb-2'>{data.title}</h1>
-                    <p className='text-medium text-sm md:text-base mb-2 text-justify' dangerouslySetInnerHTML={{ __html: data.content }}></p>
+                    <p className='text-medium text-sm md:text-base mb-2' dangerouslySetInnerHTML={{ __html: data.content }}></p>
 
                 </div>
             }
+            <div className="mb-2">
+                {data.attachments.length > 0 ?
+                    data.attachments.length == 1 ? 'sama dengan 1' :
+                        data.attachments.length < 4 ?
+                            <div className="rounded-3xl overflow-hidden grid grid-cols-2 auto-cols-auto auto-rows-auto">{
+                                data.attachments.map((item, key) => (
+                                    <img className={`object-cover ${data.attachments.length == 3 && key == 2 ? 'col-span-2 aspect-[32/9]' : 'aspect-video'}`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />
+                                ))
+                            }</div>
+                            : ''
+                    : null}
+            </div>
             <div className="flex flex-row">
                 <div className={`min-h-8 min-w-16 flex flex-row justify-between items-center border-r pr-2`}>
                     {data.user_score == 1 ? (
@@ -143,7 +161,7 @@ const DiscussionRow = ({ data, detailed, mutate, replyMutate }) => {
                     <div className="cursor-pointer mr-2 h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
                         <CiBookmark />
                     </div>
-                    <div className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
+                    <div onClick={copyToClipboard} className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
                         <CiShare1 />
                     </div>
                 </div>
@@ -159,4 +177,4 @@ const DiscussionRow = ({ data, detailed, mutate, replyMutate }) => {
     )
 }
 
-export default DiscussionRow
+export default PostRow

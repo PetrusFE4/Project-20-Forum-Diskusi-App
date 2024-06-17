@@ -1,5 +1,6 @@
 import React from 'react'
 import { CiBellOn, CiBookmark, CiHome, CiMail, CiSearch, CiUser } from 'react-icons/ci'
+import { Link } from 'react-router-dom'
 
 const Sidebar = () => {
     return (
@@ -11,33 +12,29 @@ const Sidebar = () => {
                 </div>
             </div>
             <div className="flex flex-col items-center justify-center px-2">
-                <div className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full">
+                <Link className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full" to='/'>
                     <CiHome size='24' color='rgb(107 114 128)' />
                     <span className="ml-2 text-gray-700">Home</span>
-                </div>
-                <div className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full">
+                </Link>
+                <Link className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full" to='/search'>
                     <CiSearch size='24' color='rgb(107 114 128)' />
                     <span className="ml-2 text-gray-700">Search</span>
-                </div>
-                <div className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full">
+                </Link>
+                <Link className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full" to='/notification'>
                     <CiBellOn size='24' color='rgb(107 114 128)' />
                     <span className="ml-2 text-gray-700">Notifications</span>
-                </div>
-                <div className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full">
+                </Link>
+                <Link className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full" to='/saved-post'>
                     <CiBookmark size='24' color='rgb(107 114 128)' />
                     <span className="ml-2 text-gray-700">Saved posts</span>
-                </div>
-                {/* <div className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full">
-                    <CiMail size='24' color='rgb(107 114 128)' />
-                    <span className="ml-2 text-gray-700">Messages</span>
-                </div> */}
-                <div className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full">
+                </Link>
+                <Link className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full" to='/profile'>
                     <CiUser size='24' color='rgb(107 114 128)' />
                     <span className="ml-2 text-gray-700">Account</span>
-                </div>
-                <div className="p-2 my-1 flex justify-center items-center w-full transition-colors cursor-pointer bg-primary-900 hover:bg-primary-700 rounded-full">
+                </Link>
+                <Link className="p-2 my-1 flex justify-center items-center w-full transition-colors cursor-pointer bg-primary-900 hover:bg-primary-700 rounded-full" to='/create-post'>
                     <span className="text-white">Create Post</span>
-                </div>
+                </Link>
             </div>
         </>
     )

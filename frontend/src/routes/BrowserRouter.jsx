@@ -4,13 +4,13 @@ import Login from '../pages/login/Login'
 import Registrasi from '../pages/registrasi/Registrasi'
 import Forgetpassword from '../pages/forgetpassword/ForgetPassword'
 import MainLayout from '../layouts/MainLayout'
-import DiscussionDetail from '../pages/discussion_detail/DiscussionDetail'
 import About from '../routes/About'
 import Contact from '../routes/Contact'
 import Home from '../pages/testing_layout/Home'
 import Communities from '../pages/testing_layout/Communities'
 import CreatePost from '../pages/testing_layout/CreatePost'
 import PostDetail from '../pages/testing_layout/PostDetail'
+import Community from '../pages/testing_layout/Community'
 
 const routes = createBrowserRouter([
     {
@@ -46,11 +46,19 @@ const routes = createBrowserRouter([
                 element: <Communities />
             },
             {
+                path: 'community/:community_id',
+                element: <Community />
+            },
+            {
                 path: 'create-post',
                 element: <CreatePost />
             },
             {
                 path: 'post/:post_id',
+                element: <PostDetail />
+            },
+            {
+                path: 'post/:post_id/:reply_id',
                 element: <PostDetail />
             },
             {

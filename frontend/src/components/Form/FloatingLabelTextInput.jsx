@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-export default ({ className, type, value, onChange, placeholder, readOnly, required, limit }) => {
+export default ({ className, autoFocus, type, value, onChange, placeholder, readOnly, required, limit }) => {
     const [focus, setFocus] = useState(false)
 
     const onValue = (e) => {
@@ -20,6 +20,7 @@ export default ({ className, type, value, onChange, placeholder, readOnly, requi
             <div className={'relative p-2.5 h-fit bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-3xl ' + className}>
                 <label className={`absolute pointer-events-none left-5 top-4 font-light focus transition-all ${focus || value != '' ? '-translate-y-3 text-xs' : 'text-base'}`}>{placeholder}{required ? <span className='text-red-600'>*</span> : null}</label>
                 <input
+                    autoFocus={autoFocus ?? false}
                     onFocus={() => setFocus(true)}
                     onBlur={() => setFocus(false)}
                     readOnly={readOnly}

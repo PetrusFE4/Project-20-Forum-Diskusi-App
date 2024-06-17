@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import FloatingLabelTextInput from '../../components/Form/FloatingLabelTextInput'
 import DraftEditor from '../../components/Editor/DraftEditor'
 import DragUpload from '../../components/Form/DragUpload'
@@ -10,6 +10,7 @@ import ExportToHTML from '../../components/Editor/ExportToHTML'
 import Button from '../../components/Form/Button'
 import axiosInstance from '../../lib/axiosInstance'
 import SelectPostLocation from '../../components/Form/SelectPostLocation'
+import Attachment from '../../components/Form/Attachment'
 
 const CreatePost = () => {
     document.title = 'ChatterNest - Create Post'
@@ -22,7 +23,7 @@ const CreatePost = () => {
                 blocks: [],
                 entityMap: {},
             })
-        )
+        ) 
     )
 
     const submitPost = async () => {
@@ -43,8 +44,14 @@ const CreatePost = () => {
         setProcessing(false)
     }
 
+    const [buttonActive, setButtonActive] = useState(false)
+
+    const removeAttachmentByKey = (item) => {
+        setAttachment(prev => prev.filter(each => each != item))
+    }
+
     return (
-        <div className="rounded-3xl p-4 mb-4 bg-white shadow-md flex flex-col w-full md:max-w-[75%]">
+        <div className="rounded-md border p-4 bg-white shadow-md flex flex-col w-full lg:max-w-[70%]">
             <div className="flex flex-row justify-between items-center mb-4">
                 <h1>Create new Post</h1>
             </div>
@@ -62,19 +69,28 @@ const CreatePost = () => {
                     /> */}
             </div>
             <div className="">
-                <FloatingLabelTextInput limit={300} placeholder='Title' value={title} onChange={e => setTitle(e.target.value)} required={true} />
+                <FloatingLabelTextInput autoFocus={true} limit={300} placeholder='Title' value={title} onChange={e => setTitle(e.target.value)} required={true} />
             </div>
             <div className="rounded-3xl border bg-gray-50 border-gray-300 mb-4">
-                <DraftEditor editorState={editorState} setEditorState={setEditorState} onSubmit={submitPost} />
+                <DraftEditor setButtonActive={setButtonActive} editorState={editorState} setEditorState={setEditorState} onSubmit={submitPost} />
             </div>
-            <div className='h-64 mb-4'>
+            <div className='flex flex-col h-48 mb-4'>
+                <h1 className='ml-5 mb-2'>Media</h1>
                 <DragUpload onUploadSuccess={(data) => setAttachment(prev => [...prev, { file: data.filename }])} onError={e => console.log(e)} />
             </div>
+            {attachment.length > 0 ?
+                <div className='mb-2'>
+                    {attachment.map((item, index) => (
+                        <Attachment key={index} data={`${import.meta.env.VITE_CDN}/uploads/tmp/${item.file}`} type='image' onRemoveClick={() => removeAttachmentByKey(item)} />
+                    ))}
+                </div>
+                : null}
             <div className="flex flex-row justify-end">
                 <Button
                     className='max-w-40'
                     title='Post'
                     onClick={submitPost}
+                    disabled={!buttonActive}
                 />
             </div>
         </div>

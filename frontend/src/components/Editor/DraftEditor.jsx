@@ -9,18 +9,19 @@ import {
 import Toolbar from "./Toolbar";
 import './Style.css'
 
-const DraftEditor = ({ editorState, setEditorState, setButtonActive }) => {
+const DraftEditor = ({ autoFocus, editorState, setEditorState, setButtonActive }) => {
     const [focus, setFocus] = useState(false)
     const editor = useRef(null);
 
     useEffect(() => {
-        focusEditor();
-        setButtonActive(false)
-    }, []);
+        if (autoFocus)
+            focusEditor()
+    }, [])
 
     const focusEditor = () => {
         editor.current.focus()
         setFocus(true)
+        setButtonActive(false)
     };
 
     const handleKeyCommand = (command) => {
@@ -66,6 +67,18 @@ const DraftEditor = ({ editorState, setEditorState, setButtonActive }) => {
         }
     };
 
+    const onFocus = () => {
+        setButtonActive(false)
+        setFocus(true)
+    }
+
+    const onBlur = () => {
+        if (editorState.getCurrentContent().hasText())
+            setButtonActive(true)
+        setFocus(false)
+        console.log(editorState.getCurrentContent())
+    }
+
     return (
         <div className="editor-wrapper" onClick={focusEditor}>
             <Toolbar editorState={editorState} setEditorState={setEditorState} />
@@ -78,8 +91,8 @@ const DraftEditor = ({ editorState, setEditorState, setButtonActive }) => {
                     editorState={editorState}
                     customStyleMap={styleMap}
                     blockStyleFn={myBlockStyleFn}
-                    onFocus={() => setFocus(true)}
-                    onBlur={() => setFocus(false)}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                     onChange={(editorState) => {
                         // const contentState = editorState.getCurrentContent();
                         // console.log(contentState);

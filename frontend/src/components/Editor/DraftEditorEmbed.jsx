@@ -11,7 +11,8 @@ import Toolbar from "./Toolbar";
 import './Style.css'
 import ExportToHTML from "./ExportToHTML";
 
-const DraftEditorEmbed = ({ onSubmit }) => {
+const DraftEditorEmbed = ({ autoFocus, onSubmit }) => {
+    const [buttonState, setButtonState] = useState(false)
     const [editorState, setEditorState] = useState(
         EditorState.createWithContent(
             convertFromRaw({
@@ -24,14 +25,18 @@ const DraftEditorEmbed = ({ onSubmit }) => {
     const editor = useRef(null);
 
     useEffect(() => {
-        focusEditor();
-    }, []);
+        if (autoFocus)
+            focusEditor()
+    }, [])
+
+    useEffect(() => {
+        console.log(focus)
+    }, [focus])
 
     const focusEditor = () => {
         editor.current.focus()
         setFocus(true)
-
-    };
+    }
 
     const handleKeyCommand = (command) => {
         const newState = RichUtils.handleKeyCommand(editorState, command);
@@ -74,7 +79,18 @@ const DraftEditorEmbed = ({ onSubmit }) => {
             default:
                 break;
         }
-    };
+    }
+
+    const onFocus = () => {
+        setButtonState(false)
+        setFocus(true)
+    }
+
+    const onBlur = () => {
+        if (editorState.getCurrentContent().hasText())
+            setButtonState(true)
+        setFocus(false)
+    }
 
     return (
         <div className="editor-wrapper" onClick={focusEditor}>
@@ -88,8 +104,8 @@ const DraftEditorEmbed = ({ onSubmit }) => {
                     editorState={editorState}
                     customStyleMap={styleMap}
                     blockStyleFn={myBlockStyleFn}
-                    onFocus={() => setFocus(true)}
-                    onBlur={() => setFocus(false)}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                     onChange={(editorState) => {
                         // const contentState = editorState.getCurrentContent();
                         // console.log(contentState);
@@ -99,14 +115,15 @@ const DraftEditorEmbed = ({ onSubmit }) => {
             </div>
 
             <div className="flex flex-row p-2 justify-end">
-                <Button
+                {/* <Button
                     className='block max-w-40 mr-4'
                     title='Cancel'
-                // onClick={() => setShowInput(false)} 
-                />
+                onClick={() => setShowInput(false)} 
+                /> */}
                 <Button
                     className='block max-w-40'
                     title='Post'
+                    disabled={!buttonState}
                     onClick={() => onSubmit(ExportToHTML(editorState.getCurrentContent()))}
                 />
             </div>

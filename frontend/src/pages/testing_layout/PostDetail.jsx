@@ -1,20 +1,25 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import axiosInstance from '../../lib/axiosInstance'
-import DiscussionRow from '../../components/Discussion/DiscussionRow'
-import ReplyRow from '../../components/Discussion/ReplyRow'
+import PostRow from '../../components/Post/PostRow'
+import ReplyRow from '../../components/Post/ReplyRow'
 import useSWRImmutable from 'swr/immutable'
 
 const PostDetail = () => {
     document.title = 'ChatterNest - Post'
-    const { post_id: id } = useParams()
+    const { post_id: id, reply_id } = useParams()
     const { data: discussion, error: discussionError, isLoading: discussionLoading, mutate: discussionMutate } = useSWRImmutable(`/posts/${id}`, url => axiosInstance.get(url).then(res => res.data))
-    const { data: replies, error: repliesError, isLoading: repliesLoading, mutate: repliesMutate } = useSWRImmutable(`/replies?post=${id}`, url => axiosInstance.get(url).then(res => res.data))
+    const { data: replies, error: repliesError, isLoading: repliesLoading, mutate: repliesMutate } = useSWRImmutable(`/replies${reply_id ? `/${reply_id}` : ``}?post=${reply_id ?? id}`, url => axiosInstance.get(url).then(res => res.data)) // ${reply_id ? `&parent=${reply_id}` : ``}
 
     return (
-        <div className="flex justify-center break-words">
+        <div className="flex justify-center break-words lg:max-w-[70%]">
             <div className="flex flex-col justify-center w-full">
-                {discussion ? <DiscussionRow data={discussion.data} detailed={true} mutate={discussionMutate} replyMutate={repliesMutate} /> : null}
+                {discussion ? <PostRow data={discussion.data} detailed={true} mutate={discussionMutate} replyMutate={repliesMutate} /> : null}
+                {reply_id ? 
+                <div className="border bg-white shadow-md py-2 px-4 text-gray-600 text-center">
+                    Viewing in Single Reply Mode. <Link to={`/post/${id}`}>Go Back</Link>
+                </div> : null}
                 {replies ?
                     replies.data.map((reply, index) => (
                         <div className='border bg-white shadow-md py-2 px-4'>

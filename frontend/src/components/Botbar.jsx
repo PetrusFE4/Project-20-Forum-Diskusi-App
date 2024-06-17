@@ -1,12 +1,15 @@
 import React from 'react'
 import { BsPlusLg } from 'react-icons/bs'
 import { CiBellOn, CiHome, CiMail, CiSearch, CiUser } from 'react-icons/ci'
+import { Link } from 'react-router-dom'
 
 const Botbar = () => {
     return (
         <div className="w-full h-full flex flex-row px-8 justify-between items-center border-t">
             <div className="">
-                <CiHome size='24' color='rgb(107 114 128)' />
+                <Link to=''>
+                    <CiHome size='24' color='rgb(107 114 128)' />
+                </Link>
             </div>
             <div className="">
                 <CiSearch size='24' color='rgb(107 114 128)' />

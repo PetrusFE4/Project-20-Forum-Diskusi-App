@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import useSWR from 'swr'
-import { BsHeart, BsHeartFill, BsHeartbreak, BsHeartbreakFill } from 'react-icons/bs'
+import { BsHeart, BsHeartFill, BsHeartbreak, BsHeartbreakFill, BsPlusCircle } from 'react-icons/bs'
 import axiosInstance from '../../lib/axiosInstance'
 import moment from 'moment'
 import DraftEditorEmbed from '../Editor/DraftEditorEmbed'
 import { HiOutlineChatBubbleOvalLeft } from 'react-icons/hi2'
-import { CiBookmark, CiShare1 } from 'react-icons/ci'
+import { CiBookmark, CiCirclePlus, CiShare1 } from 'react-icons/ci'
 
 const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
     const { data: replies, error: repliesError, isLoading: repliesLoading, mutate: childMutate } = useSWR(`/replies?post=${discussionId}&parent=${data._id}`, url => axiosInstance.get(url).then(res => res.data))
@@ -53,6 +54,7 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
                 content: editorState
             })
             childMutate()
+            mutate()
         } catch (error) {
 
         }
@@ -64,7 +66,7 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
             <div className="relative">
                 {replies && replies.data.length > 0 ?
                     <svg className='absolute h-full pointer-events-none top-0 left-0 '>
-                        {(level < 3 && replies && replies.data.length > 0) ?
+                        {(replies && replies.data.length > 0) ? // level < 3
                             <line x1="16" y1="36" x2="16" y2="100%" stroke="black" strokeLinecap='round' strokeWidth='1' />
                             : null}
                     </svg>
@@ -137,7 +139,7 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
                 ) : null}
             </div>
 
-            {level < 4 && replies && replies.data.length > 0 ? replies.data.map((reply, index) => {
+            {level < 3 && replies && replies.data.length > 0 ? replies.data.map((reply, index) => {
                 return (
                     <>
                         <div className="relative pl-10">
@@ -155,7 +157,16 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
                         </div>
                     </>
                 )
-            }) : null}
+            }) : level >= 3 && replies && replies.data.length > 0 ?
+                <div className="relative pl-10">
+                    <svg className='absolute h-full pointer-events-none left-4 -top-1'>
+                        <path d="M 0 0 A 24 24 0 0 0 24 24" stroke="black" strokeLinecap='round' strokeWidth='1' fill="none" />
+                    </svg>
+                    <Link to={`/post/${discussionId}/${data._id}`} className="h-8 flex w-fit items-center mt-1 text-sm cursor-pointer">
+                        <BsPlusCircle className='text-lg mr-1' /> <span>View More</span>
+                    </Link>
+                </div>
+                : null}
         </div>
     )
 }
