@@ -1,13 +1,13 @@
 export const populateCommunity = (communityId) => ([
     {
         $addFields: {
-            hasCommunity: { $cond: { if: { $gt: ['$community', null] }, then: true, else: false } }
+            has_community: { $cond: { if: { $gt: ['$community', null] }, then: true, else: false } }
         }
     },
     {
         $facet: {
             withCommunity: [
-                { $match: { hasCommunity: true } },
+                { $match: { has_community: true } },
                 {
                     $lookup: {
                         from: 'communities',
@@ -26,7 +26,7 @@ export const populateCommunity = (communityId) => ([
                 { $unwind: '$community' }
             ],
             withoutCommunity: [
-                { $match: { hasCommunity: false } }
+                { $match: { has_community: false } }
             ]
         }
     },

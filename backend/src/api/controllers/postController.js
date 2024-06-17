@@ -4,6 +4,8 @@ import PostScore from '../models/PostScore.js'
 import { checkIfUserGiveScore, populateCommunity, populateUser } from '../helpers/postHelper.js'
 import { sendNotification } from '../services/rabbitmq.js'
 import UserSavedPost from '../models/UserSavedPost.js'
+import path from 'path'
+import fs from 'fs'
 
 export const index = async (req, res, next) => {
     const post = await Post.aggregate([
@@ -45,23 +47,39 @@ export const show = async (req, res, next) => {
 export const store = async (req, res, next) => {
     const session = await mongoose.connection.startSession()
     try {
-        await session.startTransaction()
+        session.startTransaction()
         const { community_id, title, content, attachments } = req.body
+        const id = new mongoose.Types.ObjectId()
+
+        let attachmentData = []
+
+        if (attachments) {
+            let i = 1
+            for (const attachment of attachments) {
+                let filename = id + '_' + Date.now() + '_' + (i++) + path.extname(attachment.file)
+                const tmpPath = path.join('public', 'uploads', 'tmp', attachment.file)
+                const newPath = path.join('public', 'uploads', 'post', filename)
+
+                fs.renameSync(tmpPath, newPath)
+                attachmentData.push({
+                    type: attachment.type,
+                    file: filename
+                })
+            }
+        }
 
         const post = await Post.create({
+            _id: id,
             community: community_id,
             user: req.user._id,
             title: title,
             content: content,
-            attachments: attachments,
+            attachments: attachmentData.length != 0 ? attachmentData : attachments,
             reply_count: 0,
             score: 0
         })
 
         let postJson = post.toJSON()
-
-        // Notify ke user pakai websocket
-        // WebSocket.to(`user:${req.user._id}`).emit('new_notification', JSON.stringify(postJson))
 
         await session.commitTransaction()
 
