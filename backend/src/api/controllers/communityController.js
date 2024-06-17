@@ -2,9 +2,11 @@ import { ObjectId } from 'mongodb'
 import Community from '../models/Community.js'
 import CommunityUser from '../models/CommuityUser.js'
 import { ErrorResponse } from '../utils/errorResponse.js'
-import mongoose from 'mongoose'
+import mongoose, { mongo } from 'mongoose'
 import Moderator from '../models/Moderator.js'
 import { checkIfUserJoined, populateModerator } from '../helpers/communityHelper.js'
+import path from 'path'
+import fs from 'fs'
 
 export const index = async (req, res, next) => {
     try {
@@ -74,13 +76,33 @@ export const show = async (req, res, next) => {
 
 export const store = async (req, res, next) => {
     const { name, description, profile_picture, banner_picture } = req.body
+    const id = new mongoose.Types.ObjectId()
 
     const session = await mongoose.connection.startSession()
     try {
         session.startTransaction()
 
+        let pp = null
+        let bp = null
+
+        if (profile_picture) {
+            pp = id + '_' + Date.now() + '_logo' + path.extname(profile_picture)
+            const tmpPath = path.join('public', 'uploads', 'tmp', profile_picture);
+            const newPath = path.join('public', 'uploads', 'community', pp)
+
+            fs.renameSync(tmpPath, newPath)
+        }
+
+        if (banner_picture) {
+            bp = id + '_' + Date.now() + '_banner' + path.extname(profile_picture)
+            const tmpPath = path.join('public', 'uploads', 'tmp', banner_picture);
+            const newPath = path.join('public', 'uploads', 'community', bp)
+
+            fs.renameSync(tmpPath, newPath)
+        }
+
         const community = await Community.create([{
-            name: name, description: description, profile_picture: profile_picture, banner_picture: banner_picture, creator: req.user._id
+            _id: id, name: name, description: description, profile_picture: pp, banner_picture: bp, creator: req.user._id
         }], { session: session })
 
         const moderator = await Moderator.create([{
