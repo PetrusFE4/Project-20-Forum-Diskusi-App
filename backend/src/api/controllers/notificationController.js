@@ -11,3 +11,15 @@ export const index = async (req, res, next) => {
         next(error)
     }
 }
+
+export const show = async (req, res, next) => {
+    try {
+        const { id } = req.params
+
+        const notification = await Notification.findOne({ _id: id })
+
+        return res.json({ message: 'Success', data: notification })
+    } catch (error) {
+        next(error)
+    }
+}

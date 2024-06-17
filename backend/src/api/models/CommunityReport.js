@@ -7,7 +7,8 @@ const schema = new Schema(
         reportee: { type: Schema.Types.ObjectId, required: true, ref: 'User' },
         source: { type: Schema.Types.ObjectId, required: true },
         report_type: { type: String, enum: ['post', 'reply'], required: true },
-        description: { type: String, required: true }
+        description: { type: String, required: true },
+        addressed: { type: Boolean, default: false}
     }
 )
 
