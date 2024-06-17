@@ -2,7 +2,14 @@ import bcrypt from 'bcrypt'
 import mongoose from 'mongoose'
 import { ErrorResponse } from '../utils/errorResponse.js'
 import User from '../models/User.js'
-import { generateToken, validateToken } from '../utils/jwt.js'
+import { generateToken, validateToken, generateTokenWithExpire } from '../utils/jwt.js'
+import ejs from 'ejs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import nodemailer from 'nodemailer'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export const login = async (req, res, next) => {
     try {
@@ -35,6 +42,32 @@ export const register = async (req, res, next) => {
             profile_picture: req.body.profile_picture
         })
 
+        const templatePath = path.resolve(__dirname, '../templates/activation-mail.ejs')
+        const token = generateTokenWithExpire({ _id: user._id }, 3600)
+        const data = {
+            username: req.body.username,
+            link: process.env.WEB_HOST + '/activate?token=' + token,
+        }
+
+        const mailBody = await ejs.renderFile(templatePath, data)
+
+        const transport = nodemailer.createTransport({
+            // service: "Gmail",
+            port: 465,               // true for 465, false for other ports
+            host: "smtp.gmail.com",
+            auth: {
+                user: process.env.GMAIL_MAIL,
+                pass: process.env.GMAIL_APP_PASSWORD
+            }
+        })
+
+        transport.sendMail({
+            from: process.env.GMAIL_MAIL,
+            to: req.body.email,
+            subject: 'ChatterNest Account Activation',
+            html: mailBody
+        })
+
         let userJson = user.toJSON()
 
         delete userJson.password
@@ -58,9 +91,58 @@ export const validate = async (req, res, next) => {
     }
 }
 
+export const activate = async (req, res, next) => {
+    try {
+        const user = await validateToken(req.body.token)
+
+        await User.updateOne({ _id: user._id }, { $set: { activated: true } })
+
+        return res.sendStatus(204)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const resend = async (req, res, next) => {
+    try {
+        const { email } = req.body
+
+        const user = await User.findOne({ email: email })
+
+        const templatePath = path.resolve(__dirname, '../templates/activation-mail.ejs')
+        const token = generateTokenWithExpire({ _id: user._id }, 3600)
+        const data = {
+            username: req.body.username,
+            link: process.env.WEB_HOST + '/activate?token=' + token,
+        }
+
+        const mailBody = await ejs.renderFile(templatePath, data)
+
+        const transport = nodemailer.createTransport({
+            port: 465,
+            host: "smtp.gmail.com",
+            auth: {
+                user: process.env.GMAIL_MAIL,
+                pass: process.env.GMAIL_APP_PASSWORD
+            }
+        })
+
+        transport.sendMail({
+            from: process.env.GMAIL_MAIL,
+            to: req.body.email,
+            subject: 'ChatterNest Account Activation',
+            html: mailBody
+        })
+
+        return res.sendStatus(204)
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const update = async (req, res, next) => {
-    const { firstname, lastname, email, password, new_password } = req.body
-    const updateQuery = { firstname: firstname, lastname: lastname, email: email }
+    const { username, email, password, new_password } = req.body
+    const updateQuery = { username: username, email: email }
 
     if (new_password) {
         let new_password_hash = await bcrypt.hash(new_password, 10)
