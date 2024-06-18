@@ -73,7 +73,7 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
                     : null}
                 <div className='flex flex-row w-full h-full items-center z-0'>
                     <div className='w-8 h-8 mr-2'>
-                        <img src="/media/images/user.png" alt="" />
+                        <img src={`${import.meta.env.VITE_CDN}/uploads/user/${data.user.profile_picture ?? 'default_profile.png'}`} alt="" />
                     </div>
                     <div className='flex-col'>
                         <h1 className='text-xs'><span className='font-bold'>{data.user.username}</span></h1>
@@ -115,20 +115,20 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
                             // </span>
                         )}
                     </div>
-                    <div onClick={() => setShowInput(prev => !prev)} className="group cursor-pointer h-8 pl-2 pr-4 flex flex-row justify-center items-center border-r">
+                    <div onClick={() => setShowInput(prev => !prev)} className="group cursor-pointer h-8 pl-2 pr-4 flex flex-row justify-center items-center">
                         <div className="h-8 w-8 flex justify-center rounded-full items-center group-hover:bg-opacity-90 group-hover:bg-primary-900 group-hover:text-white transition-colors">
                             <HiOutlineChatBubbleOvalLeft size='16' />
                         </div>
                         <span className='group-hover:text-primary-900 transition-colors text-sm'>{data.reply_count}</span>
                     </div>
-                    <div className="h-8 flex flex-row pl-2">
+                    {/* <div className="h-8 flex flex-row pl-2">
                         <div className="cursor-pointer mr-2 h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
                             <CiBookmark />
                         </div>
                         <div className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
                             <CiShare1 />
                         </div>
-                    </div>
+                    </div> */}
                 </div>
                 {showInput ? (
                     <div className="flex flex-col mt-4 ml-10">

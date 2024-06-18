@@ -2,6 +2,7 @@ import React from "react";
 import useSWR from "swr";
 import axiosInstance from "../../lib/axiosInstance";
 import { Link } from "react-router-dom";
+import Button from "../../components/Form/Button";
 
 function Communities() {
     document.title = 'ChatterNest - Community'
@@ -13,12 +14,10 @@ function Communities() {
                 <div className="flex items-center">
                     <h1 className=" font-bold ml-2">Communities</h1>
                 </div>
-                <div className="flex items-center">
-                    <input
-                        type="text"
-                        placeholder="Search"
-                        className="px-4 py-1 rounded-md border border-gray-300"
-                    />
+                <div className="w-fit">
+                    <Button
+                        className='max-w-40'
+                        title='New Community' />
                 </div>
             </div>
             {!isLoading ?
@@ -29,10 +28,9 @@ function Communities() {
                     >
                         <Link to={`/community/${community._id}`}>
                             <div className="flex items-center mb-2">
-                                {/* <span className="text-lg font-bold">{community.rank}</span> */}
                                 <div className="">
                                     <img
-                                        src="https://www.iconpacks.net/icons/2/free-reddit-logo-icon-2436-thumb.png"
+                                        src={`${import.meta.env.VITE_CDN}/uploads/community/${community.profile_picture ?? 'default_profile.png'}`}
                                         className="h-6 w-6 shrink-0"
                                     />
                                 </div>

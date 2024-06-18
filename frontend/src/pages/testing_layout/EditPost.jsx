@@ -95,7 +95,7 @@ const EditPost = () => {
         setProcessing(false)
     }
 
-    const [buttonActive, setButtonActive] = useState(false)
+    const [buttonActive, setButtonActive] = useState(true)
 
     const removeAttachmentByKey = (item) => {
         setAttachment(prev => prev.filter(each => each != item))
@@ -138,9 +138,10 @@ const EditPost = () => {
                 : null}
             <div className="flex flex-row justify-end">
                 <Button
-                    className='max-w-40'
+                    className='max-w-40 mr-2'
                     title='Cancel'
                     onClick={() => navigate(-1)}
+                    isSecondary={true}
                 />
 
                 <Button

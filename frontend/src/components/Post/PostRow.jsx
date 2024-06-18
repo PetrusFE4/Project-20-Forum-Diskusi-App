@@ -8,9 +8,12 @@ import { HiOutlineChatBubbleOvalLeft } from 'react-icons/hi2'
 import { CiBookmark, CiShare1 } from 'react-icons/ci'
 import { UserContext } from '../../contexts/UserContext'
 import { IoPencil } from "react-icons/io5"
-import { GoBookmark, GoBookmarkFill } from "react-icons/go";
+import { GoBookmark, GoBookmarkFill } from "react-icons/go"
+import { ModalContext } from '../../contexts/ModalContext'
+import MediaModal from '../../modals/MediaModal'
 
 const PostRow = ({ data, detailed, mutate, replyMutate }) => {
+    const { showModal } = useContext(ModalContext)
     const { user } = useContext(UserContext)
     const { post_id } = useParams()
     const navigate = useNavigate()
@@ -118,11 +121,11 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
                     </div>
                     : null}
                 <div className='w-8 h-8 mr-2'>
-                    <img src="/media/images/user.png" alt="" />
+                    <img src={`${import.meta.env.VITE_CDN}/uploads/user/${data.user.profile_picture ?? 'default_profile.png'}`} alt="" />
                 </div>
 
                 <div className='flex-col'>
-                    <h1 className='text-xs'><span onClick={() => navigate(`/profile/${data.user._id}`)} className='font-bold hover:underline'>{data.user.username}</span> {data.hasCommuity ? <span className='text-gray-500'>in <Link to={`/community/${data.community._id}`} className='hover:underline cursor-pointer'>{data.community.name}</Link></span> : <span className='text-gray-500'>in their profile</span>}</h1>
+                    <h1 className='text-xs'><span onClick={() => navigate(`/profile/${data.user._id}`)} className='font-bold hover:underline'>{data.user.username}</span> {data.community ? data.community.name ? <span className='text-gray-500'>in <Link to={`/community/${data.community._id}`} className='hover:underline cursor-pointer'>{data.community.name}</Link></span> : null : <span className='text-gray-500'>in their profile</span>}</h1>
                     <span className='text-xs'>{data.created_at ? data.created_at == data.updated_at ? moment.utc(data.created_at).startOf('minute').fromNow() : 'Edited ' + moment.utc(data.updated_at).startOf('minute').fromNow() : ''}</span>
                 </div>
             </div>
@@ -132,7 +135,7 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
                     <div className="flex flex-col relative max-h-64 overflow-hidden">
                         <h1 className='font-bold text-lg md:text-xl'>{data.title}</h1>
                         <p className='text-medium text-sm md:text-base mb-2' dangerouslySetInnerHTML={{ __html: data.content }}></p>
-                        <div className="absolute bottom-0 left-0 w-full h-16 bg-gradient-to-t from-white" />
+                        <div className="absolute top-56 left-0 w-full h-8 bg-gradient-to-t from-white" />
                     </div>
                 </Link>
                 :
@@ -142,16 +145,52 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
 
                 </div>
             }
-            <div className="mb-2">
-                {data.attachments.length > 0 ?
-                    data.attachments.length == 1 ? 'sama dengan 1' :
-                        data.attachments.length < 4 ?
-                            <div className="rounded-3xl overflow-hidden grid grid-cols-2 auto-cols-auto auto-rows-auto">{
-                                data.attachments.map((item, key) => (
-                                    <img className={`object-cover ${data.attachments.length == 3 && key == 2 ? 'col-span-2 aspect-[32/9]' : 'aspect-video'}`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />
-                                ))
-                            }</div>
-                            : ''
+            <div className={`${data.attachments.length > 0 ? 'block' : 'hidden'} mb-2 cursor-pointer`} onClick={() => showModal('', <MediaModal key={Date.now()} media={data.attachments} />)}>
+                {data.attachments.length == 1 ?
+                    <div className="">{
+                        data.attachments.map((item, key) => (
+                            <img className={`w-full rounded-3xl overflow-hidden object-cover aspect-video`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />
+                        ))
+                    }</div>
+                    : null}
+                {data.attachments.length == 2 ?
+                    <div className="rounded-3xl overflow-hidden grid grid-cols-2 auto-cols-auto auto-rows-auto">{
+                        data.attachments.map((item, key) => (
+                            <img className={`object-cover aspect-[8/9]`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />
+                        ))
+                    }</div>
+                    : null}
+
+                {data.attachments.length == 3 ?
+                    <div className="rounded-3xl overflow-hidden grid grid-cols-2 auto-cols-auto auto-rows-auto">{
+                        data.attachments.map((item, key) => (
+                            <img className={`object-cover ${key == 2 ? 'aspect-[32/9] col-span-2' : 'aspect-video'}`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />
+                        ))
+                    }</div>
+                    : null}
+                {data.attachments.length == 4 ?
+                    <div className="rounded-3xl overflow-hidden grid grid-cols-2 auto-cols-auto auto-rows-auto">{
+                        data.attachments.map((item, key) => (
+                            <img className={`object-cover aspect-video`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />
+                        ))
+                    }</div>
+                    : null}
+
+                {data.attachments.length > 4 ?
+                    <div className="rounded-3xl overflow-hidden grid grid-cols-2 auto-cols-auto auto-rows-auto">
+                        {data.attachments.map((item, key) => {
+                            if (key <= 3) {
+                                if (key == 3)
+                                    return (
+                                        <div className="relative object-cover h-full w-full aspect-video flex justify-center items-center text-3xl overflow-hidden">+{data.attachments.length - 4}
+                                            <img className={`absolute top-0 left-0 aspect-video w-full h-full opacity-25`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />
+                                        </div>
+                                    )
+                                else return (
+                                    <img className={`object-cover aspect-video`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />)
+                            }
+                        })}
+                    </div>
                     : null}
             </div>
             <div className="flex flex-row">

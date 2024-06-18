@@ -15,8 +15,13 @@ import EditPost from '../pages/testing_layout/EditPost'
 import UserProfilePage from '../pages/testing_layout/UserProfile'
 import CreateCommunity from '../pages/testing_layout/CreateCommunity'
 import SavedPost from '../pages/testing_layout/SavedPost'
+import Activation from '../pages/Auth/Activation'
 
 const routes = createBrowserRouter([
+    {
+        path: '/activate/:token',
+        element: <Activation />
+    },
     {
         path: '/about',
         element: <About />

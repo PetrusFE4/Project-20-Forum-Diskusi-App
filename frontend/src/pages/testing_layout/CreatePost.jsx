@@ -14,10 +14,14 @@ import Attachment from '../../components/Form/Attachment'
 import useSWR from 'swr'
 import { UserContext } from '../../contexts/UserContext'
 import { GoChevronDown, GoChevronLeft } from 'react-icons/go'
+import { useNavigate } from 'react-router-dom'
+import { useAlert } from 'react-alert'
 
 const CreatePost = () => {
     document.title = 'ChatterNest - Create Post'
+    const alert = useAlert()
     const { user } = useContext(UserContext)
+    const navigate = useNavigate()
     const [title, setTitle] = useState('')
     const [attachment, setAttachment] = useState([])
     const [processing, setProcessing] = useState(false)
@@ -27,10 +31,10 @@ const CreatePost = () => {
                 blocks: [],
                 entityMap: {},
             })
-        ) 
+        )
     )
 
-    const { data: communities, error, isLoading } = useSWR(user ? `/users/${user._id}/communities` : null, url => axiosInstance.get(url).then(res => res.data))
+    const { data: communities, error, isLoading } = useSWR(user ? `/communities/joined` : null, url => axiosInstance.get(url).then(res => res.data))
 
     const submitPost = async () => {
         if (processing)
@@ -44,8 +48,9 @@ const CreatePost = () => {
                 content: ExportToHTML(editorState.getCurrentContent()),
                 attachments: attachment
             })
+            alert.success('Posted successfully')
         } catch (error) {
-
+            alert.error(error.response.data.message)
         }
         setProcessing(false)
     }
@@ -68,18 +73,17 @@ const CreatePost = () => {
                 <h1>Create new Post</h1>
             </div>
             <div className="mb-4">
-
                 <SelectPostLocation
-                        data={communities ? communities.data : []}
-                        label={<h1>Post to</h1>}
-                        required={true}
-                        max={7}
-                        trigger={
-                            <div className="px-6 p-4 bg-primary-900 text-white rounded-full flex flex-row items-center"><h1>{communityLoc ? communityLoc.name : 'Your profile'}</h1> <GoChevronDown className='text-base' /></div>
-                        }
-                        selected={communityLoc}
-                        onSelect={onSelect}
-                    />
+                    data={communities ? communities.data : []}
+                    label={<h1>Post to</h1>}
+                    required={true}
+                    max={7}
+                    trigger={
+                        <div className="px-6 p-4 bg-primary-900 text-white rounded-full flex flex-row items-center"><h1>{communityLoc ? communityLoc.name : 'Your profile'}</h1> <GoChevronDown className='text-base' /></div>
+                    }
+                    selected={communityLoc}
+                    onSelect={onSelect}
+                />
             </div>
             <div className="">
                 <FloatingLabelTextInput autoFocus={true} limit={300} placeholder='Title' value={title} onChange={e => setTitle(e.target.value)} required={true} />
@@ -99,6 +103,12 @@ const CreatePost = () => {
                 </div>
                 : null}
             <div className="flex flex-row justify-end">
+                <Button
+                    className='max-w-40 mr-2'
+                    title='Cancel'
+                    isSecondary={true}
+                    onClick={() => navigate(-1)}
+                />
                 <Button
                     className='max-w-40'
                     title='Post'

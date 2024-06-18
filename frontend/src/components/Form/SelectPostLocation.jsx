@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect, useContext } from 'react'
 import { UserContext } from '../../contexts/UserContext'
 
-const SelectPostLocation = ({ label, trigger, data, onSelect, selected, required, max }) => {
+const SelectPostLocation = ({ label, trigger, data, onSelect, required }) => {
     const ref = useRef()
     const [active, setActive] = useState(false)
     const { user } = useContext(UserContext)
@@ -22,8 +22,7 @@ const SelectPostLocation = ({ label, trigger, data, onSelect, selected, required
     }, [active])
 
     const onClick = (item) => {
-        if (selected.length < max)
-            onSelect(item)
+        onSelect(item)
     }
 
     return (
@@ -41,13 +40,13 @@ const SelectPostLocation = ({ label, trigger, data, onSelect, selected, required
                 <div className="overflow-y-auto max-h-64">
                     {user ?
                         <div onClick={() => onClick(null)} className="flex flex-row items-center px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">
-                            <img className='h-8 w-8 rounded-full' src={import.meta.env.VITE_CDN + 'uploads/user/' + user.profile_picture} />
+                            <img className='h-8 w-8 rounded-full' src={`${import.meta.env.VITE_CDN}/uploads/user/${user.profile_picture ?? 'default_profile.png'}`} />
                             <h1>Your profile</h1>
                         </div>
                         : null}
-                    {data.filter(item => selected.indexOf(item) < 0).map((item, index) => (
-                        <div key={index} onClick={() => onClick(item)} className="flex flex-row px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">
-                            <img className='h-8 w-8 rounded-full' src={import.meta.env.VITE_CDN + 'uploads/community/' + item.profile_picture} />
+                    {data.map((item, index) => (
+                        <div key={index} onClick={() => onClick(item)} className="flex flex-row items-center px-4 py-2 text-gray-700 hover:bg-gray-100 active:bg-blue-100 cursor-pointer rounded-md">
+                            <img className='h-8 w-8 rounded-full' src={`${import.meta.env.VITE_CDN}/uploads/community/${item.profile_picture ?? 'default_profile.png'}`} />
                             <h1>{item.name}</h1>
                         </div>
                     ))}
