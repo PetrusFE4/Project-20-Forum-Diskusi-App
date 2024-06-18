@@ -11,6 +11,6 @@ const schema = new Schema(
 
 schema.index({ user: 1, follower: 1 }, { unique: true })
 
-const User = mongoose.model('User', schema)
+const UserFollower = mongoose.model('UserFollower', schema)
 
-export default User
+export default UserFollower

@@ -13,19 +13,19 @@ export const checkIfUserJoined = (userId) => ([
                             ]
                         }
                     }
-                }
+                } 
             ],
             as: 'matchedUser'
         }
     },
-    {
-        $unwind: { path: '$matchedUser', preserveNullAndEmptyArrays: true }
-    },
+    // {
+    //     $unwind: { path: '$matchedUser', preserveNullAndEmptyArrays: true }
+    // },
     {
         $addFields: {
             'joined': {
                 $cond: {
-                    if: { $ne: ['$matchedUser', {}] },
+                    if: { $ne: ['$matchedUser', []] },
                     then: true,
                     else: false
                 }
@@ -71,5 +71,11 @@ export const populateModerator = () => ([
             ],
             as: 'moderators'
         }
+    }
+])
+
+export const sortPopular = () => ([
+    {
+        $sort: { member_count: -1, created_at: -1 }
     }
 ])

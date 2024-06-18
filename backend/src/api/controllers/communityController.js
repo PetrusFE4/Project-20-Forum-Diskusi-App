@@ -4,23 +4,24 @@ import CommunityUser from '../models/CommuityUser.js'
 import { ErrorResponse } from '../utils/errorResponse.js'
 import mongoose, { mongo } from 'mongoose'
 import Moderator from '../models/Moderator.js'
-import { checkIfUserJoined, populateModerator } from '../helpers/communityHelper.js'
+import { checkIfUserJoined, populateModerator, sortPopular } from '../helpers/communityHelper.js'
 import path from 'path'
 import fs from 'fs'
 
 export const index = async (req, res, next) => {
     try {
-        const { show_mods } = req.query
+        const { show_mods, q } = req.query
         const pipelines = []
 
+        if (q)
+            pipelines.push({ $match: { name: { $regex: q, $options: 'i' } } })
+
         if (show_mods)
-            pipelines.push(
-                ...populateModerator()
-            )
+            pipelines.push(...populateModerator())
 
         let community
 
-        if (show_mods)
+        if (pipelines.length > 0)
             community = await Community.aggregate([...pipelines])
         else
             community = await Community.find()
@@ -70,6 +71,7 @@ export const show = async (req, res, next) => {
 
         return res.json({ data: community[0] })
     } catch (error) {
+        console.log(error)
         next(error)
     }
 }
@@ -86,6 +88,7 @@ export const store = async (req, res, next) => {
         let bp = null
 
         if (profile_picture) {
+            console.log(profile_picture)
             pp = id + '_' + Date.now() + '_logo' + path.extname(profile_picture)
             const tmpPath = path.join('public', 'uploads', 'tmp', profile_picture);
             const newPath = path.join('public', 'uploads', 'community', pp)
@@ -109,6 +112,8 @@ export const store = async (req, res, next) => {
             user: req.user._id, community: community[0]._id
         }], { session: session })
 
+        await CommunityUser.create([{ user: req.user._id, community: id }], { session: session })
+
         await session.commitTransaction()
 
         return res.json({ data: community[0].toJSON() })
@@ -130,16 +135,38 @@ export const update = async (req, res, next) => {
     if (description)
         updateQuery.$set.description = description
 
-    if (profile_picture)
-        updateQuery.$set.profile_picture = profile_picture
+    if (profile_picture == -1)
+        updateQuery.$set.profile_picture = null
 
-    if (banner_picture)
-        updateQuery.$set.banner_picture = banner_picture
+    if (banner_picture == -1)
+        updateQuery.$set.banner_picture = null
+
+    let pp = null
+    let bp = null
+
+    if (profile_picture && profile_picture != -1) {
+        console.log(profile_picture)
+        pp = req.params.id + '_' + Date.now() + '_logo' + path.extname(profile_picture)
+        const tmpPath = path.join('public', 'uploads', 'tmp', profile_picture);
+        const newPath = path.join('public', 'uploads', 'community', pp)
+
+        fs.renameSync(tmpPath, newPath)
+        updateQuery.$set.profile_picture = pp
+    }
+
+    if (banner_picture && banner_picture != -1) {
+        bp = req.params.id + '_' + Date.now() + '_banner' + path.extname(banner_picture)
+        const tmpPath = path.join('public', 'uploads', 'tmp', banner_picture);
+        const newPath = path.join('public', 'uploads', 'community', bp)
+
+        fs.renameSync(tmpPath, newPath)
+        updateQuery.$set.banner_picture = bp
+    }
 
     try {
         const community = await Community.updateOne({ _id: req.params.id }, updateQuery)
 
-        return res.json({ data: community[0].toJSON() })
+        return res.json({ data: community.toJSON() })
     } catch (error) {
         next(error)
     }
@@ -172,7 +199,7 @@ export const join = async (req, res, next) => {
 export const leave = async (req, res, next) => {
     const session = await mongoose.connection.startSession()
     try {
-        await session.startTransaction()
+        session.startTransaction()
         const id = req.params.id
 
         const deleted = await CommunityUser.deleteOne({ community: id, user: req.user._id }, { session: session })
@@ -187,5 +214,50 @@ export const leave = async (req, res, next) => {
         next(error)
     } finally {
         session.endSession()
+    }
+}
+
+export const getPopular = async (req, res, next) => {
+    try {
+        const community = await Community.aggregate([
+            ...sortPopular(),
+            { $limit: 5 }
+        ])
+
+        return res.json({ data: community })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getJoined = async (req, res, next) => {
+    try {
+        const communities = await CommunityUser.aggregate([
+            {
+                $match: { user: new mongoose.Types.ObjectId(req.user._id) }
+            },
+            {
+                $lookup: {
+                    from: 'communities',
+                    localField: 'community',
+                    foreignField: '_id',
+                    as: 'community'
+                }
+            },
+            {
+                $sort: { since: -1 }
+            },
+            {
+                $unwind: '$community'
+            },
+            {
+                $replaceRoot: { newRoot: '$community' }
+            },
+        ])
+
+        return res.json({ message: 'Success', data: communities })
+    } catch (error) {
+        console.log(error)
+        next(error)
     }
 }

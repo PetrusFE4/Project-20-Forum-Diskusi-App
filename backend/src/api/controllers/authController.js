@@ -13,7 +13,7 @@ const __dirname = path.dirname(__filename)
 
 export const login = async (req, res, next) => {
     try {
-        const user = await User.findOne({ email: req.body.email }).select('+password')
+        const user = await User.findOne({ email: req.body.email }).select('+password').select('+activated')
         if (!user)
             throw new ErrorResponse(401, 'Unauthenticated')
 
@@ -61,8 +61,8 @@ export const register = async (req, res, next) => {
             }
         })
 
-        transport.sendMail({
-            from: process.env.GMAIL_MAIL,
+        await transport.sendMail({
+            from: 'noreply.chatternest@gmail.com',
             to: req.body.email,
             subject: 'ChatterNest Account Activation',
             html: mailBody
@@ -84,6 +84,10 @@ export const validate = async (req, res, next) => {
         let token_detail = await validateToken(token)
 
         let user = await User.findOne({ _id: token_detail._id })
+
+        if (!user) {
+            throw new ErrorResponse(401, 'Unauthenticated')
+        }
 
         res.json({ data: user })
     } catch (error) {
@@ -113,7 +117,7 @@ export const resend = async (req, res, next) => {
         const token = generateTokenWithExpire({ _id: user._id }, 3600)
         const data = {
             username: req.body.username,
-            link: process.env.WEB_HOST + '/activate?token=' + token,
+            link: process.env.WEB_HOST + '/activate/' + token,
         }
 
         const mailBody = await ejs.renderFile(templatePath, data)
@@ -127,8 +131,8 @@ export const resend = async (req, res, next) => {
             }
         })
 
-        transport.sendMail({
-            from: process.env.GMAIL_MAIL,
+        await transport.sendMail({
+            from: 'noreply.chatternest@gmail.com',
             to: req.body.email,
             subject: 'ChatterNest Account Activation',
             html: mailBody

@@ -101,3 +101,86 @@ export const checkIfUserGiveScore = (userId) => ([
         }
     }
 ])
+
+export const checkIfUserSaved = (userId) => ([
+    {
+        $lookup: {
+            from: 'usersavedposts',
+            let: { post_id: '$_id', user_id: userId },
+            pipeline: [
+                {
+                    $match: {
+                        $expr: {
+                            $and: [
+                                { $eq: ['$post', '$$post_id'] },
+                                { $eq: ['$user', '$$user_id'] }
+                            ]
+                        }
+                    }
+                }
+            ],
+            as: 'matchedSave'
+        }
+    },
+    {
+        $addFields: {
+            'saved': {
+                $cond: {
+                    if: { $ne: ['$matchedSave', []] },
+                    then: true,
+                    else: false
+                }
+            }
+        }
+    },
+    {
+        $project: {
+            'matchedSave': 0
+        }
+    }
+])
+
+export const sortTrending = () => ([
+    {
+        $addFields: {
+            // created_at_epoch: { $toLong: { $dateToString: { format: "%s", date: "$created_at" } } }
+            created_at_epoch: { $toLong: '$created_at' }
+        }
+    },
+    {
+        $addFields: {
+            trendingScore: {
+                $add: [
+                    "$score",
+                    {
+                        $multiply: [
+                            { $divide: [{ $subtract: [new Date().getTime(), "$created_at_epoch"] }, 3600000] },
+                            -1
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    {
+        $sort: { trendingScore: -1 }
+    },
+    {
+        $project: {
+            trendingScore: 0,
+            created_at_epoch: 0
+        }
+    }
+])
+
+export const sortPopular = () => ([
+    {
+        $sort: { score: -1, created_at: -1 }
+    }
+])
+
+export const sortNewest = () => ([
+    {
+        $sort: { created_at: -1, score: -1 }
+    }
+])

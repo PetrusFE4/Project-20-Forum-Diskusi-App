@@ -87,8 +87,16 @@ export const store = async (req, res, next) => {
     }
 }
 
-export const update = async (req, res) => {
+export const update = async (req, res, next) => {
+    const { content } = req.body
+    const { id } = req.params
+    try {
+        const reply = await Reply.findOneAndUpdate({ _id: id }, { $set: { content: content } }, { returnDocument: 'after' })
 
+        return res.json({ data: reply.toJSON() })
+    } catch (error) {
+        next(error)
+    }
 }
 
 export const destroy = async (req, res) => {

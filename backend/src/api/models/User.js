@@ -5,10 +5,11 @@ const schema = new Schema(
         username: { type: String, required: true, unique: true },
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true, select: false },
-        activated: { type: Boolean, default: false, select: false },
+        activated: { type: Boolean, default: false },
         profile_picture: { type: String, default: null },
         banner_picture: { type: String, default: null },
-        follower_count: { type: Number, default: 0 }
+        follower_count: { type: Number, default: 0 },
+        post_count: { type: Number, default: 0 }
     },
     {
         timestamps: {

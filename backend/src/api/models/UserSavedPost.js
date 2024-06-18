@@ -2,11 +2,13 @@ import mongoose, { Schema } from 'mongoose'
 
 const schema = new Schema(
     {
-        user: { type: Schema.Types.ObjectId, unique: true, ref: 'User' },
-        posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
-        datetime: { type: Date, default: Date.now() }
+        user: { type: Schema.Types.ObjectId, ref: 'User' },
+        post: { type: Schema.Types.ObjectId, ref: 'Post' },
+        saved_at: { type: Date, default: Date.now }
     }
 )
+
+schema.index({ user: 1, post: 1 }, { unique: true })
 
 const UserSavedPost = mongoose.model('UserSavedPost', schema)
 

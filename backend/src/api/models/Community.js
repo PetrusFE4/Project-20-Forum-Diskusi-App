@@ -9,7 +9,8 @@ const schema = new Schema(
         banner_picture: { type: String, default: null },
         creator: { type: Schema.Types.ObjectId, ref: 'User' },
         member_count: { type: Number, default: 1 },
-        keywords: [{ type: Schema.Types.ObjectId, ref: 'Keyword'}]
+        post_count: { type: Number, default: 0 },
+        keywords: [{ type: Schema.Types.ObjectId, ref: 'Keyword' }]
     },
     {
         timestamps: {

@@ -12,14 +12,18 @@ export const ProcessNotification = async (msg) => {
     const community = await Community.findOne({ _id: messageJson.community })
     const poster = await User.findOne({ _id: messageJson.discussion.user })
 
+    const notificationMessage = messageJson.community ? 
+    `${poster.username} created a new post in ${community.name}. ${messageJson.discussion.title.length > 50 ? messageJson.discussion.title.slice(0,50) + '...' : messageJson.discussion.title }` :
+    `${poster.username} created a new post in their profile. ${messageJson.discussion.title.length > 50 ? messageJson.discussion.title.slice(0,50) + '...' : messageJson.discussion.title}`
+
     for (const user of notifiedUsers) {
         const notification = await Notification.create([
             {
                 user: user._id,
-                community: messageJson.community,
+                community: messageJson.community ?? null,
                 poster: messageJson.discussion.user,
                 discussion: messageJson.discussion._id,
-                message: `${poster.username} created a new post in ${community.name} : ${messageJson.discussion.title.length > 50 ? messageJson.discussion.title.slice(0,50) + '...' : messageJson.discussion.title }`,
+                message: notificationMessage,
             }
         ])
 
