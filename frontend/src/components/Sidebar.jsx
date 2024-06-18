@@ -1,8 +1,11 @@
-import React from 'react'
-import { CiBellOn, CiBookmark, CiHome, CiMail, CiSearch, CiUser } from 'react-icons/ci'
+import React, { useContext } from 'react'
+import { CiBellOn, CiBookmark, CiHashtag, CiHome, CiMail, CiSearch, CiUser } from 'react-icons/ci'
 import { Link } from 'react-router-dom'
+import { UserContext } from '../contexts/UserContext'
+import { HiOutlineUserGroup } from 'react-icons/hi2'
 
 const Sidebar = () => {
+    const { user } = useContext(UserContext)
     return (
         <>
             <div className="flex flex-row items-center p-2 my-4">
@@ -16,6 +19,10 @@ const Sidebar = () => {
                     <CiHome size='24' color='rgb(107 114 128)' />
                     <span className="ml-2 text-gray-700">Home</span>
                 </Link>
+                <Link className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full" to={`/community`}>
+                    <CiHashtag size='24' color='rgb(107 114 128)' />
+                    <span className="ml-2 text-gray-700">Community</span>
+                </Link>
                 <Link className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full" to='/search'>
                     <CiSearch size='24' color='rgb(107 114 128)' />
                     <span className="ml-2 text-gray-700">Search</span>
@@ -28,7 +35,7 @@ const Sidebar = () => {
                     <CiBookmark size='24' color='rgb(107 114 128)' />
                     <span className="ml-2 text-gray-700">Saved posts</span>
                 </Link>
-                <Link className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full" to='/profile'>
+                <Link className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full" to={`/profile/${user ? user._id : ''}`}>
                     <CiUser size='24' color='rgb(107 114 128)' />
                     <span className="ml-2 text-gray-700">Account</span>
                 </Link>

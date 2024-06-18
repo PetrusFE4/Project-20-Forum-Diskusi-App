@@ -11,6 +11,10 @@ import Communities from '../pages/testing_layout/Communities'
 import CreatePost from '../pages/testing_layout/CreatePost'
 import PostDetail from '../pages/testing_layout/PostDetail'
 import Community from '../pages/testing_layout/Community'
+import EditPost from '../pages/testing_layout/EditPost'
+import UserProfilePage from '../pages/testing_layout/UserProfile'
+import CreateCommunity from '../pages/testing_layout/CreateCommunity'
+import SavedPost from '../pages/testing_layout/SavedPost'
 
 const routes = createBrowserRouter([
     {
@@ -50,12 +54,24 @@ const routes = createBrowserRouter([
                 element: <Community />
             },
             {
+                path: 'create-community',
+                element: <CreateCommunity />
+            },
+            {
+                path: 'profile/:user_id',
+                element: <UserProfilePage />
+            },
+            {
                 path: 'create-post',
                 element: <CreatePost />
             },
             {
                 path: 'post/:post_id',
                 element: <PostDetail />
+            },
+            {
+                path: 'post/:post_id/edit',
+                element: <EditPost />
             },
             {
                 path: 'post/:post_id/:reply_id',
@@ -69,7 +85,8 @@ const routes = createBrowserRouter([
                 path: 'notification'
             },
             {
-                path: 'saved-post'
+                path: 'saved-post',
+                element: <SavedPost />
             },
             {
                 path: 'profile'

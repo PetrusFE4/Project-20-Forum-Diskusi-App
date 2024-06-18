@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axiosInstance from '../../lib/axiosInstance'
 import moment from 'moment'
 import { Link, useNavigate, useParams } from 'react-router-dom'
@@ -6,12 +6,18 @@ import DraftEditorEmbed from '../Editor/DraftEditorEmbed'
 import { BsHeart, BsHeartbreak, BsShare, BsHeartFill, BsHeartbreakFill, BsChevronLeft } from 'react-icons/bs'
 import { HiOutlineChatBubbleOvalLeft } from 'react-icons/hi2'
 import { CiBookmark, CiShare1 } from 'react-icons/ci'
+import { UserContext } from '../../contexts/UserContext'
+import { IoPencil } from "react-icons/io5"
+import { GoBookmark, GoBookmarkFill } from "react-icons/go";
 
 const PostRow = ({ data, detailed, mutate, replyMutate }) => {
+    const { user } = useContext(UserContext)
     const { post_id } = useParams()
     const navigate = useNavigate()
     const [showInput, setShowInput] = useState(data._id == post_id)
     const [processing, setProcessing] = useState(false)
+
+    let isPoster = user ? user._id == data.user._id : false
 
     const handleScore = async (val) => {
         if (processing)
@@ -72,8 +78,39 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
         alert('Link copied to clipboard')
     }
 
+    const handleSave = async () => {
+        if (processing)
+            return
+        setProcessing(true)
+        try {
+            await axiosInstance.post(`/posts/${data._id}/save`)
+            mutate()
+        } catch (error) {
+
+        }
+        setProcessing(false)
+    }
+
+    const handleUnsave = async () => {
+        if (processing)
+            return
+        setProcessing(true)
+        try {
+            await axiosInstance.post(`/posts/${data._id}/unsave`)
+            mutate()
+        } catch (error) {
+
+        }
+        setProcessing(false)
+    }
+
     return (
-        <div className='flex flex-col bg-white p-2 md:px-4 rounded border w-full'>
+        <div className='relative flex flex-col bg-white p-2 md:px-4 rounded border w-full'>
+            {isPoster ?
+                <Link className={`absolute top-4 right-4 w-8 h-8 p-2 rounded-full hover:bg-gray-400 bg-opacity-50 cursor-pointer`} to={`/post/${data._id}/edit`}>
+                    <IoPencil />
+                </Link>
+                : null}
             <div className='flex flex-row w-full h-12 items-center'>
                 {detailed ?
                     <div className="w-6 h-6 md:w-8 md:h-8 mr-2 flex justify-center items-center hover:bg-gray-200 rounded-full cursor-pointer" onClick={() => navigate(-1)}>
@@ -85,8 +122,8 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
                 </div>
 
                 <div className='flex-col'>
-                    <h1 className='text-xs'><span className='font-bold'>{data.user.username}</span> {data.hasCommuity ? <span className='text-gray-500'>in <Link to={`/community/${data.community._id}`} className='hover:underline cursor-pointer'>{data.community.name}</Link></span> : <span className='text-gray-500'>in their profile</span>}</h1>
-                    <span className='text-xs'>{data.created_at ? moment.utc(data.created_at).startOf('minute').fromNow() : ''}</span>
+                    <h1 className='text-xs'><span onClick={() => navigate(`/profile/${data.user._id}`)} className='font-bold hover:underline'>{data.user.username}</span> {data.hasCommuity ? <span className='text-gray-500'>in <Link to={`/community/${data.community._id}`} className='hover:underline cursor-pointer'>{data.community.name}</Link></span> : <span className='text-gray-500'>in their profile</span>}</h1>
+                    <span className='text-xs'>{data.created_at ? data.created_at == data.updated_at ? moment.utc(data.created_at).startOf('minute').fromNow() : 'Edited ' + moment.utc(data.updated_at).startOf('minute').fromNow() : ''}</span>
                 </div>
             </div>
 
@@ -158,9 +195,15 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
                     <span className='group-hover:text-primary-900 transition-colors text-sm'>{data.reply_count}</span>
                 </div>
                 <div className="h-8 flex flex-row pl-2">
-                    <div className="cursor-pointer mr-2 h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
-                        <CiBookmark />
-                    </div>
+                    {!data.saved ?
+                        <div onClick={handleSave} className="cursor-pointer mr-2 h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
+                            <GoBookmark />
+                        </div>
+                        :
+                        <div onClick={handleUnsave} className="cursor-pointer mr-2 h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
+                            <GoBookmarkFill />
+                        </div>
+                    }
                     <div onClick={copyToClipboard} className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
                         <CiShare1 />
                     </div>

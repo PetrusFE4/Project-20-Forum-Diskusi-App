@@ -153,7 +153,7 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
                             <svg className='absolute h-full pointer-events-none left-4 -top-1'>
                                 <path d="M 0 0 A 24 24 0 0 0 24 24" stroke="black" strokeLinecap='round' strokeWidth='1' fill="none" />
                             </svg>
-                            <ReplyRow className={'border-b border-l'} discussionId={discussionId} data={reply} level={level + 1} mutate={childMutate} />
+                            <ReplyRow key={index} className={'border-b border-l'} discussionId={discussionId} data={reply} level={level + 1} mutate={childMutate} />
                         </div>
                     </>
                 )

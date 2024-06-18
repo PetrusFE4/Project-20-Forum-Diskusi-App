@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useContext } from 'react'
 import FloatingLabelTextInput from '../../components/Form/FloatingLabelTextInput'
 import DraftEditor from '../../components/Editor/DraftEditor'
 import DragUpload from '../../components/Form/DragUpload'
@@ -11,9 +11,13 @@ import Button from '../../components/Form/Button'
 import axiosInstance from '../../lib/axiosInstance'
 import SelectPostLocation from '../../components/Form/SelectPostLocation'
 import Attachment from '../../components/Form/Attachment'
+import useSWR from 'swr'
+import { UserContext } from '../../contexts/UserContext'
+import { GoChevronDown, GoChevronLeft } from 'react-icons/go'
 
 const CreatePost = () => {
     document.title = 'ChatterNest - Create Post'
+    const { user } = useContext(UserContext)
     const [title, setTitle] = useState('')
     const [attachment, setAttachment] = useState([])
     const [processing, setProcessing] = useState(false)
@@ -26,6 +30,8 @@ const CreatePost = () => {
         ) 
     )
 
+    const { data: communities, error, isLoading } = useSWR(user ? `/users/${user._id}/communities` : null, url => axiosInstance.get(url).then(res => res.data))
+
     const submitPost = async () => {
         if (processing)
             return
@@ -33,7 +39,7 @@ const CreatePost = () => {
         setProcessing(true)
         try {
             let response = await axiosInstance.post('/posts', {
-                // community_id: data._id,
+                community_id: communityLoc ? communityLoc._id : null,
                 title: title,
                 content: ExportToHTML(editorState.getCurrentContent()),
                 attachments: attachment
@@ -44,29 +50,36 @@ const CreatePost = () => {
         setProcessing(false)
     }
 
+    const [communityLoc, setCommunityLoc] = useState(null)
+
     const [buttonActive, setButtonActive] = useState(false)
 
     const removeAttachmentByKey = (item) => {
         setAttachment(prev => prev.filter(each => each != item))
     }
 
+    const onSelect = (community) => {
+        setCommunityLoc(community)
+    }
+
     return (
-        <div className="rounded-md border p-4 bg-white shadow-md flex flex-col w-full lg:max-w-[70%]">
+        <div className="rounded-md border p-4 bg-white shadow-md flex flex-col w-full">
             <div className="flex flex-row justify-between items-center mb-4">
                 <h1>Create new Post</h1>
             </div>
             <div className="mb-4">
-                {/* <SelectPostLocation
-                        data={data}
-                        label={<h1>Keywords (3-7)</h1>}
+
+                <SelectPostLocation
+                        data={communities ? communities.data : []}
+                        label={<h1>Post to</h1>}
                         required={true}
                         max={7}
                         trigger={
-                            <GoPlus className='ml-2 cursor-pointer h-4 w-4 p-0.5 hover:bg-gray-300 rounded-full' />
+                            <div className="px-6 p-4 bg-primary-900 text-white rounded-full flex flex-row items-center"><h1>{communityLoc ? communityLoc.name : 'Your profile'}</h1> <GoChevronDown className='text-base' /></div>
                         }
-                        selected={keywords}
+                        selected={communityLoc}
                         onSelect={onSelect}
-                    /> */}
+                    />
             </div>
             <div className="">
                 <FloatingLabelTextInput autoFocus={true} limit={300} placeholder='Title' value={title} onChange={e => setTitle(e.target.value)} required={true} />

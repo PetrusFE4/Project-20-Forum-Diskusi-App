@@ -1,14 +1,39 @@
 import React, { useState } from 'react'
 import CommunityProfileButton from './CommunityProfileButton'
+import axiosInstance from '../../lib/axiosInstance'
 
 const CommunityProfile = ({ data }) => {
 
-    const handleJoin = () => {
+    const [joined, setJoined] = useState(data.joined)
+    const [member, setMember] = useState(data.member_count)
+    const [ready, setReady] = useState(true)
 
+    const handleJoin = async () => {
+        if (!ready)
+            return
+        setReady(false)
+        try {
+            await axiosInstance.post(`/communities/${data._id}/join`)
+            setJoined(true)
+            setMember(prev => prev + 1)
+        } catch (error) {
+            
+        }
+        setReady(true)
     }
 
-    const handleLeave = () => {
-
+    const handleLeave = async () => {
+        if (!ready)
+            return
+        setReady(false)
+        try {
+            await axiosInstance.post(`/communities/${data._id}/leave`)
+            setJoined(false)
+            setMember(prev => prev - 1)
+        } catch (error) {
+            
+        }
+        setReady(true)
     }
 
     return (
@@ -28,14 +53,14 @@ const CommunityProfile = ({ data }) => {
                     <div className='flex flex-col'>
                         <h1 className='font-medium text-base md:text-lg lg:text-xl'>{data.name}</h1>
                         <div className="flex flex-row">
-                        <span className='text-xs md:text-sm lg:text-base'>{data.member_count} Members</span>
+                        <span className='text-xs md:text-sm lg:text-base'>{member} Members</span>
                         <span className='ml-2 text-xs md:text-sm lg:text-base'>{data.member_count} Posts</span>
                         </div>
                     </div>
-                    <CommunityProfileButton className='hidden md:flex ml-2 flex-row items-start justify-end' joined={data.joined} />
+                    <CommunityProfileButton buttonState={ready} onJoin={handleJoin} onLeave={handleLeave} className='hidden md:flex ml-2 flex-row items-start justify-end' joined={joined} />
                 </div>
             </div>
-            <CommunityProfileButton className='flex md:hidden px-4 ml-2 flex-row items-start justify-center my-1' joined={data.joined} />
+            <CommunityProfileButton buttonState={ready} onJoin={handleJoin} onLeave={handleLeave} className='flex md:hidden px-4 ml-2 flex-row items-start justify-center my-1' joined={joined} />
             <div className="p-2">
                 <p>{data.description}</p>
             </div>

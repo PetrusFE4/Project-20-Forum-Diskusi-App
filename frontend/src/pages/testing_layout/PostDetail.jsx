@@ -13,20 +13,18 @@ const PostDetail = () => {
     const { data: replies, error: repliesError, isLoading: repliesLoading, mutate: repliesMutate } = useSWRImmutable(`/replies${reply_id ? `/${reply_id}` : ``}?post=${reply_id ?? id}`, url => axiosInstance.get(url).then(res => res.data)) // ${reply_id ? `&parent=${reply_id}` : ``}
 
     return (
-        <div className="flex justify-center break-words lg:max-w-[70%]">
-            <div className="flex flex-col justify-center w-full">
-                {discussion ? <PostRow data={discussion.data} detailed={true} mutate={discussionMutate} replyMutate={repliesMutate} /> : null}
-                {reply_id ? 
+        <div className="flex flex-col justify-center w-full">
+            {discussion ? <PostRow data={discussion.data} detailed={true} mutate={discussionMutate} replyMutate={repliesMutate} /> : null}
+            {reply_id ?
                 <div className="border bg-white shadow-md py-2 px-4 text-gray-600 text-center">
                     Viewing in Single Reply Mode. <Link to={`/post/${id}`}>Go Back</Link>
                 </div> : null}
-                {replies ?
-                    replies.data.map((reply, index) => (
-                        <div className='border bg-white shadow-md py-2 px-4'>
-                            <ReplyRow discussionId={id} data={reply} level={0} mutate={repliesMutate} />
-                        </div>
-                    )) : null}
-            </div>
+            {replies ?
+                replies.data.map((reply, index) => (
+                    <div className='border bg-white shadow-md py-2 px-4'>
+                        <ReplyRow key={index} discussionId={id} data={reply} level={0} mutate={repliesMutate} />
+                    </div>
+                )) : null}
         </div>
     )
 }
