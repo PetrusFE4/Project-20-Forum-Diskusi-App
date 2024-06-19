@@ -1,8 +1,8 @@
 import React from 'react'
 
-export default ({ label, onBlur, className, type, value, onChange, placeholder, readOnly, other }) => (
+export default ({ label, onBlur, className, type, value, onChange, placeholder, readOnly, other, required }) => (
     <div className={className}>
-        {label ? <label className="block mb-2 text-sm md:text-base text-gray-900 dark:text-white">{label}</label> : ''}
+        {label ? <label className="block mb-2 text-sm md:text-base text-gray-900 dark:text-white">{label}{required ? <span className='text-red-600'>*</span> : null}</label> : ''}
         <input
             onBlur={onBlur}
             readOnly={readOnly}

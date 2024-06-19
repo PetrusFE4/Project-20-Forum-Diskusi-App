@@ -75,8 +75,8 @@ const UserProfile = ({ data, user }) => {
             {self ? null :
                 <UserProfileButton buttonState={active} onJoin={handleJoin} onLeave={handleLeave} onNotification={handleNotification} className='flex md:hidden px-4 ml-2 flex-row items-start justify-center my-1' joined={following} />
             }
-            <div className="p-2">
-                <p>{data.description}</p>
+            <div className="p-2 break-words">
+                <p>{data.bio}</p>
             </div>
         </div>
     )

@@ -120,8 +120,8 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
                         <BsChevronLeft />
                     </div>
                     : null}
-                <div className='w-8 h-8 mr-2'>
-                    <img src={`${import.meta.env.VITE_CDN}/uploads/user/${data.user.profile_picture ?? 'default_profile.png'}`} alt="" />
+                <div className='w-12 h-12 mr-2'>
+                    <img className='aspect-square object-cover rounded-full' src={`${import.meta.env.VITE_CDN}/uploads/user/${data.user.profile_picture ?? 'default_profile.png'}`} alt="" />
                 </div>
 
                 <div className='flex-col'>

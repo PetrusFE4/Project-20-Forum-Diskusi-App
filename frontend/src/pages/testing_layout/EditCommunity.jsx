@@ -10,6 +10,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { BiImageAdd } from 'react-icons/bi'
 import { UserContext } from '../../contexts/UserContext'
 import { useAlert } from 'react-alert'
+import useSWR from 'swr'
+import useSWRImmutable from 'swr/immutable'
 
 const EditCommunity = () => {
     const alert = useAlert()
@@ -21,108 +23,7 @@ const EditCommunity = () => {
     const [title, setTitle] = useState('')
     const [description, setDescription] = useState('')
     const [keywords, setKeywords] = useState([])
-    const [data, setData] = useState([
-        { name: "Technology" },
-        { name: "Jokes" },
-        { name: "Education" },
-        { name: "Gaming" },
-        { name: "News" },
-        { name: "Music" },
-        { name: "Movies" },
-        { name: "Books" },
-        { name: "Science" },
-        { name: "Sports" },
-        { name: "Memes" },
-        { name: "Art" },
-        { name: "Food" },
-        { name: "Travel" },
-        { name: "Fitness" },
-        { name: "DIY" },
-        { name: "Photography" },
-        { name: "Ask Me Anything" },
-        { name: "Politics" },
-        { name: "History" },
-        { name: "Finance" },
-        { name: "Programming" },
-        { name: "Health" },
-        { name: "Fashion" },
-        { name: "Parenting" },
-        { name: "Space" },
-        { name: "Anime" },
-        { name: "Nature" },
-        { name: "Relationships" },
-        { name: "Pets" },
-        { name: "Cryptocurrency" },
-        { name: "Personal Finance" },
-        { name: "Startups" },
-        { name: "Investing" },
-        { name: "Cars" },
-        { name: "TV Shows" },
-        { name: "Comics" },
-        { name: "Humor" },
-        { name: "Beauty" },
-        { name: "Skincare" },
-        { name: "Meditation" },
-        { name: "Mindfulness" },
-        { name: "Writing" },
-        { name: "Poetry" },
-        { name: "Gardening" },
-        { name: "Home Improvement" },
-        { name: "Interior Design" },
-        { name: "Crafts" },
-        { name: "Career" },
-        { name: "Productivity" },
-        { name: "Entrepreneurship" },
-        { name: "Mental Health" },
-        { name: "Vegan" },
-        { name: "Keto" },
-        { name: "Fantasy" },
-        { name: "Horror" },
-        { name: "Sustainability" },
-        { name: "Minimalism" },
-        { name: "Cooking" },
-        { name: "Baking" },
-        { name: "Photography" },
-        { name: "Videography" },
-        { name: "Marketing" },
-        { name: "Freelancing" },
-        { name: "Social Media" },
-        { name: "UX/UI Design" },
-        { name: "Web Development" },
-        { name: "Blockchain" },
-        { name: "Artificial Intelligence" },
-        { name: "Virtual Reality" },
-        { name: "Augmented Reality" },
-        { name: "Robotics" },
-        { name: "3D Printing" },
-        { name: "eSports" },
-        { name: "Language Learning" },
-        { name: "Puzzles" },
-        { name: "Board Games" },
-        { name: "Card Games" },
-        { name: "Travel Hacks" },
-        { name: "Road Trips" },
-        { name: "Urban Exploration" },
-        { name: "Mythology" },
-        { name: "Astronomy" },
-        { name: "Geopolitics" },
-        { name: "Sociology" },
-        { name: "Anthropology" },
-        { name: "Philosophy" },
-        { name: "Ethics" },
-        { name: "Legal Advice" },
-        { name: "Real Estate" },
-        { name: "Environmental Science" },
-        { name: "Renewable Energy" },
-        { name: "Wildlife" },
-        { name: "Marine Biology" },
-        { name: "Astrobiology" },
-        { name: "Graphic Design" },
-        { name: "Illustration" },
-        { name: "Animation" },
-        { name: "Theater" },
-        { name: "Dance" }
-    ])
+    const { data, error, isLoading } = useSWRImmutable(import.meta.env.VITE_API_ENDPOINT + '/keywords', url => axiosInstance(url).then(res => res.data))
 
     const onSelect = (item) => {
         setKeywords(prev => [...prev, item])
@@ -158,6 +59,7 @@ const EditCommunity = () => {
             setCreator(post.creator)
             setTitle(post.name)
             setDescription(post.description)
+            setKeywords(post.keywords)
             setOldBanner(post.banner_picture)
             setOldProfile(post.profile_picture)
         } catch (error) {
@@ -222,8 +124,8 @@ const EditCommunity = () => {
 
     return (
         <div className="border p-4 bg-white shadow-md flex flex-col">
-            <input className='hidden' type="file" ref={profileUpload} onChange={uploadProfile} />
-            <input className='hidden' type="file" ref={bannerUpload} onChange={uploadBanner} />
+            <input className='hidden' type="file" ref={profileUpload} onChange={uploadProfile} accept="image/*" />
+            <input className='hidden' type="file" ref={bannerUpload} onChange={uploadBanner} accept="image/*" />
             <div className="relative w-full aspect-[32/9]">
                 <img className='w-full aspect-[32/9] object-cover' src={`${import.meta.env.VITE_CDN}/uploads${banner ? `/tmp/${banner}` : oldBanner ? `/community/${oldBanner}` : '/community/default_banner.png'}`} alt="" />
                 <div onClick={() => bannerUpload.current.click()} className="cursor-pointer absolute opacity-10 md:opacity-0 md:hover:opacity-75 flex justify-center items-center top-0 left-0 z-10 w-full h-full opacity bg-white">
@@ -250,7 +152,7 @@ const EditCommunity = () => {
                 <FloatingLabelTextArea limit={500} rows={8} placeholder='Description' value={description} onChange={e => setDescription(e.target.value)} required={true} />
             </div>
             <SelectSearch
-                data={data}
+                data={data ? data.data : []}
                 label={<h1>Keywords (3-7)</h1>}
                 required={true}
                 max={7}

@@ -58,7 +58,29 @@ const Search = () => {
                 ))
             case 1:
                 return response.data.map((community, index) => (
-                    <CommunityRow key={index} data={community} />
+                    <div
+                        key={index}
+                        className="bg-white border shadow-md p-4"
+                    >
+                        <Link to={`/community/${community._id}`}>
+                            <div className="flex items-center mb-2">
+                                <div className="">
+                                    <img
+                                        src={`${import.meta.env.VITE_CDN}/uploads/community/${community.profile_picture ?? 'default_profile.png'}`}
+                                        className="h-12 w-12 shrink-0 rounded-full"
+                                    />
+                                </div>
+                                <div className="flex-col items-center ml-2">
+                                    <span className=" text-gray-500">{community.name}</span>
+                                    <p className="text-gray-700">{community.description.length < 50 ? community.description : community.description.slice(0, 50) + ' ...'}</p>
+                                    <div className="flex flex-row">
+                                        <p className="text-gray-500 mr-4">{community.member_count} Members</p>
+                                        <p className="text-gray-500">{community.post_count} Posts</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+                    </div>
                 ))
             case 2:
                 return response.data.map((post, index) => (

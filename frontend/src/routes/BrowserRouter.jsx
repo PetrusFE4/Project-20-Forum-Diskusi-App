@@ -21,6 +21,7 @@ import EditCommunity from '../pages/testing_layout/EditCommunity'
 import Notification from '../pages/testing_layout/Notification'
 import Unactivated from '../pages/Auth/Unactivated'
 import Register from '../pages/testing_layout/Register'
+import UserSettings from '../pages/testing_layout/UserSettings'
 
 const routes = createBrowserRouter([
     {
@@ -108,7 +109,8 @@ const routes = createBrowserRouter([
                 element: <SavedPost />
             },
             {
-                path: 'profile'
+                path: 'settings',
+                element: <UserSettings />
             }
         ]
     }

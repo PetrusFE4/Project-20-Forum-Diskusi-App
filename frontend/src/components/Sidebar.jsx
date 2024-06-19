@@ -1,24 +1,28 @@
 import React, { useContext } from 'react'
-import { CiBellOn, CiBookmark, CiHashtag, CiHome, CiMail, CiSearch, CiUser } from 'react-icons/ci'
+import { CiBellOn, CiBookmark, CiHashtag, CiHome, CiLogout, CiMail, CiSearch, CiUser } from 'react-icons/ci'
 import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import { HiOutlineUserGroup } from 'react-icons/hi2'
 
-const Sidebar = ({notification}) => {
+const Sidebar = ({ notification }) => {
     const { user } = useContext(UserContext)
 
     let unreadCount = notification.filter(item => item.read === false).length
+    const logout = () => {
+        sessionStorage.clear()
+        location.reload()
+    }
 
     return (
         <>
             {user ?
                 <div className="flex flex-row items-center p-2 my-4">
-                    <img src={`${import.meta.env.VITE_CDN}/uploads/user/${user.profile_picture ?? 'default_profile.png'}`} alt="Profile Picture" className="w-12 h-12 rounded-full" />
+                    <img src={`${import.meta.env.VITE_CDN}/uploads/user/${user.profile_picture ?? 'default_profile.png'}`} alt="Profile Picture" className="w-12 h-12 rounded-full aspect-square object-cover" />
                     <div className="ml-4">
                         <h2 className="text-lg font-bold">{user.username}</h2>
                     </div>
                 </div>
-                : 
+                :
                 null}
             <div className="flex flex-col items-center justify-center px-2">
                 <Link className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full" to='/'>
@@ -46,6 +50,10 @@ const Sidebar = ({notification}) => {
                     <CiUser size='24' color='rgb(107 114 128)' />
                     <span className="ml-2 text-gray-700">Account</span>
                 </Link>
+                <div onClick={logout} className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full">
+                    <CiLogout className='text-red-600' size='24' />
+                    <span className="ml-2 text-gray-700">Logout</span>
+                </div>
                 <Link className="p-2 my-1 flex justify-center items-center w-full transition-colors cursor-pointer bg-primary-900 hover:bg-primary-700 rounded-full" to='/create-post'>
                     <span className="text-white">Create Post</span>
                 </Link>

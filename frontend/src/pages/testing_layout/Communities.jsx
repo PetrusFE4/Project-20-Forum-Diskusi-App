@@ -15,9 +15,11 @@ function Communities() {
                     <h1 className=" font-bold ml-2">Communities</h1>
                 </div>
                 <div className="w-fit">
-                    <Button
-                        className='max-w-40'
-                        title='New Community' />
+                    <Link to='/create-community'>
+                        <Button
+                            className='max-w-40'
+                            title='New Community' />
+                    </Link>
                 </div>
             </div>
             {!isLoading ?

@@ -73,7 +73,7 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
                     : null}
                 <div className='flex flex-row w-full h-full items-center z-0'>
                     <div className='w-8 h-8 mr-2'>
-                        <img src={`${import.meta.env.VITE_CDN}/uploads/user/${data.user.profile_picture ?? 'default_profile.png'}`} alt="" />
+                        <img className='aspect-square object-cover rounded-full' src={`${import.meta.env.VITE_CDN}/uploads/user/${data.user.profile_picture ?? 'default_profile.png'}`} alt="" />
                     </div>
                     <div className='flex-col'>
                         <h1 className='text-xs'><span className='font-bold'>{data.user.username}</span></h1>

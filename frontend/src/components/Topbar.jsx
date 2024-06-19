@@ -18,7 +18,7 @@ const Topbar = () => {
                 <CiBellOn size='24' color='rgb(107 114 128)' />
             </div> */}
             <div className="">
-                <PiGearThin size='24' color='rgb(107 114 128)' />
+                {/* <PiGearThin size='24' color='rgb(107 114 128)' /> */}
             </div>
         </div>
     )
