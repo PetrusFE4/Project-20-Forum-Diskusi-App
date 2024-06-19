@@ -46,7 +46,7 @@ export const register = async (req, res, next) => {
         const token = generateTokenWithExpire({ _id: user._id }, 3600)
         const data = {
             username: req.body.username,
-            link: process.env.WEB_HOST + '/activate?token=' + token,
+            link: process.env.WEB_HOST + '/activate/token=' + token,
         }
 
         const mailBody = await ejs.renderFile(templatePath, data)
