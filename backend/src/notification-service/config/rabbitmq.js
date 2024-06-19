@@ -5,7 +5,7 @@ let conn
 
 export const connectRabbitMQ = async () => {
     try {
-        const connection = await connect(process.env.RABBITMQ_URL)
+        const connection = await connect(process.env.NOTIFICATION_SERVICE_HOST)
         const channel = await connection.createChannel()
         conn = connection
         chan = channel

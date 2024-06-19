@@ -6,8 +6,8 @@ export const error = (err, req, res, next) => {
     if (!err)
         next()
 
-    if (err instanceof ErrorResponse)
-        return res.status(err.code).json({ message: err.message })
+    if (err instanceof ErrorResponse){
+        return res.status(err.code).json({ message: err.message })}
 
     if (DEBUG_MODE)
         return res.status(500).json(err)

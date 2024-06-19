@@ -1,4 +1,4 @@
-import Keyword from "../models/Keyword"
+import Keyword from "../models/Keyword.js"
 
 export const index = async (req, res, next) => {
     try {
