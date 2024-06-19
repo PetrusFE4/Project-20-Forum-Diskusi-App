@@ -5,6 +5,7 @@ import User from '../models/User.js'
 import { generateToken, validateToken, generateTokenWithExpire } from '../utils/jwt.js'
 import ejs from 'ejs'
 import path from 'path'
+import fs from 'fs'
 import { fileURLToPath } from 'url'
 import nodemailer from 'nodemailer'
 
@@ -151,12 +152,44 @@ export const resend = async (req, res, next) => {
 }
 
 export const update = async (req, res, next) => {
-    const { username, email, password, new_password } = req.body
-    const updateQuery = { username: username, email: email }
+    const { username, email, bio, password, new_password, profile_picture, banner_picture } = req.body
+    const updateQuery = {
+        $set: {
+            email: email,
+            bio: bio
+        }
+    }
 
     if (new_password) {
         let new_password_hash = await bcrypt.hash(new_password, 10)
-        updateQuery.password = new_password_hash
+        updateQuery.$set.password = new_password_hash
+    }
+    if (profile_picture == -1)
+        updateQuery.$set.profile_picture = null
+
+    if (banner_picture == -1)
+        updateQuery.$set.banner_picture = null
+
+    let pp = null
+    let bp = null
+
+    if (profile_picture && profile_picture != -1) {
+        console.log(profile_picture)
+        pp = req.user._id + '_' + Date.now() + '_logo' + path.extname(profile_picture)
+        const tmpPath = path.join('public', 'uploads', 'tmp', profile_picture);
+        const newPath = path.join('public', 'uploads', 'user', pp)
+
+        fs.renameSync(tmpPath, newPath)
+        updateQuery.$set.profile_picture = pp
+    }
+
+    if (banner_picture && banner_picture != -1) {
+        bp = req.user._id + '_' + Date.now() + '_banner' + path.extname(banner_picture)
+        const tmpPath = path.join('public', 'uploads', 'tmp', banner_picture);
+        const newPath = path.join('public', 'uploads', 'user', bp)
+
+        fs.renameSync(tmpPath, newPath)
+        updateQuery.$set.banner_picture = bp
     }
 
     const session = await mongoose.connection.startSession()

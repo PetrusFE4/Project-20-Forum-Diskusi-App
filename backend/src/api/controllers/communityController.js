@@ -21,13 +21,21 @@ export const index = async (req, res, next) => {
 
         let community
 
-        if (pipelines.length > 0)
-            community = await Community.aggregate([...pipelines])
-        else
-            community = await Community.find()
+        community = await Community.aggregate([
+            ...pipelines,
+            {
+                $lookup: {
+                    from: 'keywords',
+                    localField: 'keywords',
+                    foreignField: '_id',
+                    as: 'keywords'
+                }
+            },
+        ])
 
         return res.json({ data: community })
     } catch (error) {
+        console.log(error)
         next(error)
     }
 }
@@ -42,7 +50,7 @@ export const show = async (req, res, next) => {
             pipelines.push(
                 {
                     $lookup: {
-                        on: 'moderators',
+                        from: 'moderators',
                         localField: 'moderators',
                         foreignField: 'user',
                         as: 'moderators'
@@ -63,6 +71,14 @@ export const show = async (req, res, next) => {
             {
                 $match: { _id: objectId_id }
             },
+            {
+                $lookup: {
+                    from: 'keywords',
+                    localField: 'keywords',
+                    foreignField: '_id',
+                    as: 'keywords'
+                }
+            },
             ...pipelines
         ])
 
@@ -77,7 +93,7 @@ export const show = async (req, res, next) => {
 }
 
 export const store = async (req, res, next) => {
-    const { name, description, profile_picture, banner_picture } = req.body
+    const { name, description, profile_picture, banner_picture, keywords } = req.body
     const id = new mongoose.Types.ObjectId()
 
     const session = await mongoose.connection.startSession()
@@ -104,8 +120,15 @@ export const store = async (req, res, next) => {
             fs.renameSync(tmpPath, newPath)
         }
 
+        let keywordsArray = []
+        if (keywords && keywords.length > 0) {
+            for (const keyword of keywords) {
+                keywordsArray.push(keyword._id)
+            }
+        }
+
         const community = await Community.create([{
-            _id: id, name: name, description: description, profile_picture: pp, banner_picture: bp, creator: req.user._id
+            _id: id, name: name, keywords: keywordsArray, description: description, profile_picture: pp, banner_picture: bp, creator: req.user._id
         }], { session: session })
 
         const moderator = await Moderator.create([{
@@ -126,7 +149,7 @@ export const store = async (req, res, next) => {
 }
 
 export const update = async (req, res, next) => {
-    const { name, description, profile_picture, banner_picture } = req.body
+    const { name, description, keywords, profile_picture, banner_picture } = req.body
 
     const updateQuery = { $set: {} }
     if (name)
@@ -140,6 +163,16 @@ export const update = async (req, res, next) => {
 
     if (banner_picture == -1)
         updateQuery.$set.banner_picture = null
+
+    if (keywords) {
+        let keywordsArray = []
+        if (keywords.length > 0) {
+            for (const keyword of keywords) {
+                keywordsArray.push(keyword._id)
+            }
+        }
+        updateQuery.$set.keywords = keywordsArray
+    }
 
     let pp = null
     let bp = null

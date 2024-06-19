@@ -7,6 +7,7 @@ import * as StorageController from '../controllers/storageController.js'
 import * as ReportController from '../controllers/reportController.js'
 import * as UserController from '../controllers/userController.js'
 import * as NotificationController from '../controllers/notificationController.js'
+import * as KeywordController from '../controllers/keywordController.js'
 import * as Middleware from '../middlewares/index.js'
 
 import morgan from 'morgan'
@@ -22,9 +23,13 @@ router.use(morgan(':date[iso] | :status | :response-time ms | :remote-addr | :me
 
 router.post('/upload', Middleware.upload.single('file'), StorageController.uploadFile)
 
+
+router.get('/keywords', KeywordController.index)
+
 router.post('/auth/login', AuthController.login)
 router.post('/auth/register', AuthController.register)
 router.get('/auth/validate', Middleware.auth, AuthController.validate)
+router.put('/auth/update', Middleware.auth, AuthController.update)
 router.post('/auth/activate', AuthController.activate)
 router.post('/auth/resend', Middleware.auth, AuthController.resend)
 router.post('/auth/check_username', AuthController.checkAvailability)
