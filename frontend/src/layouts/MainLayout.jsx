@@ -24,7 +24,7 @@ const MainLayout = () => {
             const response = (await axiosInstance.get('/notifications')).data.data
             setNotification(response)
         } catch (error) {
-            
+
         }
     }
 
@@ -66,7 +66,7 @@ const MainLayout = () => {
 
     useEffect(() => {
 
-        const socket = io('https://ws.carolynn.my.id', {
+        const socket = io(import.meta.env.VITE_WS, {
             query: { token: apiKey }
         });
 
@@ -87,7 +87,7 @@ const MainLayout = () => {
         <NotificationProvider notification={notification} setNotification={setNotification}>
             <div className='h-screen w-screen flex overflow-y-auto'>
                 <div className='hidden md:block fixed w-64 h-screen overflow-y-auto shadow-md border-r'>
-                    <Sidebar notification={notification}/>
+                    <Sidebar notification={notification} />
                 </div>
                 <div className='block md:hidden fixed h-12 w-screen bottom-0 left-0 bg-white shadow-md'>
                     <Botbar />
