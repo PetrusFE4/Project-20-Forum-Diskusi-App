@@ -1,8 +1,10 @@
 import React, { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import axiosInstance from '../../lib/axiosInstance'
+import { useAlert } from 'react-alert'
 
 const DragUpload = ({ onUploadSuccess, onError }) => {
+    const alert = useAlert()
     const [uploadProgress, setUploadProgress] = useState(-1)
 
     const uploadFile = async (file) => {
@@ -20,7 +22,9 @@ const DragUpload = ({ onUploadSuccess, onError }) => {
                 }
             })
             onUploadSuccess(response.data)
+            alert.success('Uploaded')
         } catch (error) {
+            alert.error(error.response.data.message)
             onError(error)
         } finally {
             setUploadProgress(-1)
@@ -34,8 +38,8 @@ const DragUpload = ({ onUploadSuccess, onError }) => {
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: {
-            'image/*': ['.jpeg', '.jpg', '.png', '.gif', '.bmp', '.webp'],
-            'video/*': ['.mp4', '.mkv', '.avi', '.mov', '.wmv'],
+            'image/*': ['.jpeg', '.jpg', '.png', '.bmp', '.webp'],
+            // 'video/*': ['.mp4', '.mkv', '.avi', '.mov', '.wmv'],
         },
     })
 
@@ -54,10 +58,11 @@ const DragUpload = ({ onUploadSuccess, onError }) => {
                     </div> :
                     <div className="flex flex-col">
                         <p>Drop your media file here, or click to select file</p>
-                        <p className='text-xs'>jpeg, jpg, png, gif, bmp, webp, or mp4, mkv, avi, mov, wmv</p>
+                        <p className='text-xs'>jpeg, jpg, png, bmp, webp</p> 
+                        {/* , or mp4, mkv, avi, mov, wmv */}
                     </div>
             }
-            <input type="file" accept='image/*,video/*' name="" id="" {...getInputProps()} />
+            <input type="file" accept='image/*' name="" id="" {...getInputProps()} />
         </div>
     )
 }

@@ -4,8 +4,11 @@ import { Link } from 'react-router-dom'
 import { UserContext } from '../contexts/UserContext'
 import { HiOutlineUserGroup } from 'react-icons/hi2'
 
-const Sidebar = () => {
+const Sidebar = ({notification}) => {
     const { user } = useContext(UserContext)
+
+    let unreadCount = notification.filter(item => item.read === false).length
+
     return (
         <>
             {user ?
@@ -33,6 +36,7 @@ const Sidebar = () => {
                 <Link className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full" to='/notification'>
                     <CiBellOn size='24' color='rgb(107 114 128)' />
                     <span className="ml-2 text-gray-700">Notifications</span>
+                    <span class="inline-flex items-center rounded-md bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">{unreadCount}</span>
                 </Link>
                 <Link className="p-2 my-1 flex items-center w-full transition-colors cursor-pointer hover:bg-gray-200 rounded-full" to='/saved-post'>
                     <CiBookmark size='24' color='rgb(107 114 128)' />

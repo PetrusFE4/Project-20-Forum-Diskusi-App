@@ -193,61 +193,63 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
                     </div>
                     : null}
             </div>
-            <div className="flex flex-row">
-                <div className={`min-h-8 min-w-16 flex flex-row justify-between items-center border-r pr-2`}>
-                    {data.user_score == 1 ? (
-                        <div onClick={deleteScore} className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
-                            <BsHeartFill size={'14'} />
-                        </div>
-                        // <span onClick={deleteScore} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-gray-300 rounded-full'>
-                        //     <BsHeartFill size={'14'} color='#000' />
-                        // </span>
-                    ) : (
-                        <div onClick={() => handleScore(1)} className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
-                            <BsHeart size={'14'} />
-                        </div>
-                        // <span onClick={() => handleScore(1)} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-gray-300 rounded-full'>
-                        //     <BsHeart size={'14'} color='#000' />
-                        // </span>
-                    )}
-                    <span className='mx-1 cursor-default text-sm'>{data.score}</span>
-                    {data.user_score == -1 ? (
-                        <div onClick={deleteScore} className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
-                            <BsHeartbreakFill size={'14'} />
-                        </div>
-                        // <span onClick={deleteScore} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-primary-800 rounded-full'>
-                        //     <BsHeartbreakFill size={'14'} color='#fff' />
-                        // </span>
-                    ) : (
-                        <div onClick={() => handleScore(-1)} className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
-                            <BsHeartbreak size={'14'} />
-                        </div>
-                        // <span onClick={() => handleScore(-1)} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-gray-300 rounded-full'>
-                        //     <BsHeartbreak size={'15'} color={data.user_score ? '#fff' : '#000'} />
-                        // </span>
-                    )}
-                </div>
-                <div onClick={handleReplyClick} className="group cursor-pointer h-8 pl-2 pr-4 flex flex-row justify-center items-center border-r">
-                    <div className="h-8 w-8 flex justify-center rounded-full items-center group-hover:bg-opacity-90 group-hover:bg-primary-900 group-hover:text-white transition-colors">
-                        <HiOutlineChatBubbleOvalLeft size='16' />
+            {mutate ?
+                <div className="flex flex-row">
+                    <div className={`min-h-8 min-w-16 flex flex-row justify-between items-center border-r pr-2`}>
+                        {data.user_score == 1 ? (
+                            <div onClick={deleteScore} className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
+                                <BsHeartFill size={'14'} />
+                            </div>
+                            // <span onClick={deleteScore} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-gray-300 rounded-full'>
+                            //     <BsHeartFill size={'14'} color='#000' />
+                            // </span>
+                        ) : (
+                            <div onClick={() => handleScore(1)} className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
+                                <BsHeart size={'14'} />
+                            </div>
+                            // <span onClick={() => handleScore(1)} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-gray-300 rounded-full'>
+                            //     <BsHeart size={'14'} color='#000' />
+                            // </span>
+                        )}
+                        <span className='mx-1 cursor-default text-sm'>{data.score}</span>
+                        {data.user_score == -1 ? (
+                            <div onClick={deleteScore} className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
+                                <BsHeartbreakFill size={'14'} />
+                            </div>
+                            // <span onClick={deleteScore} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-primary-800 rounded-full'>
+                            //     <BsHeartbreakFill size={'14'} color='#fff' />
+                            // </span>
+                        ) : (
+                            <div onClick={() => handleScore(-1)} className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
+                                <BsHeartbreak size={'14'} />
+                            </div>
+                            // <span onClick={() => handleScore(-1)} className='cursor-pointer h-8 w-8 p-2 flex items-center justify-center hover:bg-gray-300 rounded-full'>
+                            //     <BsHeartbreak size={'15'} color={data.user_score ? '#fff' : '#000'} />
+                            // </span>
+                        )}
                     </div>
-                    <span className='group-hover:text-primary-900 transition-colors text-sm'>{data.reply_count}</span>
-                </div>
-                <div className="h-8 flex flex-row pl-2">
-                    {!data.saved ?
-                        <div onClick={handleSave} className="cursor-pointer mr-2 h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
-                            <GoBookmark />
+                    <div onClick={handleReplyClick} className="group cursor-pointer h-8 pl-2 pr-4 flex flex-row justify-center items-center border-r">
+                        <div className="h-8 w-8 flex justify-center rounded-full items-center group-hover:bg-opacity-90 group-hover:bg-primary-900 group-hover:text-white transition-colors">
+                            <HiOutlineChatBubbleOvalLeft size='16' />
                         </div>
-                        :
-                        <div onClick={handleUnsave} className="cursor-pointer mr-2 h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
-                            <GoBookmarkFill />
+                        <span className='group-hover:text-primary-900 transition-colors text-sm'>{data.reply_count}</span>
+                    </div>
+                    <div className="h-8 flex flex-row pl-2">
+                        {!data.saved ?
+                            <div onClick={handleSave} className="cursor-pointer mr-2 h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
+                                <GoBookmark />
+                            </div>
+                            :
+                            <div onClick={handleUnsave} className="cursor-pointer mr-2 h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
+                                <GoBookmarkFill />
+                            </div>
+                        }
+                        <div onClick={copyToClipboard} className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
+                            <CiShare1 />
                         </div>
-                    }
-                    <div onClick={copyToClipboard} className="cursor-pointer h-8 w-8 flex justify-center rounded-full items-center hover:bg-opacity-90 hover:bg-primary-900 hover:text-white transition-colors">
-                        <CiShare1 />
                     </div>
                 </div>
-            </div>
+                : null}
             {showInput ? (
                 <div className="flex flex-col mt-4">
                     <div className="border rounded-md mb-2">

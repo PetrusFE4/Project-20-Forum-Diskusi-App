@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Navbar from '../components/Navbar/Navbar'
-import Login from '../pages/login/Login'
+import Login from '../pages/testing_layout/Login'
 import Registrasi from '../pages/registrasi/Registrasi'
 import Forgetpassword from '../pages/forgetpassword/ForgetPassword'
 import MainLayout from '../layouts/MainLayout'
@@ -16,11 +16,20 @@ import UserProfilePage from '../pages/testing_layout/UserProfile'
 import CreateCommunity from '../pages/testing_layout/CreateCommunity'
 import SavedPost from '../pages/testing_layout/SavedPost'
 import Activation from '../pages/Auth/Activation'
+import Search from '../pages/testing_layout/Search'
+import EditCommunity from '../pages/testing_layout/EditCommunity'
+import Notification from '../pages/testing_layout/Notification'
+import Unactivated from '../pages/Auth/Unactivated'
+import Register from '../pages/testing_layout/Register'
 
 const routes = createBrowserRouter([
     {
         path: '/activate/:token',
         element: <Activation />
+    },
+    {
+        path: '/activate',
+        element: <Unactivated />
     },
     {
         path: '/about',
@@ -36,7 +45,7 @@ const routes = createBrowserRouter([
     },
     {
         path: '/register',
-        element: <Registrasi />
+        element: <Register />
     },
     {
         path: '/forgetpassword',
@@ -57,6 +66,10 @@ const routes = createBrowserRouter([
             {
                 path: 'community/:community_id',
                 element: <Community />
+            },
+            {
+                path: 'community/:community_id/edit',
+                element: <EditCommunity />
             },
             {
                 path: 'create-community',
@@ -84,10 +97,11 @@ const routes = createBrowserRouter([
             },
             {
                 path: 'search',
-                element: <></>
+                element: <Search />
             },
             {
-                path: 'notification'
+                path: 'notification',
+                element: <Notification />
             },
             {
                 path: 'saved-post',

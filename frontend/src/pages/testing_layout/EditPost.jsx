@@ -15,8 +15,10 @@ import SelectPostLocation from '../../components/Form/SelectPostLocation'
 import Attachment from '../../components/Form/Attachment'
 import { useNavigate, useParams } from 'react-router-dom'
 import { UserContext } from '../../contexts/UserContext'
+import { useAlert } from 'react-alert'
 
 const EditPost = () => {
+    const alert = useAlert()
     const { user } = useContext(UserContext)
     document.title = 'ChatterNest - Edit Post'
     const { post_id: id } = useParams()
@@ -62,6 +64,7 @@ const EditPost = () => {
                 return EditorState.createWithContent(state)
             })
         } catch (error) {
+            navigate('/')
             console.log(error)
         }
     }
@@ -89,8 +92,9 @@ const EditPost = () => {
                 content: ExportToHTML(editorState.getCurrentContent()),
                 attachments: attachment
             })
+            alert.success('Post saved')
         } catch (error) {
-
+            alert.error('Error, Can\' save post')
         }
         setProcessing(false)
     }

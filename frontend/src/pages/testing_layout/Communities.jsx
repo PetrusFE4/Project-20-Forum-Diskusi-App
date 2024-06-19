@@ -21,9 +21,9 @@ function Communities() {
                 </div>
             </div>
             {!isLoading ?
-                data.data.map((community) => (
+                data.data.map((community, index) => (
                     <div
-                        key={community.rank}
+                        key={index}
                         className="bg-white border shadow-md p-4"
                     >
                         <Link to={`/community/${community._id}`}>

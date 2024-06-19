@@ -41,7 +41,7 @@ const CommunityProfile = ({ data, user }) => {
 
     return (
         <div className="border p-2 w-full h-fit bg-white">
-            <img className='w-full aspect-[32/9] object-cover' src={`${import.meta.env.VITE_CDN}/uploads/community/${data.profile_picture ?? 'default_banner.png'}`} alt="" />
+            <img className='w-full aspect-[32/9] object-cover' src={`${import.meta.env.VITE_CDN}/uploads/community/${data.banner_picture ?? 'default_banner.png'}`} alt="" />
             <div className="flex flex-row -mb-12 md:-mb-18 lg:-mb-24">
                 <img className='-translate-y-12 h-24 w-24 p-1 md:-translate-y-18 md:h-36 md:w-36 md:p-2 lg:-translate-y-24 lg:h-48 lg:w-48 lg:p-2 aspect-square object-cover rounded-full bg-white' src={`${import.meta.env.VITE_CDN}/uploads/community/${data.profile_picture ?? 'default_profile.png'}`} alt="" />
                 <div className="flex flex-row w-full justify-between p-2">
@@ -49,7 +49,7 @@ const CommunityProfile = ({ data, user }) => {
                         <h1 className='font-medium text-base md:text-lg lg:text-xl'>{data.name}</h1>
                         <div className="flex flex-row">
                             <span className='text-xs md:text-sm lg:text-base'>{member} Members</span>
-                            <span className='ml-2 text-xs md:text-sm lg:text-base'>{data.member_count} Posts</span>
+                            <span className='ml-2 text-xs md:text-sm lg:text-base'>{data.post_count} Posts</span>
                         </div>
                     </div>
                     {!creator ?
