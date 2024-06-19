@@ -1,14 +1,15 @@
 import React, { useContext, useState } from 'react';
 import './Login.css';
 import axios from 'axios';
-import UserContext from '../../contexts/UserContext';
-import { Link } from 'react-router-dom';
+import { UserContext } from '../../contexts/UserContext';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [submitting, setSubmitting] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { setUser } = useContext(UserContext);
+    const navigate = useNavigate()
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -19,6 +20,7 @@ const Login = () => {
             sessionStorage.setItem('api_key', response.data.token);
             setUser(response.data.user);
             // navigate somewhere
+            navigate('/')
         } catch (error) {
             console.error(error);
         } finally {

@@ -2,7 +2,7 @@ import React from 'react'
 
 export default ({ className, label, value, onChange, placeholder }) => (
     <div className={className}>
-        {label ? <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{label}</label> : ''}
+        {label ? <label className="block mb-2 text-sm md:text-base text-gray-900 dark:text-white">{label}</label> : ''}
         <textarea
             value={value}
             rows={5}

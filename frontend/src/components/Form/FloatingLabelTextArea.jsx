@@ -18,18 +18,9 @@ export default ({ className, type, value, onChange, placeholder, readOnly, requi
     return (
         <>
             <div className={'relative p-2.5 bg-gray-50 border h-full border-gray-300 text-gray-900 sm:text-sm rounded-3xl ' + className}>
-                <label className={`absolute left-5 top-4 font-light focus transition-all ${focus || value != '' ? '-translate-y-3 text-xs' : 'text-base'}`}>{placeholder}{required ? <span className='text-red-600'>*</span> : null}</label>
-                {/* <input
-                    onFocus={() => setFocus(true)}
-                    onBlur={() => setFocus(false)}
-                    readOnly={readOnly}
-                    value={value}
-                    onChange={onValue}
-                    type={type ?? 'text'}
-                    style={{ border: 'none' }}
-                    className={`bg-transparent outline-none border-none focus:outline-none`} /> */}
+                <label className={`absolute pointer-events-none left-5 top-4 font-light focus transition-all ${focus || value != '' ? '-translate-y-3 text-xs' : 'text-base'}`}>{placeholder}{required ? <span className='text-red-600'>*</span> : null}</label>
                 <textarea
-                    className='px-2.5 mt-2.5 bg-transparent border-none outline-none w-full h-full'
+                    className='px-2.5 mt-2.5 bg-transparent w-full h-full border-none outline-none focus:border-none focus:outline-none ring-0 focus:ring-0'
                     value={value}
                     readOnly={readOnly}
                     onChange={onValue}

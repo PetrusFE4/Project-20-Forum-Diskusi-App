@@ -149,8 +149,8 @@ function Communities() {
   ];
 
   return (
-    <div className="bg-gray-100 min-h-screen">
-      <div className="container mx-auto p-4">
+    <div className="bg-gray-100 min-h-screen p-8">
+      <div className="container p-4">
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center">
             <h1 className="text-2xl font-bold ml-2">Communities</h1>
@@ -187,9 +187,6 @@ function Communities() {
               <p className="text-gray-500">{community.members} members</p>
             </div>
           ))}
-        </div>
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-4">ChatterNest</h2>
         </div>
       </div>
     </div>

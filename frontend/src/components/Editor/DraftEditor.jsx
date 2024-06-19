@@ -6,28 +6,22 @@ import {
     convertToRaw,
     convertFromRaw,
 } from "draft-js";
-import Button from "../Form/Button";
 import Toolbar from "./Toolbar";
 import './Style.css'
-import ExportToHTML from "./ExportToHTML";
 
-const DraftEditor = ({ discussionId, onSubmit }) => {
-    const [editorState, setEditorState] = useState(
-        EditorState.createWithContent(
-            convertFromRaw({
-                blocks: [],
-                entityMap: {},
-            })
-        )
-    );
+const DraftEditor = ({ autoFocus, editorState, setEditorState, setButtonActive }) => {
+    const [focus, setFocus] = useState(false)
     const editor = useRef(null);
 
     useEffect(() => {
-        focusEditor();
-    }, []);
+        if (autoFocus)
+            focusEditor()
+    }, [])
 
     const focusEditor = () => {
-        editor.current.focus();
+        editor.current.focus()
+        setFocus(true)
+        setButtonActive(false)
     };
 
     const handleKeyCommand = (command) => {
@@ -73,35 +67,37 @@ const DraftEditor = ({ discussionId, onSubmit }) => {
         }
     };
 
+    const onFocus = () => {
+        setButtonActive(false)
+        setFocus(true)
+    }
+
+    const onBlur = () => {
+        if (editorState.getCurrentContent().hasText())
+            setButtonActive(true)
+        setFocus(false)
+        console.log(editorState.getCurrentContent())
+    }
+
     return (
         <div className="editor-wrapper" onClick={focusEditor}>
             <Toolbar editorState={editorState} setEditorState={setEditorState} />
-            <div className="p-2 border-b">
+            <div className="p-5 pt-5 pb-2 border-b relative">
+                <label className={`absolute pointer-events-none left-5 top-4 font-light focus transition-all ${focus || editorState.getCurrentContent().hasText() ? '-translate-y-3 text-xs' : 'text-base'}`}>Content{true ? <span className='text-red-600'>*</span> : null}</label>
                 <Editor
                     ref={editor}
-                    placeholder="Content"
+                    placeholder={null}
                     handleKeyCommand={handleKeyCommand}
                     editorState={editorState}
                     customStyleMap={styleMap}
                     blockStyleFn={myBlockStyleFn}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                     onChange={(editorState) => {
                         // const contentState = editorState.getCurrentContent();
                         // console.log(contentState);
-                        setEditorState(editorState);
+                        setEditorState(editorState)
                     }}
-                />
-            </div>
-
-            <div className="flex flex-row p-2 justify-end">
-                <Button
-                    className='max-w-40 mr-4'
-                    title='Cancel'
-                // onClick={() => setShowInput(false)} 
-                />
-                <Button
-                    className='max-w-40'
-                    title='Post'
-                onClick={() => onSubmit(ExportToHTML(editorState.getCurrentContent()))} 
                 />
             </div>
         </div>
