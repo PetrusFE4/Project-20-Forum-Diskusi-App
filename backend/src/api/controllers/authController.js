@@ -37,18 +37,18 @@ export const register = async (req, res, next) => {
         session.startTransaction()
         let password = await bcrypt.hash(req.body.password, 10)
 
-        const user = await User.create({
+        const user = (await User.create([{
             username: req.body.username,
             email: req.body.email,
             password: password,
             profile_picture: req.body.profile_picture
-        }, { session: session })
+        }], { session: session }))[0]
 
         const templatePath = path.resolve(__dirname, '../templates/activation-mail.ejs')
         const token = generateTokenWithExpire({ _id: user._id }, 3600)
         const data = {
             username: req.body.username,
-            link: process.env.WEB_HOST + '/activate/token=' + token,
+            link: process.env.WEB_HOST + '/activate/' + token,
         }
 
         const mailBody = await ejs.renderFile(templatePath, data)
@@ -180,4 +180,17 @@ export const update = async (req, res, next) => {
     } finally {
         session.endSession()
     }
-} 
+}
+
+export const checkAvailability = async (req, res, next) => {
+    try {
+        const user = await User.findOne({ username: req.body.username })
+
+        if (user)
+            return res.json({ data: { value: false } })
+        else
+            return res.json({ data: { value: true } })
+    } catch (error) {
+        next(error)
+    }
+}

@@ -12,14 +12,11 @@ const schema = new Schema(
             file: { type: String },
             type: { type: String }
         }],
-        score: { type: Number, default: 0 }
-    },
-    {
-        timestamps: {
-            createdAt: 'created_at',
-            updatedAt: 'updated_at'
-        }
-    })
+        score: { type: Number, default: 0 },
+        created_at: { type: Date, default: Date.now },
+        updated_at: { type: Date, default: Date.now }
+    }
+)
 
 const Post = mongoose.model('Post', schema)
 

@@ -5,7 +5,7 @@ const schema = new Schema(
         user: { type: Schema.Types.ObjectId, ref: 'User' },
         community: { type: Schema.Types.ObjectId, ref: 'Community' },
         poster: { type: Schema.Types.ObjectId, ref: 'User' },
-        discussion: { type: Schema.Types.ObjectId, ref: 'Discussion' },
+        post: { type: Schema.Types.ObjectId, ref: 'Post' },
         message: { type: String },
         read: { type: Boolean, default: false },
         timestamp: { type: Date, default: Date.now }

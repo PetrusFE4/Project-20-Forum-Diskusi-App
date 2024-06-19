@@ -6,6 +6,7 @@ import * as CommunityController from '../controllers/communityController.js'
 import * as StorageController from '../controllers/storageController.js'
 import * as ReportController from '../controllers/reportController.js'
 import * as UserController from '../controllers/userController.js'
+import * as NotificationController from '../controllers/notificationController.js'
 import * as Middleware from '../middlewares/index.js'
 
 import morgan from 'morgan'
@@ -26,6 +27,7 @@ router.post('/auth/register', AuthController.register)
 router.get('/auth/validate', Middleware.auth, AuthController.validate)
 router.post('/auth/activate', AuthController.activate)
 router.post('/auth/resend', Middleware.auth, AuthController.resend)
+router.post('/auth/check_username', AuthController.checkAvailability)
 
 router.get('/users', Middleware.auth, UserController.index)
 router.get('/users/popular', Middleware.auth, UserController.getPopular)
@@ -68,5 +70,8 @@ router.get('/reports', Middleware.auth, ReportController.indexUser)
 router.get('/reports/:id', Middleware.auth, ReportController.showUser)
 router.get('/communities/:community_id/reports', Middleware.auth, Middleware.communityAdmin, ReportController.indexCommunity)
 router.get('/communities/:community_id/reports/:id', Middleware.auth, Middleware.communityAdmin, ReportController.showCommunity)
+
+router.get('/notifications', Middleware.auth, NotificationController.index)
+router.get('/notifications/:id', Middleware.auth, NotificationController.show)
 
 export default router

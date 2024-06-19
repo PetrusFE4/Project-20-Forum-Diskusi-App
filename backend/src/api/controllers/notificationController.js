@@ -1,10 +1,29 @@
-import Notification from '../models/Notification'
+import mongoose from 'mongoose'
+import Notification from '../models/Notification.js'
 
 export const index = async (req, res, next) => {
     try {
         const userId = req.user._id
 
-        const notification = await Notification.find({ user: userId }).populate('community').populate('poster').populate('post').exec()
+        const notification = await Notification.aggregate([
+            {
+                $match: { user: new mongoose.Types.ObjectId(userId) }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'poster',
+                    foreignField: '_id',
+                    as: 'poster'
+                }
+            },
+            {
+                $unwind: '$poster'
+            },
+            {
+                $sort: { timestamp: -1 }
+            }
+        ])
 
         return res.json({ message: 'Success', data: notification })
     } catch (error) {
