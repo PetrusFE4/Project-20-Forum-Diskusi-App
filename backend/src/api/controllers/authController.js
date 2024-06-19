@@ -32,7 +32,9 @@ export const login = async (req, res, next) => {
 }
 
 export const register = async (req, res, next) => {
+    const session = await mongoose.connection.startSession()
     try {
+        session.startTransaction()
         let password = await bcrypt.hash(req.body.password, 10)
 
         const user = await User.create({
@@ -40,7 +42,7 @@ export const register = async (req, res, next) => {
             email: req.body.email,
             password: password,
             profile_picture: req.body.profile_picture
-        })
+        }, { session: session })
 
         const templatePath = path.resolve(__dirname, '../templates/activation-mail.ejs')
         const token = generateTokenWithExpire({ _id: user._id }, 3600)
@@ -71,9 +73,13 @@ export const register = async (req, res, next) => {
         let userJson = user.toJSON()
 
         delete userJson.password
+        await session.commitTransaction()
         return res.json({ user: userJson, token: generateToken({ _id: userJson._id }) })
     } catch (error) {
+        await session.abortTransaction()
         next(error)
+    } finally {
+        session.endSession()
     }
 }
 
