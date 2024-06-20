@@ -1,4 +1,4 @@
-import app from './src/api/app.js'
+import app from './src/app.js'
 import express from 'express'
 import fs from 'fs'
 import http from 'http'
@@ -8,6 +8,7 @@ const host = process.env.HOST || 'http://localhost'
 
 app.use(express.static('public'))
 const server = http.createServer(app)
+InitWebS
 
 var dirs = ['./public/uploads/', './public/uploads/tmp', './public/uploads/community', './public/uploads/post', './public/uploads/user']
 
