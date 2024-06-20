@@ -149,14 +149,14 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
                 {data.attachments.length == 1 ?
                     <div className="">{
                         data.attachments.map((item, key) => (
-                            <img className={`w-full rounded-3xl overflow-hidden object-cover aspect-video`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />
+                            <img className={`w-full rounded-3xl overflow-hidden object-cover aspect-video`} src={import.meta.env.VITE_CDN + '/uploads/post/' + item.file} alt="" />
                         ))
                     }</div>
                     : null}
                 {data.attachments.length == 2 ?
                     <div className="rounded-3xl overflow-hidden grid grid-cols-2 auto-cols-auto auto-rows-auto">{
                         data.attachments.map((item, key) => (
-                            <img className={`object-cover aspect-[8/9]`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />
+                            <img className={`object-cover aspect-[8/9]`} src={import.meta.env.VITE_CDN + '/uploads/post/' + item.file} alt="" />
                         ))
                     }</div>
                     : null}
@@ -164,14 +164,14 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
                 {data.attachments.length == 3 ?
                     <div className="rounded-3xl overflow-hidden grid grid-cols-2 auto-cols-auto auto-rows-auto">{
                         data.attachments.map((item, key) => (
-                            <img className={`object-cover ${key == 2 ? 'aspect-[32/9] col-span-2' : 'aspect-video'}`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />
+                            <img className={`object-cover ${key == 2 ? 'aspect-[32/9] col-span-2' : 'aspect-video'}`} src={import.meta.env.VITE_CDN + '/uploads/post/' + item.file} alt="" />
                         ))
                     }</div>
                     : null}
                 {data.attachments.length == 4 ?
                     <div className="rounded-3xl overflow-hidden grid grid-cols-2 auto-cols-auto auto-rows-auto">{
                         data.attachments.map((item, key) => (
-                            <img className={`object-cover aspect-video`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />
+                            <img className={`object-cover aspect-video`} src={import.meta.env.VITE_CDN + '/uploads/post/' + item.file} alt="" />
                         ))
                     }</div>
                     : null}
@@ -183,11 +183,11 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
                                 if (key == 3)
                                     return (
                                         <div className="relative object-cover h-full w-full aspect-video flex justify-center items-center text-3xl overflow-hidden">+{data.attachments.length - 4}
-                                            <img className={`absolute top-0 left-0 aspect-video w-full h-full opacity-25`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />
+                                            <img className={`absolute top-0 left-0 aspect-video w-full h-full opacity-25`} src={import.meta.env.VITE_CDN + '/uploads/post/' + item.file} alt="" />
                                         </div>
                                     )
                                 else return (
-                                    <img className={`object-cover aspect-video`} src={import.meta.env.VITE_CDN + 'uploads/post/' + item.file} alt="" />)
+                                    <img className={`object-cover aspect-video`} src={import.meta.env.VITE_CDN + '/uploads/post/' + item.file} alt="" />)
                             }
                         })}
                     </div>

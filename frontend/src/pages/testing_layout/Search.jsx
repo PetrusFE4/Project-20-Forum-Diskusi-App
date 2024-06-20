@@ -45,7 +45,7 @@ const Search = () => {
                 return response.data.map((item, index) => (
                     <Link to={`/profile/${item._id}`}>
                         <div key={index} className="p-2 border bg-white flex flex-row items-center">
-                            <img className='w-12 h-12 rounded-full mr-4' src={item.profile_picture != null ? import.meta.env.VITE_CDN + 'uploads/user/' + item.profile_picture : import.meta.env.VITE_CDN + 'uploads/user/default_profile.png'} alt="" />
+                            <img className='w-12 h-12 rounded-full mr-4' src={item.profile_picture != null ? import.meta.env.VITE_CDN + '/uploads/user/' + item.profile_picture : import.meta.env.VITE_CDN + '/uploads/user/default_profile.png'} alt="" />
                             <div className="flex flex-col">
                                 <h1>{item.username}</h1>
                                 <div className="flex flex-row">

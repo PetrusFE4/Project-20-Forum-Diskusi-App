@@ -5,10 +5,16 @@ import cors from 'cors'
 import { serve, setup } from 'swagger-ui-express'
 import mainSwaggerDoc from '../docs/mainSwaggerDoc.js'
 import * as Middleware from './middlewares/index.js'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 connectDB()
 
 const app = express()
+app.use(express.static(path.resolve(__dirname, '../public')))
 
 app.use(cors())
 app.use(express.json())

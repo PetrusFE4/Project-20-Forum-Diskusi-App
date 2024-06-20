@@ -30,7 +30,7 @@ const MediaModal = ({ media }) => {
             <div onClick={handlePrev} className="absolute cursor-pointer top-0 left-0 h-full w-8 hover:bg-gray-200 bg-opacity-50 flex items-center justify-center">
                 <BsChevronLeft className='' />
             </div>
-            <img className='object-fill max-w-full max-h-full' src={import.meta.env.VITE_CDN + 'uploads/post/' + media[index].file} alt="" />
+            <img className='object-fill max-w-full max-h-full' src={import.meta.env.VITE_CDN + '/uploads/post/' + media[index].file} alt="" />
             <div onClick={handleNext} className="absolute cursor-pointer top-0 right-0 h-full w-8 hover:bg-gray-200 bg-opacity-10 flex items-center justify-center">
                 <BsChevronRight className='' />
             </div>

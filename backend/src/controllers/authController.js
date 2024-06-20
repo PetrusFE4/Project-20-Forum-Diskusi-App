@@ -60,12 +60,12 @@ export const register = async (req, res, next) => {
             host: "smtp.gmail.com",
             auth: {
                 user: process.env.GMAIL_MAIL,
-                pass: process.env.GMAIL_APP_PASSWORD
+                pass: decodeURI(process.env.GMAIL_APP_PASSWORD)
             }
         })
 
         await transport.sendMail({
-            from: 'noreply.chatternest@gmail.com',
+            from: process.env.SENDER_MAIL || process.env.GMAIL_MAIL,
             to: req.body.email,
             subject: 'ChatterNest Account Activation',
             html: mailBody
@@ -134,12 +134,12 @@ export const resend = async (req, res, next) => {
             host: "smtp.gmail.com",
             auth: {
                 user: process.env.GMAIL_MAIL,
-                pass: process.env.GMAIL_APP_PASSWORD
+                pass: decodeURI(process.env.GMAIL_APP_PASSWORD)
             }
         })
 
         await transport.sendMail({
-            from: 'noreply.chatternest@gmail.com',
+            from: process.env.SENDER_MAIL || process.env.GMAIL_MAIL,
             to: req.body.email,
             subject: 'ChatterNest Account Activation',
             html: mailBody
@@ -176,8 +176,9 @@ export const update = async (req, res, next) => {
     if (profile_picture && profile_picture != -1) {
         console.log(profile_picture)
         pp = req.user._id + '_' + Date.now() + '_logo' + path.extname(profile_picture)
-        const tmpPath = path.join('public', 'uploads', 'tmp', profile_picture);
-        const newPath = path.join('public', 'uploads', 'user', pp)
+        
+        const tmpPath = path.resolve(__dirname, '../../public', 'uploads', 'tmp', profile_picture);
+        const newPath = path.resolve(__dirname, '../../public', 'uploads', 'user', pp)
 
         fsPromises.rename(tmpPath, newPath)
         updateQuery.$set.profile_picture = pp

@@ -9,6 +9,10 @@ import fsPromises from 'fs/promises'
 import User from '../models/User.js'
 import Community from '../models/Community.js'
 import { processNotification } from '../services/notification.js'
+import { fileURLToPath } from 'url'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export const index = async (req, res, next) => {
     const { q } = req.query
@@ -76,8 +80,8 @@ export const store = async (req, res, next) => {
             let i = 1
             for (const attachment of attachments) {
                 let filename = id + '_' + Date.now() + '_' + (i++) + path.extname(attachment.file)
-                const tmpPath = path.join('public', 'uploads', 'tmp', attachment.file)
-                const newPath = path.join('public', 'uploads', 'post', filename)
+                const tmpPath = path.resolve(__dirname, '../../public', 'uploads', 'tmp', attachment.file)
+                const newPath = path.resolve(__dirname, '../../public', 'uploads', 'post', filename)
 
                 await fsPromises.rename(tmpPath, newPath)
                 attachmentData.push({
@@ -128,6 +132,7 @@ export const update = async (req, res, next) => {
 
         if (title) updateQuery.$set.title = title;
         if (content) updateQuery.$set.content = content;
+        updateQuery.$set.updated_at = Date.now();
 
 
         if (attachments) {
@@ -143,8 +148,8 @@ export const update = async (req, res, next) => {
                 }
 
                 let filename = req.params.id + '_' + Date.now() + '_' + (i++) + path.extname(attachment.file)
-                const tmpPath = path.join('public', 'uploads', 'tmp', attachment.file)
-                const newPath = path.join('public', 'uploads', 'post', filename)
+                const tmpPath = path.resolve(__dirname, '../../public', 'uploads', 'tmp', attachment.file)
+                const newPath = path.resolve(__dirname, '../../public', 'uploads', 'post', filename)
 
                 await fsPromises.rename(tmpPath, newPath)
                 attachmentData.push({
