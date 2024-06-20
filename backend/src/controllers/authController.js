@@ -5,7 +5,7 @@ import User from '../models/User.js'
 import { generateToken, validateToken, generateTokenWithExpire } from '../utils/jwt.js'
 import ejs from 'ejs'
 import path from 'path'
-import fs from 'fs'
+import fsPromises from 'fs/promises'
 import { fileURLToPath } from 'url'
 import nodemailer from 'nodemailer'
 
@@ -179,7 +179,7 @@ export const update = async (req, res, next) => {
         const tmpPath = path.join('public', 'uploads', 'tmp', profile_picture);
         const newPath = path.join('public', 'uploads', 'user', pp)
 
-        fs.renameSync(tmpPath, newPath)
+        fsPromises.rename(tmpPath, newPath)
         updateQuery.$set.profile_picture = pp
     }
 
@@ -188,7 +188,7 @@ export const update = async (req, res, next) => {
         const tmpPath = path.join('public', 'uploads', 'tmp', banner_picture);
         const newPath = path.join('public', 'uploads', 'user', bp)
 
-        fs.renameSync(tmpPath, newPath)
+        fsPromises.rename(tmpPath, newPath)
         updateQuery.$set.banner_picture = bp
     }
 

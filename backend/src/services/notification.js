@@ -1,6 +1,13 @@
-export const ProcessNotification = async (msg) => {
-    const messageJson = JSON.parse(msg.content.toString())
+import mongoose from 'mongoose'
+import Community from '../models/Community.js'
+import CommunityUser from '../models/CommuityUser.js'
+import User from '../models/User.js'
+import UserFollower from '../models/UserFollower.js'
+import Notification from '../models/Notification.js'
+import { WebSocket } from '../config/websocket.js'
 
+export const processNotification = async (msg) => {
+    const messageJson = JSON.parse(msg.toString())
     if (messageJson.community) {
         const notifiedUsers = await CommunityUser.aggregate([
             { $match: { community: new mongoose.Types.ObjectId(messageJson.community) } },
@@ -15,12 +22,16 @@ export const ProcessNotification = async (msg) => {
             { $unwind: { path: '$user' } },
             { $replaceRoot: { newRoot: '$user' } }
         ])
+        console.log(notifiedUsers)
         const community = await Community.findOne({ _id: messageJson.community })
         const poster = await User.findOne({ _id: messageJson.post.user })
 
         const notificationMessage = `${poster.username} created a new post in ${community.name}. ${messageJson.post.title.length > 50 ? messageJson.post.title.slice(0, 50) + '...' : messageJson.post.title}`
 
         for (const user of notifiedUsers) {
+            if (poster._id == user._id)
+                continue
+            
             const notification = await Notification.create([
                 {
                     user: user._id,
@@ -30,12 +41,11 @@ export const ProcessNotification = async (msg) => {
                     message: notificationMessage,
                 }
             ])
-
-            WebSocket.to(`user:${user._id}`).emit('new_notification', JSON.stringify(notification))
+            WebSocket.to(`user:${user._id}`).emit('new_notification', JSON.stringify({ id: notification[0]._id}))
         }
     } else {
         const notifiedUsers = await UserFollower.aggregate([
-            { $match: { username: new mongoose.Types.ObjectId(messageJson.post.user) } },
+            { $match: { user: new mongoose.Types.ObjectId(messageJson.post.user) } },
             {
                 $lookup: {
                     from: 'users',
@@ -48,6 +58,7 @@ export const ProcessNotification = async (msg) => {
             { $replaceRoot: { newRoot: '$follower' } }
         ])
         
+        console.log(notifiedUsers)
         const poster = await User.findOne({ _id: messageJson.post.user })
 
         const notificationMessage = `${poster.username} created a new post in their profile. ${messageJson.post.title.length > 50 ? messageJson.post.title.slice(0, 50) + '...' : messageJson.post.title}`
@@ -63,9 +74,9 @@ export const ProcessNotification = async (msg) => {
                 }
             ])
 
-            WebSocket.to(`user:${user._id}`).emit('new_notification', JSON.stringify(notification))
+            WebSocket.to(`user:${user._id}`).emit('new_notification', JSON.stringify({ id: notification[0]._id}))
         }
 
     }
-    console.log(`New Message: ${msg.content.toString()}`)
+    console.log(`New Message: ${msg.toString()}`)
 }

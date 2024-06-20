@@ -71,10 +71,12 @@ const MainLayout = () => {
         });
 
         socket.on('new_notification', (notification) => {
-            console.log(`New Notification`)
             const not = JSON.parse(notification)
-            setNotification(prev => [notification, ...prev]);
-            alert.info(not.message)
+            console.log(`New Notification`)
+            axiosInstance.get('/notifications/' + not.id).then(res => {
+                setNotification(prev => [res.data.data, ...prev]);
+                alert.info(res.data.data.message)
+            })
         });
 
         return () => {

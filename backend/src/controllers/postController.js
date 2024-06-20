@@ -5,9 +5,10 @@ import { checkIfUserGiveScore, populateCommunity, populateUser, sortPopular, sor
 import { sendNotification } from '../services/rabbitmq.js'
 import UserSavedPost from '../models/UserSavedPost.js'
 import path from 'path'
-import fs from 'fs'
+import fsPromises from 'fs/promises'
 import User from '../models/User.js'
 import Community from '../models/Community.js'
+import { processNotification } from '../services/notification.js'
 
 export const index = async (req, res, next) => {
     const { q } = req.query
@@ -78,7 +79,7 @@ export const store = async (req, res, next) => {
                 const tmpPath = path.join('public', 'uploads', 'tmp', attachment.file)
                 const newPath = path.join('public', 'uploads', 'post', filename)
 
-                fs.renameSync(tmpPath, newPath)
+                await fsPromises.rename(tmpPath, newPath)
                 attachmentData.push({
                     type: attachment.type,
                     file: filename
@@ -94,6 +95,7 @@ export const store = async (req, res, next) => {
             content: content,
             attachments: attachmentData.length != 0 ? attachmentData : attachments,
             reply_count: 0,
+            
             score: 0
         }], { session: session })
 
@@ -106,7 +108,7 @@ export const store = async (req, res, next) => {
 
         await session.commitTransaction()
 
-        sendNotification(JSON.stringify({ post: postJson, community: community_id }))
+        processNotification(JSON.stringify({ post: postJson, community: community_id }))
 
         return res.json({ message: "Record created succesfully.", data: postJson })
     } catch (error) {
@@ -144,7 +146,7 @@ export const update = async (req, res, next) => {
                 const tmpPath = path.join('public', 'uploads', 'tmp', attachment.file)
                 const newPath = path.join('public', 'uploads', 'post', filename)
 
-                fs.renameSync(tmpPath, newPath)
+                await fsPromises.rename(tmpPath, newPath)
                 attachmentData.push({
                     // type: attachment.type,
                     file: filename
