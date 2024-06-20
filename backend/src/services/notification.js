@@ -22,7 +22,6 @@ export const processNotification = async (msg) => {
             { $unwind: { path: '$user' } },
             { $replaceRoot: { newRoot: '$user' } }
         ])
-        console.log(notifiedUsers)
         const community = await Community.findOne({ _id: messageJson.community })
         const poster = await User.findOne({ _id: messageJson.post.user })
 
@@ -31,7 +30,7 @@ export const processNotification = async (msg) => {
         for (const user of notifiedUsers) {
             if (poster._id == user._id)
                 continue
-            
+
             const notification = await Notification.create([
                 {
                     user: user._id,
@@ -58,7 +57,6 @@ export const processNotification = async (msg) => {
             { $replaceRoot: { newRoot: '$follower' } }
         ])
         
-        console.log(notifiedUsers)
         const poster = await User.findOne({ _id: messageJson.post.user })
 
         const notificationMessage = `${poster.username} created a new post in their profile. ${messageJson.post.title.length > 50 ? messageJson.post.title.slice(0, 50) + '...' : messageJson.post.title}`
@@ -78,5 +76,4 @@ export const processNotification = async (msg) => {
         }
 
     }
-    console.log(`New Message: ${msg.toString()}`)
 }
