@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "dotenvx run -- node index.js",
-    "start_notification_service": "dotenvx run -- node notification_service.js",
+    "prod": "node index.js",
     "dev": "dotenvx run -- nodemon index.js"
   },
   "author": "",
