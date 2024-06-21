@@ -7,6 +7,7 @@ import Moderator from '../models/Moderator.js'
 import { checkIfUserJoined, populateModerator, sortPopular } from '../helpers/communityHelper.js'
 import path from 'path'
 import fs from 'fs'
+import { fileURLToPath } from 'url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
