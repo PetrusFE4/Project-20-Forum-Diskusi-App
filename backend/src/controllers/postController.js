@@ -80,8 +80,8 @@ export const store = async (req, res, next) => {
             let i = 1
             for (const attachment of attachments) {
                 let filename = id + '_' + Date.now() + '_' + (i++) + path.extname(attachment.file)
-                const tmpPath = path.resolve(__dirname, '../../public', 'uploads', 'tmp', attachment.file)
-                const newPath = path.resolve(__dirname, '../../public', 'uploads', 'post', filename)
+                const tmpPath = path.resolve(__dirname, '../../../frontend/public', 'uploads', 'tmp', attachment.file)
+                const newPath = path.resolve(__dirname, '../../../frontend/public', 'uploads', 'post', filename)
 
                 await fsPromises.rename(tmpPath, newPath)
                 attachmentData.push({
@@ -148,8 +148,8 @@ export const update = async (req, res, next) => {
                 }
 
                 let filename = req.params.id + '_' + Date.now() + '_' + (i++) + path.extname(attachment.file)
-                const tmpPath = path.resolve(__dirname, '../../public', 'uploads', 'tmp', attachment.file)
-                const newPath = path.resolve(__dirname, '../../public', 'uploads', 'post', filename)
+                const tmpPath = path.resolve(__dirname, '../../../frontend/public', 'uploads', 'tmp', attachment.file)
+                const newPath = path.resolve(__dirname, '../../../frontend/public', 'uploads', 'post', filename)
 
                 await fsPromises.rename(tmpPath, newPath)
                 attachmentData.push({

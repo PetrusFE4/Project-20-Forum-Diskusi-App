@@ -19,8 +19,8 @@ InitWebSocket(server)
 var dirs = ['./public/uploads/', './public/uploads/tmp', './public/uploads/community', './public/uploads/post', './public/uploads/user']
 
 for (const dir of dirs) {
-    if (!fs.existsSync(dir)){
-        fs.mkdirSync(dir, { recursive: true });
+    if (!fs.existsSync(path.join(__dirname, '..', 'frontend', dir))){
+        fs.mkdirSync(path.join(__dirname, '..', 'frontend', dir), { recursive: true });
     }
 }
 
