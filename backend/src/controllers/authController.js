@@ -177,8 +177,8 @@ export const update = async (req, res, next) => {
         console.log(profile_picture)
         pp = req.user._id + '_' + Date.now() + '_logo' + path.extname(profile_picture)
 
-        const tmpPath = path.resolve(__dirname, '../../../frontend/public', 'uploads', 'tmp', profile_picture);
-        const newPath = path.resolve(__dirname, '../../../frontend/public', 'uploads', 'user', pp)
+        const tmpPath = path.resolve(__dirname, '../../../frontend/dist', 'uploads', 'tmp', profile_picture);
+        const newPath = path.resolve(__dirname, '../../../frontend/dist', 'uploads', 'user', pp)
 
         fsPromises.rename(tmpPath, newPath)
         updateQuery.$set.profile_picture = pp
@@ -186,8 +186,8 @@ export const update = async (req, res, next) => {
 
     if (banner_picture && banner_picture != -1) {
         bp = req.user._id + '_' + Date.now() + '_banner' + path.extname(banner_picture)
-        const tmpPath = path.join(__dirname, '../../../frontend/public', 'uploads', 'tmp', banner_picture);
-        const newPath = path.join(__dirname, '../../../frontend/public', 'uploads', 'user', bp)
+        const tmpPath = path.join(__dirname, '../../../frontend/dist', 'uploads', 'tmp', banner_picture);
+        const newPath = path.join(__dirname, '../../../frontend/dist', 'uploads', 'user', bp)
 
         fsPromises.rename(tmpPath, newPath)
         updateQuery.$set.banner_picture = bp

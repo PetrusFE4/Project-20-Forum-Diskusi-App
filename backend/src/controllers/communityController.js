@@ -108,16 +108,16 @@ export const store = async (req, res, next) => {
         if (profile_picture) {
             console.log(profile_picture)
             pp = id + '_' + Date.now() + '_logo' + path.extname(profile_picture)
-            const tmpPath = path.join(__dirname, '../../../frontend/public', 'uploads', 'tmp', profile_picture);
-            const newPath = path.join(__dirname, '../../../frontend/public', 'uploads', 'community', pp)
+            const tmpPath = path.join(__dirname, '../../../frontend/dist', 'uploads', 'tmp', profile_picture);
+            const newPath = path.join(__dirname, '../../../frontend/dist', 'uploads', 'community', pp)
 
             fs.renameSync(tmpPath, newPath)
         }
 
         if (banner_picture) {
             bp = id + '_' + Date.now() + '_banner' + path.extname(profile_picture)
-            const tmpPath = path.join(__dirname, '../../../frontend/public', 'uploads', 'tmp', banner_picture);
-            const newPath = path.join(__dirname, '../../../frontend/public', 'uploads', 'community', bp)
+            const tmpPath = path.join(__dirname, '../../../frontend/dist', 'uploads', 'tmp', banner_picture);
+            const newPath = path.join(__dirname, '../../../frontend/dist', 'uploads', 'community', bp)
 
             fs.renameSync(tmpPath, newPath)
         }
@@ -182,8 +182,8 @@ export const update = async (req, res, next) => {
     if (profile_picture && profile_picture != -1) {
         console.log(profile_picture)
         pp = req.params.id + '_' + Date.now() + '_logo' + path.extname(profile_picture)
-        const tmpPath = path.join('public', 'uploads', 'tmp', profile_picture);
-        const newPath = path.join('public', 'uploads', 'community', pp)
+        const tmpPath = path.join(__dirname, '../../../frontend/dist', 'uploads', 'tmp', profile_picture);
+        const newPath = path.join(__dirname, '../../../frontend/dist', 'uploads', 'community', pp)
 
         fs.renameSync(tmpPath, newPath)
         updateQuery.$set.profile_picture = pp
@@ -191,8 +191,8 @@ export const update = async (req, res, next) => {
 
     if (banner_picture && banner_picture != -1) {
         bp = req.params.id + '_' + Date.now() + '_banner' + path.extname(banner_picture)
-        const tmpPath = path.join('public', 'uploads', 'tmp', banner_picture);
-        const newPath = path.join('public', 'uploads', 'community', bp)
+        const tmpPath = path.join(__dirname, '../../../frontend/dist', 'uploads', 'tmp', banner_picture);
+        const newPath = path.join(__dirname, '../../../frontend/dist', 'uploads', 'community', bp)
 
         fs.renameSync(tmpPath, newPath)
         updateQuery.$set.banner_picture = bp
