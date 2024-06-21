@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename)
 const port = process.env.PORT || 3000
 const host = process.env.HOST || 'http://localhost'
 
-app.use(express.static(path.resolve(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, 'public')))
 const server = http.createServer(app)
 InitWebSocket(server)
 
