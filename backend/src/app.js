@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename)
 connectDB()
 
 const app = express()
-app.use(express.static(path.resolve(__dirname, '../public')))
+// app.use(express.static(path.resolve(__dirname, '../public')))
 
 app.use(cors())
 app.use(express.json())
