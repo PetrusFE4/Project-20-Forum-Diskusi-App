@@ -24,6 +24,6 @@ for (const dir of dirs) {
     }
 }
 
-server.listen(port, host, () => {
+server.listen(port, () => {
     console.log(`Server is running on${port}`);
 })
