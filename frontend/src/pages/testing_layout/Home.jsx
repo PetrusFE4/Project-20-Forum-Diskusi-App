@@ -11,7 +11,7 @@ const Home = () => {
     return (
             <div className='break-words'>
                 {!error & !isLoading ? data.data.map((post, index) => (
-                    <PostRow mutate={mutate} data={post} detailed={false} />
+                    <PostRow archived={post.deleted_at != null} mutate={mutate} data={post} detailed={false} />
                 )) : null}
             </div>
     )

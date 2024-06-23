@@ -12,15 +12,19 @@ import { UserContext } from '../../contexts/UserContext'
 import { useAlert } from 'react-alert'
 import InputText from '../../components/Form/InputText'
 import TextArea from '../../components/Form/TextArea'
+import { FaCheckCircle, FaMinusCircle, FaTimesCircle } from 'react-icons/fa'
+import axios from 'axios'
 
 
 const UserSettings = () => {
     const alert = useAlert()
-    const { user } = useContext(UserContext)
+    const { user, setUser } = useContext(UserContext)
     const profileUpload = useRef()
     const bannerUpload = useRef()
     const navigate = useNavigate()
+    const [usernameAvailable, setUsernameAvailable] = useState(false)
 
+    const [oldUsername, setOldUsername] = useState('')
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [bio, setBio] = useState('')
@@ -39,6 +43,7 @@ const UserSettings = () => {
     const handleCreate = async () => {
         try {
             let res = (await axiosInstance.put(`/auth/update`, {
+                username: username,
                 email: email,
                 bio: bio,
                 password: password,
@@ -47,6 +52,7 @@ const UserSettings = () => {
                 banner_picture: banner
             })).data.data
             // navigate(`/community/${community_id}`)
+            setUser(res)
             alert.success('Changes saved')
         } catch (error) {
             console.log(error)
@@ -59,6 +65,7 @@ const UserSettings = () => {
             return
         try {
             const post = (await axiosInstance.get(`/users/${user._id}`)).data.data
+            setOldUsername(post.username)
             setUsername(post.username)
             setEmail(post.email)
             setBio(post.bio)
@@ -71,7 +78,7 @@ const UserSettings = () => {
 
     useEffect(() => {
         getCommunity()
-    }, [])
+    }, [user])
 
     const uploadProfile = async (e) => {
         const formData = new FormData()
@@ -109,8 +116,17 @@ const UserSettings = () => {
         } finally {
             // setUploadProgress(-1)
         }
-
     }
+
+    const checkAvailability = async () => {
+        try {
+            let response = (await axios.post(`${import.meta.env.VITE_API_ENDPOINT}/auth/check_username`, { username: username })).data.data
+            setUsernameAvailable(response.value)
+        } catch (error) {
+
+        }
+    }
+
     return (
         <div className="p-2 border">
             <input className='hidden' type="file" ref={profileUpload} onChange={uploadProfile} accept="image/*" />
@@ -135,16 +151,39 @@ const UserSettings = () => {
             </div>
 
             <div className="mb-4 ">
-                <InputText label='Username' value={username} readOnly={true} />
+                <InputText
+                    onBlur={checkAvailability}
+                    label='Username'
+                    value={username}
+                    onChange={e => setUsername(e.target.value.replace(/\s/g, ''))}
+                    other={
+                        username == oldUsername ? 
+                        <span className='-mb-1 text-xs text-gray-600 flex flex-row items-center'>
+                            <FaMinusCircle className='mr-2' />
+                            <h1>Username unchanged</h1>
+                        </span>
+                        :
+                        username && usernameAvailable ?
+                        <span className='-mb-1 text-xs text-green-400 flex flex-row items-center'>
+                            <FaCheckCircle className='mr-2' />
+                            <h1>Username is available</h1>
+                        </span>
+                        : username != '' ?
+                            <span className='-mb-1 text-xs text-red-600 flex flex-row items-center'>
+                                <FaTimesCircle className='mr-2' />
+                                <h1>Username is not available!</h1>
+                            </span> : null
+                    }
+                />
             </div>
             <div className="mb-4">
-                <InputText  required={true} type='email' label='Email' value={email} onChange={e => setEmail(e.target.value)} />
+                <InputText required={true} type='email' label='Email' value={email} onChange={e => setEmail(e.target.value)} />
             </div>
             <div className="mb-4">
                 <TextArea label={'Bio'} value={bio} onChange={e => setBio(e.target.value)} />
             </div>
             <div className="mb-4">
-                <InputText required={true} type='password'  label='Password' value={password} onChange={e => setPassword(e.target.value)} />
+                <InputText required={true} type='password' label='Password' value={password} onChange={e => setPassword(e.target.value)} />
             </div>
             <div className="mb-4">
                 <InputText type='password' label='New Password' value={newPassword} onChange={e => setNewPassword(e.target.value)} />

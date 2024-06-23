@@ -160,6 +160,7 @@ export const update = async (req, res, next) => {
         }
     }
 
+
     if (new_password) {
         let new_password_hash = await bcrypt.hash(new_password, 10)
         updateQuery.$set.password = new_password_hash
@@ -169,6 +170,9 @@ export const update = async (req, res, next) => {
 
     if (banner_picture == -1)
         updateQuery.$set.banner_picture = null
+
+    if (username)
+        updateQuery.$set.username = username
 
     let pp = null
     let bp = null
@@ -199,7 +203,7 @@ export const update = async (req, res, next) => {
         const user = await User.findOneAndUpdate(
             { _id: req.user._id },
             updateQuery,
-            { session: session }
+            { session: session, returnDocument: 'after' }
         ).select('+password')
 
         let match = await bcrypt.compare(password, user.password)
@@ -207,7 +211,7 @@ export const update = async (req, res, next) => {
             throw new ErrorResponse(403, 'Wrong password!')
 
         await session.commitTransaction()
-        return res.sendStatus(204)
+        return res.json({ message: 'Success', data: user })
     } catch (error) {
         await session.abortTransaction()
         next(error)

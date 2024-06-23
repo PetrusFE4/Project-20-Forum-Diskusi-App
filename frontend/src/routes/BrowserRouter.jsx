@@ -58,59 +58,59 @@ const routes = createBrowserRouter([
         children: [
             {
                 path: '',
-                element: <Home />
+                element: <Home key={Date.now()} />
             },
             {
                 path: 'community',
-                element: <Communities />
+                element: <Communities key={Date.now()} />
             },
             {
                 path: 'community/:community_id',
-                element: <Community />
+                element: <Community key={Date.now()} />
             },
             {
                 path: 'community/:community_id/edit',
-                element: <EditCommunity />
+                element: <EditCommunity key={Date.now()} />
             },
             {
                 path: 'create-community',
-                element: <CreateCommunity />
+                element: <CreateCommunity key={Date.now()} />
             },
             {
                 path: 'profile/:user_id',
-                element: <UserProfilePage />
+                element: <UserProfilePage key={Date.now()} />
             },
             {
                 path: 'create-post',
-                element: <CreatePost />
+                element: <CreatePost key={Date.now()} />
             },
             {
                 path: 'post/:post_id',
-                element: <PostDetail />
+                element: <PostDetail key={Date.now()} />
             },
             {
                 path: 'post/:post_id/edit',
-                element: <EditPost />
+                element: <EditPost key={Date.now()} />
             },
             {
                 path: 'post/:post_id/:reply_id',
-                element: <PostDetail />
+                element: <PostDetail key={Date.now()} />
             },
             {
                 path: 'search',
-                element: <Search />
+                element: <Search key={Date.now()} />
             },
             {
                 path: 'notification',
-                element: <Notification />
+                element: <Notification key={Date.now()} />
             },
             {
                 path: 'saved-post',
-                element: <SavedPost />
+                element: <SavedPost key={Date.now()} />
             },
             {
                 path: 'settings',
-                element: <UserSettings />
+                element: <UserSettings key={Date.now()} />
             }
         ]
     }

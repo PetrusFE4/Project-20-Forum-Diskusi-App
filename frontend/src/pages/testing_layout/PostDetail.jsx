@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useParams } from 'react-router-dom'
 import axiosInstance from '../../lib/axiosInstance'
@@ -14,15 +14,15 @@ const PostDetail = () => {
 
     return (
         <div className="flex flex-col justify-center w-full">
-            {discussion ? <PostRow data={discussion.data} detailed={true} mutate={discussionMutate} replyMutate={repliesMutate} /> : null}
+            {discussion ? <PostRow archived={discussion.data.deleted_at != null} data={discussion.data} detailed={true} mutate={discussionMutate} replyMutate={repliesMutate} /> : null}
             {reply_id ?
                 <div className="border bg-white shadow-md py-2 px-4 text-gray-600 text-center">
                     Viewing in Single Reply Mode. <Link to={`/post/${id}`}>Go Back</Link>
                 </div> : null}
-            {replies ?
+            {replies && discussion ?
                 replies.data.map((reply, index) => (
                     <div className='border bg-white shadow-md py-2 px-4'>
-                        <ReplyRow key={index} discussionId={id} data={reply} level={0} mutate={repliesMutate} />
+                        <ReplyRow archived={discussion.data.deleted_at != null} key={index} discussionId={id} data={reply} level={0} mutate={repliesMutate} />
                     </div>
                 )) : null}
         </div>

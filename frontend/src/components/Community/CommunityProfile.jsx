@@ -3,8 +3,10 @@ import CommunityProfileButton from './CommunityProfileButton'
 import axiosInstance from '../../lib/axiosInstance'
 import { Link } from 'react-router-dom'
 import { IoPencil } from 'react-icons/io5'
+import { useAlert } from 'react-alert'
 
 const CommunityProfile = ({ data, user }) => {
+    const alert = useAlert()
     const [joined, setJoined] = useState(data.joined)
     const [member, setMember] = useState(data.member_count)
     const [ready, setReady] = useState(true)
@@ -19,6 +21,7 @@ const CommunityProfile = ({ data, user }) => {
             await axiosInstance.post(`/communities/${data._id}/join`)
             setJoined(true)
             setMember(prev => prev + 1)
+            alert.success('Community joined')
         } catch (error) {
 
         }
@@ -33,6 +36,7 @@ const CommunityProfile = ({ data, user }) => {
             await axiosInstance.post(`/communities/${data._id}/leave`)
             setJoined(false)
             setMember(prev => prev - 1)
+            alert.success('Successfully left community')
         } catch (error) {
 
         }

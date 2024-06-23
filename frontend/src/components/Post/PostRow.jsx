@@ -7,26 +7,29 @@ import { BsHeart, BsHeartbreak, BsShare, BsHeartFill, BsHeartbreakFill, BsChevro
 import { HiOutlineChatBubbleOvalLeft } from 'react-icons/hi2'
 import { CiBookmark, CiShare1 } from 'react-icons/ci'
 import { UserContext } from '../../contexts/UserContext'
-import { IoPencil } from "react-icons/io5"
+import { IoPencil, IoTrash } from "react-icons/io5"
 import { GoBookmark, GoBookmarkFill } from "react-icons/go"
 import { ModalContext } from '../../contexts/ModalContext'
 import MediaModal from '../../modals/MediaModal'
+import { useAlert } from 'react-alert'
 
-const PostRow = ({ data, detailed, mutate, replyMutate }) => {
+const PostRow = ({ archived, data, detailed, mutate, replyMutate }) => {
+    const alert = useAlert()
     const { showModal } = useContext(ModalContext)
     const { user } = useContext(UserContext)
     const { post_id } = useParams()
     const navigate = useNavigate()
-    const [showInput, setShowInput] = useState(data._id == post_id)
+    const [showInput, setShowInput] = useState(data._id == post_id && data.deleted_at == null)
     const [processing, setProcessing] = useState(false)
 
     const [userScore, setUserScore] = useState(data.user_score ?? 0)
     const [score, setScore] = useState(data.score)
 
     let isPoster = user ? user._id == data.user._id : false
+    console.log('Archived : ', archived)
 
     const handleScore = async (val) => {
-        if (processing)
+        if (processing || data.deleted_at != null)
             return
         try {
             setProcessing(true)
@@ -41,7 +44,7 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
     }
 
     const deleteScore = async () => {
-        if (processing)
+        if (processing || data.deleted_at != null)
             return
         try {
             setProcessing(true)
@@ -54,7 +57,7 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
     }
 
     const submitReply = async (editorState) => {
-        if (processing)
+        if (processing || data.deleted_at != null)
             return
         setProcessing(true)
         try {
@@ -72,7 +75,7 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
     }
 
     const handleReplyClick = () => {
-        if (detailed)
+        if (detailed && data.deleted_at == null)
             setShowInput(prev => !prev)
 
         else
@@ -85,7 +88,7 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
     }
 
     const handleSave = async () => {
-        if (processing)
+        if (processing || data.deleted_at != null)
             return
         setProcessing(true)
         try {
@@ -110,12 +113,26 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
         setProcessing(false)
     }
 
+    const handleDelete = async () => {
+        if (confirm("Do really want to delete this post?") == true) {
+            axiosInstance.delete(`/posts/${data._id}`).then(res => {
+                alert.success('Post deleted successfully')
+                mutate()
+            })
+        }
+    }
+
     return (
         <div className='relative flex flex-col bg-white p-2 md:px-4 rounded border w-full'>
-            {isPoster ?
-                <Link className={`absolute top-4 right-4 w-8 h-8 p-2 rounded-full hover:bg-gray-400 bg-opacity-50 cursor-pointer`} to={`/post/${data._id}/edit`}>
-                    <IoPencil />
-                </Link>
+            {isPoster && data.deleted_at == null ?
+                <div className='absolute top-4 right-4 flex flex-row'>
+                    <div className={`w-8 h-8 p-2 mr-1 rounded-full hover:bg-gray-400 bg-opacity-50 cursor-pointer`} onClick={handleDelete}>
+                        <IoTrash />
+                    </div>
+                    <Link className={`w-8 h-8 p-2 rounded-full hover:bg-gray-400 bg-opacity-50 cursor-pointer`} to={`/post/${data._id}/edit`}>
+                        <IoPencil />
+                    </Link>
+                </div>
                 : null}
             <div className='flex flex-row w-full h-12 items-center'>
                 {detailed ?
@@ -253,7 +270,7 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
                     </div>
                 </div>
                 : null}
-            {showInput ? (
+            {showInput && !archived ? (
                 <div className="flex flex-col mt-4">
                     <div className="border rounded-md mb-2">
                         <DraftEditorEmbed onSubmit={submitReply} />

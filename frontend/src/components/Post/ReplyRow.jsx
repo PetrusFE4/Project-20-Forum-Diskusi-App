@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
+import { UserContext } from '../../contexts/UserContext'
 import { Link } from 'react-router-dom'
 import useSWR from 'swr'
 import { BsHeart, BsHeartFill, BsHeartbreak, BsHeartbreakFill, BsPlusCircle } from 'react-icons/bs'
@@ -6,20 +7,25 @@ import axiosInstance from '../../lib/axiosInstance'
 import moment from 'moment'
 import DraftEditorEmbed from '../Editor/DraftEditorEmbed'
 import { HiOutlineChatBubbleOvalLeft } from 'react-icons/hi2'
+import { IoTrash } from 'react-icons/io5'
+import { useAlert } from 'react-alert'
 
-const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
+const ReplyRow = ({ archived, discussionId, data, level, mutate, className }) => {
     const { data: replies, error: repliesError, isLoading: repliesLoading, mutate: childMutate } = useSWR(`/replies?post=${discussionId}&parent=${data._id}`, url => axiosInstance.get(url).then(res => res.data))
 
+    const { user } = useContext(UserContext)
+    const alert = useAlert()
     const [showInput, setShowInput] = useState(false)
     const [comment, setComment] = useState('')
     const [processing, setProcessing] = useState(false)
+    let isPoster = user ? user._id == data.user._id : false
 
     useEffect(() => {
         setComment('')
     }, [showInput])
 
     const handleScore = async (val) => {
-        if (processing)
+        if (processing || archived)
             return
         try {
             setProcessing(true)
@@ -34,7 +40,7 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
     }
 
     const deleteScore = async () => {
-        if (processing)
+        if (processing || archived)
             return
         try {
             let response = await axiosInstance.delete(`/replies/${data._id}/score`)
@@ -46,6 +52,10 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
     }
 
     const submitReply = async (editorState) => {
+        if (processing || archived)
+            return
+
+        setProcessing(true)
         try {
             let response = await axiosInstance.post('/replies', {
                 post_id: discussionId,
@@ -57,11 +67,26 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
         } catch (error) {
 
         }
+        setProcessing(false)
         setShowInput(false)
+    }
+
+    const handleDelete = async () => {
+        if (confirm("Do really want to delete this post?") == true) {
+            axiosInstance.delete(`/posts/${data._id}`).then(res => {
+                alert.success('Post deleted successfully')
+                mutate()
+            })
+        }
     }
 
     return (
         <div className={`relative flex flex-col bg-white border-gray-400 break-words`}>
+            {isPoster && !archived ?
+                    <div className={`absolute top-4 right-4 w-8 h-8 p-2 rounded-full hover:bg-gray-400 bg-opacity-50 cursor-pointer z-10`} onClick={handleDelete}>
+                        <IoTrash />
+                    </div>
+                : null}
             <div className="relative">
                 {replies && replies.data.length > 0 ?
                     <svg className='absolute h-full pointer-events-none top-0 left-0 '>
@@ -114,7 +139,7 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
                             // </span>
                         )}
                     </div>
-                    <div onClick={() => setShowInput(prev => !prev)} className="group cursor-pointer h-8 pl-2 pr-4 flex flex-row justify-center items-center">
+                    <div onClick={() => {if (!archived) setShowInput(prev => !prev)}} className="group cursor-pointer h-8 pl-2 pr-4 flex flex-row justify-center items-center">
                         <div className="h-8 w-8 flex justify-center rounded-full items-center group-hover:bg-opacity-90 group-hover:bg-primary-900 group-hover:text-white transition-colors">
                             <HiOutlineChatBubbleOvalLeft size='16' />
                         </div>
@@ -129,7 +154,7 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
                         </div>
                     </div> */}
                 </div>
-                {showInput ? (
+                {showInput && !archived ? (
                     <div className="flex flex-col mt-4 ml-10">
                         <div className="border rounded-md mb-2">
                             <DraftEditorEmbed onSubmit={submitReply} />
@@ -152,7 +177,7 @@ const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
                             <svg className='absolute h-full pointer-events-none left-4 -top-1'>
                                 <path d="M 0 0 A 24 24 0 0 0 24 24" stroke="black" strokeLinecap='round' strokeWidth='1' fill="none" />
                             </svg>
-                            <ReplyRow key={index} className={'border-b border-l'} discussionId={discussionId} data={reply} level={level + 1} mutate={childMutate} />
+                            <ReplyRow archived={archived} key={index} className={'border-b border-l'} discussionId={discussionId} data={reply} level={level + 1} mutate={childMutate} />
                         </div>
                     </>
                 )

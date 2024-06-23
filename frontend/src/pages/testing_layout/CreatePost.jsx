@@ -42,12 +42,13 @@ const CreatePost = () => {
         console.log(attachment)
         setProcessing(true)
         try {
-            let response = await axiosInstance.post('/posts', {
+            let response = (await axiosInstance.post('/posts', {
                 community_id: communityLoc ? communityLoc._id : null,
                 title: title,
                 content: ExportToHTML(editorState.getCurrentContent()),
                 attachments: attachment
-            })
+            })).data.data
+            navigate(`/post/${response._id}`)
             alert.success('Posted successfully')
         } catch (error) {
             alert.error(error.response.data.message)
