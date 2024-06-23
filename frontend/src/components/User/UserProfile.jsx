@@ -52,7 +52,7 @@ const UserProfile = ({ data, user }) => {
 
     return (
         <div className="border p-2 w-full h-fit bg-white">
-            <img className='w-full aspect-[32/9] object-cover' src={`${import.meta.env.VITE_CDN}/uploads/user/${data.profile_picture ?? 'default_banner.png'}`} alt="" />
+            <img className='w-full aspect-[32/9] object-cover' src={`${import.meta.env.VITE_CDN}/uploads/user/${data.banner_picture ?? 'default_banner.png'}`} alt="" />
             <div className="flex flex-row -mb-12 md:-mb-18 lg:-mb-24">
                 <img className='-translate-y-12 h-24 w-24 p-1 md:-translate-y-18 md:h-36 md:w-36 md:p-2 lg:-translate-y-24 lg:h-48 lg:w-48 lg:p-2 aspect-square object-cover rounded-full bg-white' src={`${import.meta.env.VITE_CDN}/uploads/user/${data.profile_picture ?? 'default_profile.png'}`} alt="" />
                 <div className="flex flex-row w-full justify-between p-2">
