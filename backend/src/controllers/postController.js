@@ -178,7 +178,7 @@ export const destroy = async (req, res, next) => {
     try {
         session.startSession()
 
-        const post = await Post.findOne({ _id: req.params.id, deleted_at: null }, {}, { session: session })
+        let post = await Post.findOne({ _id: req.params.id, deleted_at: null }, {}, { session: session })
         if (!post)
             throw new ErrorResponse(404, 'Post ID not found')
 
@@ -191,15 +191,13 @@ export const destroy = async (req, res, next) => {
             return res.sendStatus(204)
         }
 
-        await Post.updateOne(
-            { _id: req.params.id },
-            {
-                title: '[Deleted]',
-                content: '<blockquote className="blockQuote">This post was deleted by user, thus is archived and locked</blockquote>',
-                deleted_at: Date.now()
-            },
-            { session: session }
-        )
+        post.title = '[Deleted]'
+        post.content = '<blockquote className="blockQuote">This post was deleted by user, thus is archived and locked</blockquote>'
+        post.deleted_at = Date.now()
+
+        await post.save()
+        await session.commitTransaction()
+        return res.sendStatus(204)
     } catch (error) {
         await session.abortTransaction()
         next(error)

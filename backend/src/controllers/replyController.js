@@ -98,7 +98,33 @@ export const update = async (req, res, next) => {
 }
 
 export const destroy = async (req, res) => {
+    const session = await mongoose.connection.startSession()
+    try {
+        session.startSession()
 
+        let reply = await Reply.findOne({ _id: req.params.id, deleted_at: null }, {}, { session: session })
+        if (!reply)
+            throw new ErrorResponse(404, 'Reply ID not found')
+
+        if (reply.reply_count == 0) {
+            await Reply.deleteOne({ _id: req.params.id }, { session: session })
+            await ReplyScore.deleteMany({ reply: req.params.id }, { session: session })
+            await session.commitTransaction()
+            return res.sendStatus(204)
+        }
+
+        reply.content = '<blockquote className="blockQuote">This post was deleted by user, thus is archived and locked</blockquote>'
+        reply.deleted_at = Date.now()
+
+        await reply.save()
+        await session.commitTransaction()
+        return res.sendStatus(204)
+    } catch (error) {
+        await session.abortTransaction()
+        next(error)
+    } finally {
+        session.endSession()
+    }
 }
 
 export const score = async (req, res, next) => {
