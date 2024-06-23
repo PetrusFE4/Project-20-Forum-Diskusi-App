@@ -18,7 +18,7 @@ const InitWebSocket = (httpServer) => {
             validateToken(token).then(decoded => {
                 socket.user_id = decoded._id
                 next()
-            })
+            }).catch(err => console.log(err))
         } else {
             next(new Error('Authentication error'))
         }

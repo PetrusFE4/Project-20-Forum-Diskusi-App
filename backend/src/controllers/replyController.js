@@ -100,7 +100,7 @@ export const update = async (req, res, next) => {
 export const destroy = async (req, res) => {
     const session = await mongoose.connection.startSession()
     try {
-        session.startSession()
+        session.startTransaction()
 
         let reply = await Reply.findOne({ _id: req.params.id, deleted_at: null }, {}, { session: session })
         if (!reply)

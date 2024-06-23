@@ -12,6 +12,7 @@ import { processNotification } from '../services/notification.js'
 import { fileURLToPath } from 'url'
 import CommunityUser from '../models/CommuityUser.js'
 import { ErrorResponse } from '../utils/errorResponse.js'
+import createPostNotification from '../services/notification/createPostNotification.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -115,7 +116,7 @@ export const store = async (req, res, next) => {
 
         await session.commitTransaction()
 
-        processNotification(JSON.stringify({ post: postJson, community: community_id }))
+        createPostNotification(JSON.stringify({ post: postJson, community: community_id }))
 
         return res.json({ message: "Record created succesfully.", data: postJson })
     } catch (error) {
@@ -176,7 +177,7 @@ export const update = async (req, res, next) => {
 export const destroy = async (req, res, next) => {
     const session = await mongoose.connection.startSession()
     try {
-        session.startSession()
+        session.startTransaction()
 
         let post = await Post.findOne({ _id: req.params.id, deleted_at: null }, {}, { session: session })
         if (!post)

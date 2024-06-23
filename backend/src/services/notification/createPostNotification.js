@@ -6,7 +6,7 @@ import UserFollower from '../../models/UserFollower.js'
 import Notification from '../../models/Notification.js'
 import { WebSocket } from '../../config/websocket.js'
 
-export const create = async (msg) => {
+const createPostNotification = async (msg) => {
     try {
         const messageJson = JSON.parse(msg.toString())
 
@@ -51,21 +51,22 @@ export const create = async (msg) => {
         }
 
         for (const user of notifiedUsers) {
-            if (poster._id == user._id)
-                continue
-
-            const notification = await Notification.create([
-                {
-                    user: user._id,
-                    community: messageJson.community ?? null,
-                    poster: messageJson.post.user,
-                    post: messageJson.post._id,
-                    message: notificationMessage,
-                }
-            ])
-            WebSocket.to(`user:${user._id}`).emit('new_notification', JSON.stringify({ id: notification[0]._id }))
+            if (messageJson.post.user != user._id) {
+                const notification = await Notification.create([
+                    {
+                        user: user._id,
+                        community: messageJson.community ?? null,
+                        poster: messageJson.post.user,
+                        post: messageJson.post._id,
+                        message: notificationMessage,
+                    }
+                ])
+                WebSocket.to(`user:${user._id}`).emit('new_notification', JSON.stringify({ id: notification[0]._id }))
+            }
         }
     } catch (error) {
         console.log(error)
     }
 }
+
+export default createPostNotification
