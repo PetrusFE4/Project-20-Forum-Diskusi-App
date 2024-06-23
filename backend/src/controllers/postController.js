@@ -10,6 +10,8 @@ import User from '../models/User.js'
 import Community from '../models/Community.js'
 import { processNotification } from '../services/notification.js'
 import { fileURLToPath } from 'url'
+import CommunityUser from '../models/CommuityUser.js'
+import { ErrorResponse } from '../utils/errorResponse.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -99,14 +101,15 @@ export const store = async (req, res, next) => {
             content: content,
             attachments: attachmentData.length != 0 ? attachmentData : attachments,
             reply_count: 0,
-            
             score: 0
         }], { session: session })
 
-        await User.updateOne({ _id: req.user._id }, { $inc: { post_count: 1 } }, {session: session})
+        await User.updateOne({ _id: req.user._id }, { $inc: { post_count: 1 } }, { session: session })
 
-        if (community_id)
-            await Community.updateOne({ _id: community_id }, { $inc: { post_count: 1 } }, {session: session})
+        if (community_id) {
+            await Community.updateOne({ _id: community_id }, { $inc: { post_count: 1 } }, { session: session })
+            await CommunityUser.updateOne({ community: community_id, user: req.user._id }, { $inc: { post_count: 1 }, }, { session: session })
+        }
 
         let postJson = post[0].toJSON()
 
@@ -133,7 +136,6 @@ export const update = async (req, res, next) => {
         if (title) updateQuery.$set.title = title;
         if (content) updateQuery.$set.content = content;
         updateQuery.$set.updated_at = Date.now();
-
 
         if (attachments) {
             let attachmentData = []
@@ -172,7 +174,38 @@ export const update = async (req, res, next) => {
 }
 
 export const destroy = async (req, res, next) => {
+    const session = await mongoose.connection.startSession()
+    try {
+        session.startSession()
 
+        const post = await Post.findOne({ _id: req.params.id, deleted_at: null }, {}, { session: session })
+        if (!post)
+            throw new ErrorResponse(404, 'Post ID not found')
+
+        await User.findByIdAndUpdate(req.user._id, { $inc: { post_count: -1 } }, { session: session })
+
+        if (post.reply_count == 0) {
+            await Post.deleteOne({ _id: req.params.id }, { session: session })
+            await PostScore.deleteMany({ post: req.params.id }, { session: session })
+            await session.commitTransaction()
+            return res.sendStatus(204)
+        }
+
+        await Post.updateOne(
+            { _id: req.params.id },
+            {
+                title: '[Deleted]',
+                content: '<blockquote className="blockQuote">This post was deleted by user, thus is archived and locked</blockquote>',
+                deleted_at: Date.now()
+            },
+            { session: session }
+        )
+    } catch (error) {
+        await session.abortTransaction()
+        next(error)
+    } finally {
+        session.endSession()
+    }
 }
 
 export const score = async (req, res, next) => {

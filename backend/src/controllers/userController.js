@@ -3,6 +3,7 @@ import * as userHelper from '../helpers/userHelper.js'
 import UserFollower from "../models/UserFollower.js"
 import mongoose from "mongoose"
 import { ErrorResponse } from "../utils/errorResponse.js"
+import CommunityUser from "../models/CommuityUser.js"
 
 export const index = async (req, res, next) => {
     try {
@@ -40,18 +41,18 @@ export const index = async (req, res, next) => {
 export const show = async (req, res, next) => {
     try {
         const user = await User.aggregate([
-            { $match : { _id: new mongoose.Types.ObjectId(req.params.id) } },
+            { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
             ...userHelper.checkIfUserFollowed(new mongoose.Types.ObjectId(req.user._id)),
         ])
 
-if (user.length == 0)
-    throw new ErrorResponse(404, 'User ID not found')
+        if (user.length == 0)
+            throw new ErrorResponse(404, 'User ID not found')
 
-return res.json({ data: user[0] })
+        return res.json({ data: user[0] })
     } catch (error) {
-    console.log(error)
-    next(error)
-}
+        console.log(error)
+        next(error)
+    }
 }
 
 export const follow = async (req, res, next) => {
@@ -103,6 +104,86 @@ export const getPopular = async (req, res, next) => {
         ])
 
         return res.json({ data: user })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getFollower = async (req, res, next) => {
+    try {
+        const follower = await UserFollower.aggregate([
+            { $match: { user: new mongoose.Types.ObjectId(req.params.id) } },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'follower',
+                    foreignField: '_id',
+                    as: 'follower'
+                }
+            },
+            { $unwind: { path: '$follower' } },
+            { $replaceRoot: { newRoot: '$follower' } }
+        ])
+
+        return res.json(200, {message: 'Success', data: follower})
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getFollowing = async (req, res, next) => {
+    try {
+        const following = await UserFollower.aggregate([
+            { $match: { follower: new mongoose.Types.ObjectId(req.params.id) } },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'user',
+                    foreignField: '_id',
+                    pipeline: [
+                        {
+                            $project: {
+                                password: 0
+                            }
+                        }
+                    ],
+                    as: 'following'
+                }
+            },
+            { $unwind: { path: '$following' } },
+            { $replaceRoot: { newRoot: '$following' } }
+        ])
+
+        return res.json(200, {message: 'Success', data: following})
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getCommunity = async (req, res, next) => {
+    try {
+        const community = await CommunityUser.aggregate([
+            { $match: { user: new mongoose.Types.ObjectId(req.params.id) } },
+            {
+                $lookup: {
+                    from: 'communities',
+                    localField: 'community',
+                    foreignField: '_id',
+                    pipeline: [
+                        {
+                            $project: {
+                                password: 0
+                            }
+                        }
+                    ],
+                    as: 'community'
+                }
+            },
+            { $unwind: { path: '$community' } },
+            { $replaceRoot: { newRoot: '$community' } }
+        ])
+
+        return res.json(200, {message: 'Success', data: community})
     } catch (error) {
         next(error)
     }

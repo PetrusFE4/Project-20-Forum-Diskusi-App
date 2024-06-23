@@ -42,15 +42,11 @@ export const show = async (req, res) => {
         const id = new mongoose.Types.ObjectId(req.params.id);
 
         const reply = await Reply.aggregate([
-            {
-                $match: { _id: id }
-            },
+            { $match: { _id: id } },
             ...checkIfUserIsPoster(new mongoose.Types.ObjectId(req.user._id)),
             ...populateUser(),
             ...checkIfUserGiveScore(new mongoose.Types.ObjectId(req.user._id)),
-            {
-                $sort: { like: 1 }
-            }
+            { $sort: { like: 1 } }
         ])
 
         return res.status(200).json({ data: reply })
@@ -91,7 +87,9 @@ export const update = async (req, res, next) => {
     const { content } = req.body
     const { id } = req.params
     try {
-        const reply = await Reply.findOneAndUpdate({ _id: id }, { $set: { content: content } }, { returnDocument: 'after' })
+        const reply = await Reply.findOneAndUpdate({ _id: id },
+            { $set: { content: content, updated_at: Date.now() } },
+            { returnDocument: 'after' })
 
         return res.json({ data: reply.toJSON() })
     } catch (error) {

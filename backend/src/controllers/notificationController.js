@@ -6,9 +6,7 @@ export const index = async (req, res, next) => {
         const userId = req.user._id
 
         const notification = await Notification.aggregate([
-            {
-                $match: { user: new mongoose.Types.ObjectId(userId) }
-            },
+            { $match: { user: new mongoose.Types.ObjectId(userId) } },
             {
                 $lookup: {
                     from: 'users',
@@ -17,12 +15,8 @@ export const index = async (req, res, next) => {
                     as: 'poster'
                 }
             },
-            {
-                $unwind: '$poster'
-            },
-            {
-                $sort: { timestamp: -1 }
-            }
+            { $unwind: '$poster' },
+            { $sort: { timestamp: -1 } }
         ])
 
         return res.json({ message: 'Success', data: notification })

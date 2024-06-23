@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "prod": "dotenvx run -- node index.js",
-    "start": "node index.js",
+    "start": "dotenvx run -- node index.js",
+    "prod": "node index.js",
     "dev": "dotenvx run -- nodemon index.js"
   },
   "author": "",

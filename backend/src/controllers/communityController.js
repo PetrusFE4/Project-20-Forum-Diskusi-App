@@ -297,3 +297,32 @@ export const getJoined = async (req, res, next) => {
         next(error)
     }
 }
+
+export const getMember = async (req, res, next) => {
+    try {
+        const member = await CommunityUser.aggregate([
+            { $match: { community: new mongoose.Types.ObjectId(req.params.id) } },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'user',
+                    foreignField: '_id',
+                    pipeline: [
+                        {
+                            $project: {
+                                password: 0
+                            }
+                        }
+                    ],
+                    as: 'member'
+                }
+            },
+            { $unwind: { path: '$member' } },
+            { $replaceRoot: { newRoot: '$member' } }
+        ])
+
+        return res.json({message: 'Success', data: member})
+    } catch (error) {
+        next(error)
+    }
+}

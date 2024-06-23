@@ -20,6 +20,9 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
     const [showInput, setShowInput] = useState(data._id == post_id)
     const [processing, setProcessing] = useState(false)
 
+    const [userScore, setUserScore] = useState(data.user_score ?? 0)
+    const [score, setScore] = useState(data.score)
+
     let isPoster = user ? user._id == data.user._id : false
 
     const handleScore = async (val) => {
@@ -132,10 +135,10 @@ const PostRow = ({ data, detailed, mutate, replyMutate }) => {
 
             {!detailed ?
                 <Link to={`/post/${data._id}`}>
-                    <div className="flex flex-col relative max-h-64 overflow-hidden">
+                    <div className="flex flex-col relative max-h-48 overflow-hidden">
                         <h1 className='font-bold text-lg md:text-xl'>{data.title}</h1>
                         <p className='text-medium text-sm md:text-base mb-2' dangerouslySetInnerHTML={{ __html: data.content }}></p>
-                        <div className="absolute top-56 left-0 w-full h-8 bg-gradient-to-t from-white" />
+                        <div className="absolute top-40 left-0 w-full h-8 bg-gradient-to-t from-white" />
                     </div>
                 </Link>
                 :

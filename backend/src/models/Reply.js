@@ -8,18 +8,10 @@ const schema = new Schema(
         user: { type: Schema.Types.ObjectId, ref: 'User' },
         content: { type: Schema.Types.Mixed, required: true },
         reply_count: { type: Number, default: 0 },
-        attachments: [{
-            name: { type: String },
-            file: { type: String },
-            type: { type: String }
-        }],
-        score: { type: Number, default: 0 }
-    },
-    {
-        timestamps: {
-            createdAt: 'created_at',
-            updatedAt: 'updated_at'
-        }
+        score: { type: Number, default: 0 },
+        created_at: { type: Date, default: Date.now },
+        updated_at: { type: Date, default: Date.now },
+        deleted_at: { type: Date, default: null}
     }
 )
 

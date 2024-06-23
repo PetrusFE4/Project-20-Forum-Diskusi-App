@@ -6,7 +6,6 @@ import axiosInstance from '../../lib/axiosInstance'
 import moment from 'moment'
 import DraftEditorEmbed from '../Editor/DraftEditorEmbed'
 import { HiOutlineChatBubbleOvalLeft } from 'react-icons/hi2'
-import { CiBookmark, CiCirclePlus, CiShare1 } from 'react-icons/ci'
 
 const ReplyRow = ({ discussionId, data, level, mutate, className }) => {
     const { data: replies, error: repliesError, isLoading: repliesLoading, mutate: childMutate } = useSWR(`/replies?post=${discussionId}&parent=${data._id}`, url => axiosInstance.get(url).then(res => res.data))
